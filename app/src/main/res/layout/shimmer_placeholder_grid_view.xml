@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_height="wrap_content"
+>
+
+    <View
+            android:id="@+id/viewForImageTwo2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/placeholder_bg"
+            app:layout_constraintTop_toTopOf="@+id/viewForImageTwo"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintBottom_toBottomOf="@+id/viewForImageTwo"
+            app:layout_constraintStart_toEndOf="@+id/viewForImageTwo" android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="0.5"/>
+    <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/placeholder_text_height"
+            android:textSize="24sp"
+            android:background="@color/placeholder_bg"
+            app:layout_constraintTop_toBottomOf="@+id/viewForImageTwo2"
+            app:layout_constraintStart_toStartOf="@+id/viewForImageTwo2"
+            app:layout_constraintEnd_toEndOf="@+id/viewForImageTwo2" android:layout_marginTop="8dp"
+            app:layout_constraintHorizontal_bias="0.0"/>
+    <View
+            android:id="@+id/viewForImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/placeholder_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/viewForImageTwo"
+            app:layout_constraintDimensionRatio="3:4" android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"/>
+
+
+    <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/placeholder_text_height"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:background="@color/placeholder_bg"
+            app:layout_constraintStart_toStartOf="@+id/viewForImage"
+            app:layout_constraintEnd_toEndOf="@+id/viewForImage"
+            app:layout_constraintTop_toBottomOf="@+id/viewForImage" android:layout_marginTop="8dp"
+            app:layout_constraintHorizontal_bias="0.0"/>
+
+    <View
+            android:id="@+id/viewForImageTwo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/placeholder_bg"
+            app:layout_constraintTop_toTopOf="@+id/viewForImage"
+            app:layout_constraintStart_toEndOf="@+id/viewForImage" android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/viewForImage" app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/viewForImageTwo2"/>
+
+
+    <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/placeholder_text_height"
+            android:textSize="24sp"
+            android:background="@color/placeholder_bg"
+            app:layout_constraintTop_toBottomOf="@+id/viewForImageTwo"
+            app:layout_constraintStart_toStartOf="@+id/viewForImageTwo"
+            app:layout_constraintEnd_toEndOf="@+id/viewForImageTwo" android:layout_marginTop="8dp"/>
+
+    <!-- </android.support.constraint.ConstraintLayout>-->
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

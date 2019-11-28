@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <include
+            android:id="@+id/toolbar"
+            layout="@layout/layout_common_toolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/browseMoreButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/holo_orange_dark"
+            android:text="Shop More"
+            android:textAllCaps="false"
+            android:textColor="@android:color/background_light"
+            android:textSize="@dimen/_14ssp"
+            app:cornerRadius="4dp"
+            app:layout_constraintTop_toBottomOf="@id/orderStatusScrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    <androidx.core.widget.NestedScrollView
+            android:id="@+id/orderStatusScrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@id/browseMoreButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvLabelThankYou"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:srcCompat="@drawable/ic_success"
+                    tools:ignore="ContentDescription" />
+
+
+            <TextView
+                    android:id="@+id/tvLabelThankYou"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Thank You !"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/_20ssp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/textView12"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Your order is confirmed"
+                    android:textSize="@dimen/_14ssp"
+                    app:layout_constraintBottom_toTopOf="@+id/cardView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvLabelThankYou" />
+
+            <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView12">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <TextView
+                            android:id="@+id/textViewOrderStatusOrderNumberTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="?attr/actionBarSize"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center_vertical"
+                            android:text="Your Order Number "
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_14ssp"
+                            app:layout_constraintEnd_toStartOf="@+id/textViewOrderStatusOrderNumberDescription"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_chainStyle="spread_inside"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                            android:id="@+id/textViewOrderStatusOrderNumberDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="123456789"
+                            android:textSize="@dimen/_12ssp"
+                            app:layout_constraintBaseline_toBaselineOf="@+id/textViewOrderStatusOrderNumberTitle"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/textViewOrderStatusOrderNumberTitle" />
+
+                    <View
+                            android:id="@+id/divider2"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textViewOrderStatusOrderNumberTitle" />
+
+                    <TextView
+                            android:id="@+id/textViewOrderStatusOrderAmountTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="?attr/actionBarSize"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center_vertical"
+                            android:text="@string/delivery_day"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_14ssp"
+                            app:layout_constraintEnd_toStartOf="@+id/textViewOrderStatusOrderAmountDescription"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_chainStyle="spread_inside"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+                    <TextView
+                            android:id="@+id/textViewOrderStatusOrderAmountDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="₹605"
+                            android:textSize="@dimen/_12ssp"
+                            app:layout_constraintBaseline_toBaselineOf="@+id/textViewOrderStatusOrderAmountTitle"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/textViewOrderStatusOrderAmountTitle" />
+
+                    <View
+                            android:id="@+id/divider3"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textViewOrderStatusOrderAmountTitle" />
+
+                    <TextView
+                            android:id="@+id/textViewOrderStatusOrderPaymentTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="?attr/actionBarSize"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center_vertical"
+                            android:text="@string/payment_method"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_14ssp"
+                            app:layout_constraintEnd_toStartOf="@+id/textViewOrderStatusOrderPaymentDescription"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_chainStyle="spread_inside"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+                    <TextView
+                            android:id="@+id/textViewOrderStatusOrderPaymentDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/text_cod"
+                            android:textSize="@dimen/_12ssp"
+                            app:layout_constraintBaseline_toBaselineOf="@+id/textViewOrderStatusOrderPaymentTitle"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/textViewOrderStatusOrderPaymentTitle" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                    android:id="@+id/delivery_timing_statement"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:text="@string/delivery_timing_statment"
+                    android:textSize="@dimen/_14ssp"
+                    app:layout_constraintEnd_toEndOf="@id/cardView"
+                    app:layout_constraintStart_toStartOf="@id/cardView"
+                    app:layout_constraintTop_toBottomOf="@id/cardView" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

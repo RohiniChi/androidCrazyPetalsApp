@@ -1,0 +1,22 @@
+# Created by .ignore support plugin (hsz.mobi)
+*.iml
+.gradle
+local.properties
+.idea/sonarlint/
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.idea/sonarIssues.xml
+.idea/sonarlint.xml
+.idea/sonarlint-state.xml
+.idea/sonarSettings.xml
+/.idea/codeStyles/
+/.idea/dictionaries/
+/.idea/runConfigurations.xml

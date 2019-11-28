@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textViewSubTotalDiscountTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Products Discount"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintStart_toStartOf="@+id/textViewSubTotalMrpTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSubTotalMrpTitle" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalMrpTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Sub Total"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintEnd_toStartOf="@+id/textViewSubTotalMrpDescription"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalMrpDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textViewSubTotalMrpTitle"
+            app:layout_constraintTop_toTopOf="@+id/textViewSubTotalMrpTitle" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalDiscountDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewSubTotalDiscountTitle"
+            app:layout_constraintEnd_toEndOf="@+id/textViewSubTotalMrpDescription"
+            app:layout_constraintTop_toTopOf="@+id/textViewSubTotalDiscountTitle" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalTaxTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="GST (8%)"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/textViewSubTotalDiscountTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSubTotalDiscountTitle" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalTaxDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+ ₹30"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewSubTotalTaxTitle"
+            app:layout_constraintEnd_toEndOf="@+id/textViewSubTotalDiscountDescription"
+            app:layout_constraintTop_toTopOf="@+id/textViewSubTotalTaxTitle" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalDeliveryChargesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Delivery Charges"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintStart_toStartOf="@+id/textViewSubTotalTaxTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSubTotalTaxTitle" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalDeliveryChargesDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Free"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewSubTotalDeliveryChargesTitle"
+            app:layout_constraintEnd_toEndOf="@+id/textViewSubTotalTaxDescription"
+            app:layout_constraintTop_toTopOf="@+id/textViewSubTotalDeliveryChargesTitle" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSubTotalDeliveryChargesTitle" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Total Amount"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textViewSubTotalDeliveryChargesTitle"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/textViewSubTotalDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewSubTotalTitle"
+            app:layout_constraintEnd_toEndOf="@+id/textViewSubTotalDeliveryChargesDescription"
+            app:layout_constraintTop_toTopOf="@+id/textViewSubTotalTitle" />
+
+        <ImageView
+            android:id="@+id/imageViewSubTotalCollapse"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_keyboard_arrow_dwn" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:showIn="navigation_view">
+
+    <group
+            android:id="@+id/group_login_signUp"
+            android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_login_signUp"
+                android:title="@string/menu_login_signup" />
+    </group>
+    <group
+            android:id="@+id/group_home"
+            android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_home"
+                android:title="@string/menu_home" />
+    </group>
+    <group
+            android:id="@+id/group_my_order"
+            android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_my_order"
+                android:title="@string/menu_my_order" />
+    </group>
+    <group
+            android:id="@+id/group_wishList"
+            android:checkableBehavior="single">
+
+        <item
+                android:id="@+id/nav_wishList"
+                android:title="@string/menu_wish_list" />
+    </group>
+    <!--  <group android:id="@+id/group_request_booking" android:checkableBehavior="single">
+
+          <item
+                  android:id="@+id/nav_requestBooking"
+                  android:title="@string/menu_request_booking"/>
+      </group>
+  -->
+    <group
+            android:id="@+id/group_about_us"
+            android:checkableBehavior="single">
+
+        <item
+                android:id="@+id/nav_about_us"
+                android:title="@string/menu_about_us" />
+    </group>
+
+    <group
+            android:id="@+id/group_contact_us"
+            android:checkableBehavior="single">
+
+        <item
+                android:id="@+id/nav_contact_us"
+                android:title="@string/title_contact_us" />
+    </group>
+
+    <group
+            android:id="@+id/group_faqs"
+            android:checkableBehavior="single">
+
+        <item
+                android:id="@+id/nav_faqs"
+                android:title="@string/title_faqs" />
+    </group>
+
+    <group android:checkableBehavior="none">
+        <item
+                android:id="@+id/nav_log_out"
+                android:title="@string/menu_logout" />
+    </group>
+
+    <group android:checkableBehavior="none">
+
+        <item
+                android:id="@+id/emptyLine"
+                android:title="" />
+    </group>
+
+</menu>

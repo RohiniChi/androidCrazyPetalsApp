@@ -1,0 +1,50 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowEnableSplitTouch">false</item>
+        <item name="android:splitMotionEvents">false</item>
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/appBackgroundColor</item>
+    </style>
+
+
+
+    <style name="AppTheme.MyTheme" parent="Theme.AppCompat">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/offerGreenColor</item>
+    </style>
+    <style name="AppTheme.NoActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="SearchViewTheme" parent="Widget.AppCompat.Light.SearchView">
+
+        <item name="colorControlActivated">@android:color/darker_gray</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorHint">@color/colorLightGray</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+    <style name="customTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/colorWhite</item>
+        <item name="boxStrokeColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="NavigationDrawerStyle" parent="Base.TextAppearance.AppCompat">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/muli_regular</item>
+        <!-- text size in menu-->
+    </style>
+
+    <style name="AppTheme.OTPTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
+    </style>
+
+</resources>

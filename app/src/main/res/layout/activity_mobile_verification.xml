@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+    <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:id="@+id/imageButtonBackArrow"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_shape_backarrow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+            <ImageView
+                    android:id="@+id/imageViewLogo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/app_logo_cp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageButtonBackArrow"
+                    tools:ignore="ContentDescription" />
+
+            <TextView
+                    android:id="@+id/textViewVerifyPhoneNo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="start"
+                    android:text="@string/text_verify"
+                    android:textColor="#3c3c3c"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="@+id/imageViewLogo"
+                    app:layout_constraintStart_toStartOf="@+id/imageViewLogo"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutPhoneNo"
+                    style="@style/customTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    app:boxStrokeColor="@color/colorLightGray"
+                    app:layout_constraintEnd_toEndOf="@+id/textViewVerifyPhoneNo"
+                    app:layout_constraintStart_toStartOf="@+id/textViewVerifyPhoneNo"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewVerifyPhoneNo">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textInputEditTextPhoneNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/mobile_number"
+                        android:inputType="phone"
+                        android:singleLine="true"
+                        android:maxLength="10"
+                        android:textCursorDrawable="@null" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                    android:id="@+id/textViewPhoneNoError"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/edittextErrorColor"
+                    android:textSize="12sp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhoneNo"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhoneNo"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhoneNo" />
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonGetOtp"
+                    android:layout_width="0dp"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginTop="24dp"
+                    android:background="#ff9500"
+                    android:text="@string/get_otp"
+                    android:textAllCaps="false"
+                    android:clickable="true"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="18sp"
+                    app:cornerRadius="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhoneNo"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhoneNo"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewPhoneNoError" />
+
+            <androidx.core.widget.ContentLoadingProgressBar
+                    android:id="@+id/progressBar"
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

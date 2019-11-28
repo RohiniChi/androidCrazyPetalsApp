@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.activities.ProductsListActivity">
+
+    <include
+            android:id="@+id/toolbar"
+            layout="@layout/layout_common_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    <include
+            layout="@layout/layout_network_condition"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <include
+            layout="@layout/layout_no_wish_list"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <include
+            layout="@layout/layout_no_data_condition"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <include
+            layout="@layout/layout_server_error_condition"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerViewContainerProductList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:shimmer_duration="800">
+
+        <!-- Adding 3 rows of placeholders -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/filter_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/colorLightestGray"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/recyclerViewProducts"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintTop_toTopOf="@id/shimmerViewContainerProductList">
+
+
+        <TextView
+                android:id="@+id/textViewFilter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:autoSizeMaxTextSize="100sp"
+                android:autoSizeMinTextSize="14sp"
+                android:fontFamily="@font/avenir_book"
+                android:text="@string/title_filter"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@id/filter_layout"
+                app:layout_constraintEnd_toStartOf="@id/show_filter"
+                app:layout_constraintStart_toStartOf="@id/filter_layout"
+                app:layout_constraintTop_toTopOf="@id/filter_layout"
+                tools:ignore="UnusedAttribute" />
+
+        <ImageView
+                android:id="@+id/show_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_down_arrow"
+                app:layout_constraintBottom_toBottomOf="@id/filter_layout"
+                app:layout_constraintEnd_toEndOf="@id/filter_layout"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@id/textViewFilter"
+                app:layout_constraintTop_toTopOf="@id/filter_layout"
+                tools:ignore="ContentDescription" />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/button_apply_filter"
+                app:layout_constraintTop_toTopOf="@id/filter_layout"
+                tools:listitem="@layout/recycler_filter_item" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_apply_filter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="#C65589"
+                android:text="@string/text_apply_filter"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/filter_layout"
+                app:layout_constraintEnd_toStartOf="@id/button_cancel"
+                app:layout_constraintStart_toStartOf="@id/filter_layout"
+                app:layout_constraintTop_toBottomOf="@id/recycler_filter" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/darker_gray"
+                android:text="@string/text_cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/filter_layout"
+                app:layout_constraintEnd_toEndOf="@id/filter_layout"
+                app:layout_constraintStart_toEndOf="@id/button_apply_filter"
+                app:layout_constraintTop_toBottomOf="@id/recycler_filter" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+  <!--  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayoutProductList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_layout"
+            app:layout_constraintTop_toTopOf="@+id/shimmerViewContainerProductList">
+
+-->
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewProducts"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_layout"
+            tools:listitem="@layout/layout_product_item" />
+
+<!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+
+    <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBarProductList"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

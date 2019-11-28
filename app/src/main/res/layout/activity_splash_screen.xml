@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/design_default_color_surface"
+    tools:context=".ui.activities.SplashScreenActivity">
+
+
+    <ImageView
+        android:id="@+id/imageViewCpLogo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/app_logo_cp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription,HardcodedText" />
+
+    <TextView
+        android:id="@+id/splash_screen_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/splash_screen_text"
+        android:textSize="25sp"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewCpLogo"
+        app:layout_constraintStart_toStartOf="@+id/imageViewCpLogo"
+        app:layout_constraintTop_toBottomOf="@id/imageViewCpLogo" />
+
+    <ImageView
+        android:id="@+id/imageViewSplashScreenImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="130dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/splash_screen_text"
+        app:srcCompat="@drawable/img_splash"
+        tools:ignore="ContentDescription" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

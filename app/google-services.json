@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "206361117480",
+    "firebase_url": "https://crazypetals-9b7cf.firebaseio.com",
+    "project_id": "crazypetals-9b7cf",
+    "storage_bucket": "crazypetals-9b7cf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206361117480:android:c88053d4d5065de883061d",
+        "android_client_info": {
+          "package_name": "com.plugable.mcommerceapp.cpmvp1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206361117480-l2vrfjhpshb8pp79fqbo23ml5tnkhkg9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_3eD4LnabQbz0pPmAzpEoiL8K2eXRvYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206361117480-l2vrfjhpshb8pp79fqbo23ml5tnkhkg9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206361117480:android:c88053d4d5065de883061d",
+        "android_client_info": {
+          "package_name": "com.plugable.mcommerceapp.mvp1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206361117480-l2vrfjhpshb8pp79fqbo23ml5tnkhkg9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_3eD4LnabQbz0pPmAzpEoiL8K2eXRvYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206361117480-l2vrfjhpshb8pp79fqbo23ml5tnkhkg9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206361117480:android:c88053d4d5065de883061d",
+        "android_client_info": {
+          "package_name": "com.plugable.mcommerceapp.main"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206361117480-l2vrfjhpshb8pp79fqbo23ml5tnkhkg9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_3eD4LnabQbz0pPmAzpEoiL8K2eXRvYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206361117480-l2vrfjhpshb8pp79fqbo23ml5tnkhkg9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

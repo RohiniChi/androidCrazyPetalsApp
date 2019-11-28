@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.activities.OrderSummaryActivity">
+
+    <include
+            android:id="@+id/include2"
+            layout="@layout/layout_common_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+            android:id="@+id/content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@id/materialButtonOrderSummaryPlaceOrder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include2">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+            <TextView
+                    android:id="@+id/textViewOrderSummaryDeliveryAddressTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/delivery_address"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/addressLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_background_unselected"
+                    android:padding="@dimen/_4sdp"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewOrderSummaryDeliveryAddressTitle">
+
+                <TextView
+                        android:id="@+id/textViewDeliveryAddressPersonName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="Rohit Pandya"
+                        android:textColor="@color/colorBlack"
+                        app:layout_constraintBottom_toTopOf="@+id/textViewDeliveryAddressCompleteAddress"
+                        app:layout_constraintEnd_toStartOf="@+id/imageViewDeliveryAddressDelete"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                        android:id="@+id/imageViewDeliveryAddressDelete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_close_black_24dp" />
+
+                <TextView
+                        android:id="@+id/textViewDeliveryAddressCompleteAddress"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="301, Octave Complex,Baner Road, Near Subway,Baner, Pune - 411045 "
+                        app:layout_constraintBottom_toTopOf="@+id/textViewDeliveryAddressContactNumber"
+                        app:layout_constraintEnd_toEndOf="@+id/textViewDeliveryAddressPersonName"
+                        app:layout_constraintStart_toStartOf="@+id/textViewDeliveryAddressPersonName"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewDeliveryAddressPersonName" />
+
+                <TextView
+                        android:id="@+id/textViewDeliveryAddressContactNumber"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="Contact No. +919876543210"
+                        app:layout_constraintEnd_toEndOf="@+id/textViewDeliveryAddressCompleteAddress"
+                        app:layout_constraintStart_toStartOf="@+id/textViewDeliveryAddressCompleteAddress"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewDeliveryAddressCompleteAddress" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                    android:id="@+id/textViewOrderSummaryOrderDetailsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/order_details"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/include4" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewOrderSummaryOrderDetails"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/rounded_background_unselected"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewOrderSummaryOrderDetailsTitle"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/layout_order_summary_order_details" />
+
+            <TextView
+                    android:id="@+id/textViewOrderSummaryTotalAmountTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Total Amount :"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addressLayout" />
+
+            <include
+                    android:id="@+id/include4"
+                    layout="@layout/layout_sub_total_amount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewOrderSummaryTotalAmountTitle" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewOrderSummaryOrderDetails">
+
+                <TextView
+                        android:id="@+id/tvLabelComments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="@dimen/_2sdp"
+                        android:text="@string/comments"
+                        android:textColor="@color/colorBlack"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                        android:id="@+id/etComments"
+                        android:layout_width="match_parent"
+                        android:layout_height="?listPreferredItemHeightLarge"
+                        android:background="@drawable/rounded_background_unselected"
+                        android:ellipsize="end"
+                        android:gravity="top"
+                        android:hint="@string/hint_comments"
+                        android:inputType="text"
+                        android:maxLength="60"
+                        android:maxLines="3"
+                        android:padding="@dimen/_8sdp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textCursorDrawable="@null"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvLabelComments"
+                        tools:ignore="Autofill,LabelFor" />
+
+
+                <CheckBox
+                        android:id="@+id/checkboxInstructions"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/checkbox_text_instructions"
+                        android:textColor="@android:color/darker_gray"
+                        app:layout_constraintStart_toStartOf="@id/etComments"
+                        app:layout_constraintTop_toBottomOf="@id/etComments" />
+
+                <TextView
+                        android:id="@+id/textViewTermsAndConditions"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:text="@string/order_summary_terms_conditions"
+                        android:textColor="@android:color/holo_blue_light"
+                        app:layout_constraintBottom_toBottomOf="@id/checkboxInstructions"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/checkboxInstructions"
+                        app:layout_constraintTop_toTopOf="@id/checkboxInstructions" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/materialButtonOrderSummaryPlaceOrder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/message_place_order"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/content" />
+
+    <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

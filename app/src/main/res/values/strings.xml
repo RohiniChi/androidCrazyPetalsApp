@@ -1,0 +1,353 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">CrazyPetals</string>
+
+    <string name="mix_panel_token">7d973e43d032b93334bfcd2451afad32</string>
+
+    //interactive theme plug
+
+    <string name="oops_no_internet_connection">Oops! No Internet Connection</string>
+    <string name="please_check_your_connection_and_try_again">Please check your connection and try again</string>
+    <string name="oops_no_results_found">Oops! No Results Found</string>
+    <string name="please_try_again_later_or_try_something_else">Please try again later or try something else</string>
+    <string name="oops_something_went_wrong">Oops! Something went wrong</string>
+    <string name="please_try_again">Please try again</string>
+    <string name="refresh">Refresh</string>
+
+    <string name="appbar_scrolling_view_behavior" translatable="false">
+        com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior
+    </string>
+    <string name="try_again">Try Again</string>
+    <string name="check_internet_connection">Please check your internet connection.</string>
+
+    <string name="title_activity_dashboard">DashboardActivity</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_my_order">Orders</string>
+
+
+    <string name="name">
+        <font fgcolor="black">Name :</font>
+        <font fgcolor="red">*</font>
+    </string>
+    <string name="booked">Your order has been booked successfully,
+        we will contact you shortly for order confirmation.
+    </string>
+    <string name="contact_no">
+        <font fgcolor="black">Contact Number :</font>
+        <font fgcolor="red">*</font>
+    </string>
+    <string name="email">
+        <font fgcolor="black">Email :</font>
+        <font fgcolor="red">*</font>
+    </string>
+
+    <string name="area_pincode">
+        <font fgcolor="black">Area(Pincode) :</font>
+        <font fgcolor="red">*</font>
+    </string>
+
+    <string name="order_details">
+        <font fgcolor="black">Order Details :</font>
+    </string>
+
+
+    <string name="delivery_address">Delivery Address :</string>
+    <string name="submit">Submit</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_actual_price">
+        <strike>300</strike>
+    </string>
+
+    <string name="title_cart_view">Cart</string>
+    <string name="message_percent_discount">UP TO %1$d%% OFF</string>
+    <string name="menu_wish_list">Wish List</string>
+    <string name="menu_request_booking">Request Booking</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_about_us">About Us</string>
+    <string name="title_mangoes">Mangos</string>
+    <string name="title_up_to_20_off">UP TO 20% OFF</string>
+    <string name="browse_by_category">Browse by category</string>
+    <string name="title_desserts">Desserts</string>
+    <string name="title_discounted_price">RS 200</string>
+    <string name="title_loading">Loading data</string>
+    <string name="title_is_available">Available</string>
+    <string name="title_view_all">View All</string>
+    <string name="title_hello">Hello </string>
+    <string name="title_emoji">&#128522;</string>
+    <string name="title_subcategory">Edible oil</string>
+    <string name="title_booking_successful">Booking Successful</string>
+    <string name="title_categories">Categories</string>
+    <string name="title_request_booking">Request Booking</string>
+    <string name="title_wish_list">Wish List</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_my_order">Orders</string>
+
+    <string name="title_settings">Settings</string>
+    <string name="title_faqs">FAQs</string>
+    <string name="title_about_us">About Us</string>
+    <string name="title_privacy_policy">Privacy Policy</string>
+    <string name="title_contact_us">Contact Us</string>
+    <string name="kerala_mini_mart">Kerala Mini Mart</string>
+    <string name="contact_No">Contact Number</string>
+    <string name="mobile_No">+91(721) 806-8071</string>
+    <string name="app_email_id">keralaminimart@gmail.com</string>
+    <string name="visit_us_at">Visit us at</string>
+    <string name="address">serial no.18/2, Avinash colony, waluj, gangapur, Aurangabad, maharashtra, India 431123
+    </string>
+    <string name="request_booking_name" tools:ignore="ExtraTranslation">Enter name</string>
+    <string name="request_booking_description" tools:ignore="TypographyEllipsis">Lorem lpsum is simply dummy text of the
+        printing and typesettings industry. Lorem lpsum… The first line of
+        Lorem lpsum, Lorem lpsum dolor sit amet...,comes...
+    </string>
+    <string name="request_booking_address">301,octave Complex ,Baner Road,near Subway,Baner,Pune-411045</string>
+    <string name="request_booking_email">xyz@gmail.com</string>
+    <string name="request_booking_contact_no">Enter contact number</string>
+    <string name="search_min_characters_to_search">Please enter minimum 3 characters to search</string>
+    <string name="selectUser">
+        <font fgcolor="black">Select User</font>
+        <font fgcolor="red">*</font>
+    </string>
+    <string name="message_contact_admin">Something went wrong, Please contact to Admin.</string>
+
+    <string name="message_item_added">Item added to wish list</string>
+    <string name="message_item_removed">Item removed from wish list</string>
+    <string name="order_detail_hint">
+        I want to buy, \n• Product one - 1 packet - color
+        \n• Product two - 2 kg - color
+    </string>
+    <string name="order_detail_data">I want to buy,\n</string>
+
+    <string name="message_coming_soon">Coming Soon</string>
+    <string name="message_enable_location">Please enable your location from settings</string>
+    <string name="message_something_went_wrong">Something went wrong</string>
+    <string name="message_press_back_button">Press BACK again to exit</string>
+    <string name="title_in_stock">In stock</string>
+    <string name="title_out_of_stock">Out of stock</string>
+    <string name="message_place_order">Place order</string>
+    <string name="title_browse_more">Browse More</string>
+    <string name="title_add_items">Add Items</string>
+    <string name="title_start_shopping">Start Shopping</string>
+
+    <string name="title_empty_wishlist">Empty Wish List!</string>
+    <string name="title_empty_order_list">Empty Order List!</string>
+
+    <string name="message_add_some_items_in_wishlist_to_make_me_happy">Add some items in wish list to make me happy!</string>
+    <string name="message_add_some_items_in_order">You haven\'t place any order yet!</string>
+    <string name="title_product_details">VIEW DETAILS</string>
+    <string name="title_total_items">Total items ( %d )</string>
+
+    <string name="title_cart">Cart</string>
+    <string name="title_order_status">Order Status</string>
+    <string name="title_delivery_schedule">Delivery Schedule</string>
+    <string name="title_checkbox_wish_list">Add products from wish list</string>
+    <string name="mobile_no">
+        <font fgcolor="#4f4f4f">Mobile number</font>
+        <font fgcolor="red">*</font>
+    </string>
+    <string name="flat_no">
+        <font fgcolor="#4f4f4f">Flat No /House No /Floor /Building</font>
+        <font fgcolor="red">*</font>
+    </string>
+
+    <string name="locality">
+        <font fgcolor="#4f4f4f">Colony /Street /Landmark</font>
+        <font fgcolor="red">*</font>
+    </string>
+
+    <string name="pin_code">
+        <font fgcolor="#4f4f4f">6 digit pin code</font>
+        <font fgcolor="red">*</font>
+    </string>
+
+    <string name="area">
+        <font fgcolor="#4f4f4f">Area /Locality</font>
+        <font fgcolor="red">*</font>
+    </string>
+
+    <string name="city">
+        <font fgcolor="#4f4f4f">City</font>
+        <font fgcolor="red">*</font>
+    </string>
+    <string name="add_address">Add Address</string>
+    <string name="message_delivery_address">Delivery Address</string>
+    <string name="title_added_to_cart">Added to cart</string>
+
+    <string name="product_detail_brand_name">Brand :</string>
+    <string name="product_detail_colour">Color variant :</string>
+    <string name="product_detail_header_short_description">Key features :</string>
+
+
+    <string name="validation_enter_name">Please enter your name</string>
+    <string name="validation_empty_space">Please do not add blank spaces</string>
+    <string name="validation_name_length">Please enter maximum 100 characters</string>
+    <string name="validation_enter_number">Please enter your mobile number</string>
+    <string name="validation_number">Please enter a valid mobile number</string>
+    <string name="validation_enter_email">Please enter your email address</string>
+    <string name="validation_email">Please enter a valid email address</string>
+    <string name="validation_enter_order_detail">Please enter the order details</string>
+    <string name="empty_wish_list">Your wish list is empty</string>
+    <string name="request_booking_checkbox_alert">This will clear previously added products in order details. Do you
+        want to continue?
+    </string>
+    <string name="success_booking_delivery_date">Your order will deliver probably on</string>
+    <string name="message_spinner">Please select area to deliver your order</string>
+    <string name="dayAndTime">Delivery Time :</string>
+    <string name="payment_mode">Payment Mode :</string>
+    <string name="order_no">Order No :</string>
+    <string name="app_update_message">New version is available. Please update application.</string>
+    <string name="app_update">Update</string>
+    <string name="app_update_later">Not Now</string>
+    <string name="app_update_info">New Version</string>
+    <string name="cash_on_delivery">COD</string>
+    <string name="area_pincode_validation">Please select area and pincode</string>
+    <string name="intent_data_title">title</string>
+    <string name="fragment_tag">TAG</string>
+    <string name="subCategoryName">Products</string>
+    <string name="spinner_select">Select</string>
+    <string name="delivery_location_to_pass_day">DeliveryLocationToPassDay</string>
+    <string name="delivery_location_to_pass_time">DeliveryLocationToPassTime</string>
+    <string name="order_number_to_pass">OrderNumber</string>
+    <string name="intent_banner_search">BannerSearch</string>
+    <string name="forceful_update">Forcefull</string>
+    <string name="playstore_url">https://play.google.com/store/apps/details?id=com.plugable.mcommerceapp.mvp1</string>
+    <string name="banner_search_dosa">Dosa batter</string>
+    <string name="banner_search_grated_coconut">Grated coconut</string>
+    <string name="about_us_web_url">file:///android_asset/About_Us.html</string>
+    <string name="faqs_web_url">file:///android_asset/FAQs.html</string>
+    <string name="instructions_web_url">file:///android_asset/TermsAndConditions.html</string>
+    <string name="hello_timer">hello-timer</string>
+    <string name="title_browse_by_category">Browse by category</string>
+    <string name="title_category">Categories</string>
+    <string name="empty_wishlist_message">Your wish list is empty</string>
+    <string name="alert_title">Alert</string>
+    <string name="alert_order_detail_clear_message">This will clear previously added products in order details. Do you
+        want to continue?
+    </string>
+    <string name="mixpanel_about_us">About Us</string>
+    <string name="product_not_available">This product is no longer available</string>
+    <string name="mixpanel_request_booking_from_product_detail">request booking from product detail</string>
+    <string name="mixpanel_booking_successful">booking successful</string>
+    <string name="mixpanel_request_booking_from_hamburger_menu">request booking from hamburger menu</string>
+    <string name="mixpanel_contact_us">contact us</string>
+    <string name="mixpanel_faqs">FAQs</string>
+    <string name="mixpanel_wishlist">wish list</string>
+    <string name="title_email">Email</string>
+    <string name="skip">Skip ></string>
+    <string name="welcome">Welcome!</string>
+    <string name="create_account">Create Account</string>
+    <string name="email_address">Email Id</string>
+    <string name="password">Password</string>
+    <string name="signUp">Sign up</string>
+    <string name="registered_account">Already have an account?</string>
+    <string name="login">Login</string>
+    <string name="register_name">Name</string>
+    <string name="validation_enter_password">Please enter your password</string>
+    <string name="validation_password_length">Please enter at least 6 characters</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_button">Sign in</string>
+    <string name="verify_button">Verify</string>
+    <string name="or">OR</string>
+    <string name="text_verify">Please enter your Mobile Number</string>
+    <string name="get_otp">Get OTP</string>
+    <string name="text_enter_otp">Please enter the verification code sent to your mobile number</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="message_otp_code_sent">OTP has been sent</string>
+    <string name="create_new_password">Create New Password</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="confirm_new_password">Re-enter new password</string>
+    <string name="save_password">Save Password</string>
+    <string name="validation_new_password">Please enter new password</string>
+    <string name="validation_confirm_password">Please re-enter your password</string>
+    <string name="validation_wrong_confirmed_password">Password doesn\'t match</string>
+    <string name="menu_login_signup">Login/Signup</string>
+    <string name="menu_logout">Logout</string>
+    <string name="message_logout">Are you sure you want to logout ?</string>
+    <string name="mesage_successfully_registered">Registered Successfully</string>
+    <string name="otp_validation_message">Please enter valid OTP</string>
+    <string name="login_validation_message">Please enter valid email address or password</string>
+    <string name="mobileVerification_validation_meassage">User does not exist</string>
+    <string name="textviewterms">By Signing up or Logging in you agree with our </string>
+    <string name="textviewTermsAndConditions">Terms and Conditions</string>
+    <string name="message_logged_out">Logged out successfully</string>
+    <string name="searchHint"> What would you like to shop?</string>
+    <string name="search_order_hint">Search orders by order id</string>
+    <string name="title_notification">Notification</string>
+    <string name="discount_percentage">(60% off)</string>
+    <string name="menu_exclusive">Exclusive</string>
+    <string name="menu_search">SEARCH</string>
+    <string name="menu_profile">PROFILE</string>
+    <string name="title_filter">Click to filter specific categories</string>
+    <string name="filter_text">HandCrafted</string>
+    <string name="splash_screen_text">Style in an ethenic ware</string>
+    <string name="menu_crazypetals">Crazypetals</string>
+    <string name="text_apply_filter">Apply </string>
+    <string name="text_cancel">Cancel</string>
+    <string name="mobile_number">Mobile No.</string>
+    <string name="text_add_profile_photo">Add Profile Photo</string>
+    <string name="text_weight">Weight</string>
+    <string name="value_weight">Below 1 Kg</string>
+    <string name="text_height">Height</string>
+    <string name="value_height">5.5m</string>
+    <string name="text_material_type">Material Type </string>
+    <string name="value_material_type">Gold</string>
+    <string name="text_size">Size variant:</string>
+    <string name="value_size">Small</string>
+    <string name="text_precautions">Precautions:</string>
+    <string name="value_precautions">Use drycleaners only.</string>
+    <string name="text_included_accesoris">IncludedAccesoris</string>
+    <string name="title_also_recommended">Also Recommended</string>
+    <string name="message_grant_permission">Please Grant permission</string>
+    <string name="title_select_source">Select source</string>
+    <string name="default_image_string"> </string>
+    <string name="title_product_detail">Description:</string>
+    <string name="logged_in_user_id">UserIdLogin</string>
+    <string name="send_otp_register_subject">Kerala Mini Mart OTP Confirmation</string>
+    <string name="send_otp_reset_password_subject">Kerala Mini Mart Reset Password</string>
+    <string name="button_add_to_cart">Add to cart</string>
+    <string name="text_delivery_time">Delivery Time</string>
+    <string name="value_delivery_time">Order will be delivered in 7 days</string>
+    <string name="title_description">Description</string>
+    <string name="title_specification">Specification</string>
+    <string name="title_instruction">Instruction</string>
+    <string name="text_colon">:</string>
+    <string name="text_width">Width</string>
+    <string name="text_length">Length</string>
+
+    <string name="notification">Notifications</string>
+    <string name="message_product_added_to_cart">Product added to cart</string>
+    <string name="alert_select_color">Please select color</string>
+    <string name="alert_select_size">Please select size</string>
+
+    <string name="title_order_detail">Order Detail</string>
+    <string name="tab_order_detail">Order Detail</string>
+    <string name="tab_product">Product</string>
+
+    <string name="label_arriving_on">Arriving On:</string>
+    <string name="label_delivery_date">Delivery Date:</string>
+    <string name="label_delivered_date">Delivered Date:</string>
+    <string name="label_buy_it_again">Buy it again</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="label_out_of_stock">Out of stock</string>
+    <string name="label_view_standard_delivery_chart">View standard delivery chart</string>
+    <string name="label_review_order">Review Order</string>
+    <string name="label_cash_on_delivery">Cash on Delivery</string>
+    <string name="label_payment_method">Payment Method</string>
+    <string name="label_your_order_will_be_delivered_on_s">Your order will be delivered on : %s</string>
+    <string name="comments">Comments :</string>
+    <string name="price_can_change_for_few_grocery_products_based_on_quantity_variations"><![CDATA[<p><b>Instruction:</b> Price can change for few grocery products based on quantity variations.</p>]]></string>
+    <string name="button_update">Update</string>
+    <string name="order_summary_terms_conditions"><![CDATA[terms & conditions]]></string>
+    <string name="checkbox_text_instructions">Please agree to our</string>
+    <string name="hint_comments">Enter your comments/instructions here</string>
+    <string name="delivery_day">Delivery Day</string>
+
+    <string name="please_login_to_continue">Please login to continue</string>
+    <string name="delivery_timing_statment">To check early delivery timing, kindly contact to KMM support team.</string>
+    <string name="text_cod">Cash on delivery</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="alert_message_place_order"><![CDATA[Oops! looks like few items went out of stock.Please remove them from the cart list and then place the order.]]></string>
+
+</resources>

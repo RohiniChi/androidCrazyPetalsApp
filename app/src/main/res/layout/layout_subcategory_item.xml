@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:clickable="true"
+                                   android:focusable="true"
+                                   android:foreground="?android:attr/selectableItemBackground"
+                                   card_view:cardCornerRadius="2dp"
+                                   android:clipToPadding="true" android:layout_margin="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+    >
+
+
+        <ImageView
+                android:id="@+id/imageViewSubcategory"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_80sdp"
+                android:src="@drawable/ic_placeholder_category"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent" card_view:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp" tools:ignore="ContentDescription"/>
+
+        <TextView
+                android:id="@+id/textViewSubcategoryTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                card_view:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+                android:text="@string/title_subcategory" card_view:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                card_view:layout_constraintTop_toBottomOf="@+id/imageViewSubcategory" android:textAlignment="center"/>
+
+        <TextView
+                android:id="@+id/textViewSubcategoryTitleDiscount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/textViewSubcategoryTitle"
+                card_view:layout_constraintEnd_toEndOf="@+id/textViewSubcategoryTitle"
+                android:text="@string/title_up_to_20_off"
+                card_view:layout_constraintStart_toStartOf="@+id/textViewSubcategoryTitle"
+                android:textColor="@color/offerGreenColor" android:textAlignment="center"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

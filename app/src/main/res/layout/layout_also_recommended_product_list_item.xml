@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_4sdp"
+        app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:id="@+id/imageViewProduct"
+                android:layout_width="@dimen/_160sdp"
+                android:layout_height="@dimen/_220sdp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/productInfoLayout"
+                app:layout_constraintDimensionRatio="w,5:4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_placeholder_category"
+                tools:ignore="ContentDescription" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/favourite_layout"
+                android:background="@drawable/circular_favourite_background"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="@id/imageViewProduct"
+                app:layout_constraintTop_toTopOf="@id/imageViewProduct">
+
+            <ImageView
+                    android:id="@+id/imageViewFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foregroundGravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/favourite_layout"
+                    app:layout_constraintEnd_toEndOf="@id/favourite_layout"
+                    app:layout_constraintStart_toStartOf="@id/favourite_layout"
+                    app:layout_constraintTop_toTopOf="@id/favourite_layout"
+                    app:srcCompat="@drawable/selector_favorite"
+                    tools:ignore="ContentDescription,RtlSymmetry" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/productInfoLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imageViewProduct">
+
+            <TextView
+                    android:id="@+id/textViewProductTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/title_mangoes"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="@dimen/_12ssp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                    android:id="@+id/textViewDiscountedPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_discounted_price"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="@dimen/_12ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/textViewActualPrice"
+                    app:layout_constraintStart_toStartOf="@+id/textViewProductTitle"
+                    app:layout_constraintTop_toBottomOf="@id/textViewProductTitle" />
+
+            <TextView
+                    android:id="@+id/textViewActualPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_actual_price"
+                    android:textSize="@dimen/_10ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/discountPercentage"
+                    app:layout_constraintStart_toEndOf="@id/textViewDiscountedPrice"
+                    app:layout_constraintTop_toBottomOf="@id/textViewProductTitle" />
+
+            <TextView
+                    android:id="@+id/discountPercentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/discount_percentage"
+                    android:textColor="@color/product_detail_color_yellow"
+                    android:textSize="@dimen/_11ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/textViewProductTitle"
+                    app:layout_constraintStart_toEndOf="@id/textViewActualPrice"
+                    app:layout_constraintTop_toBottomOf="@id/textViewProductTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

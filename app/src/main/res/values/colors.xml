@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#141313</color>
+    <color name="colorPrimaryDark">#386AE5</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="colorBlack">#141313</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorLightGray">#BDBDBD</color>
+
+    <color name="placeholder_bg">#BDBDBD</color>
+    <color name="colorLightestGray">#EFEFF4</color>
+
+    <color name="offerGreenColor">#629E68</color>
+    <color name="edittextErrorColor">#B00020</color>
+    <color name="appBackgroundColor">#F6F6F6</color>
+
+    <color name="product_detail_color_white">#FFFFFF</color>
+    <color name="product_detail_color_black">#000000</color>
+    <color name="product_detail_color_yellow">#FFEB3B</color>
+    <color name="product_detail_color_green">#4CAF50</color>
+    <color name="product_detail_color_orange">#FF9800</color>
+    <color name="product_detail_color_red">#F44336</color>
+    <color name="product_detail_color_pink">#E91E63</color>
+
+    <color name="number_picker_enabled_color">#FF9800</color>
+    <color name="number_picker_disabled_color">@color/colorLightGray</color>
+</resources>

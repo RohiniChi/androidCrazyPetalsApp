@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutProductDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="WebViewLayout">
+
+
+        <TextView
+            android:id="@+id/txtProductName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/title_loading"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textViewAvailability"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="UnusedAttribute" />
+
+        <TextView
+            android:id="@+id/textViewAvailability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/title_is_available"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/headers_text_size"
+            app:layout_constraintBottom_toBottomOf="@+id/txtProductName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/txtProductName" />
+
+
+        <TextView
+            android:id="@+id/textViewBrand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/product_detail_brand_name"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/valueBrand"
+            app:layout_constraintStart_toStartOf="@+id/txtProductName"
+            app:layout_constraintTop_toBottomOf="@+id/txtProductName" />
+
+        <TextView
+            android:id="@+id/valueBrand"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            android:text="Double Horse"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textViewBrand"
+            app:layout_constraintTop_toBottomOf="@+id/txtProductName" />
+
+
+
+        <TextView
+            android:id="@+id/textViewTitleQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Quantity : "
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/textViewQuantity"
+            app:layout_constraintStart_toStartOf="@+id/textViewBrand"
+            app:layout_constraintTop_toBottomOf="@+id/textViewBrand" />
+
+        <TextView
+            android:id="@+id/textViewQuantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="250ml"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textViewTitleQuantity"
+            app:layout_constraintTop_toTopOf="@+id/textViewTitleQuantity" />
+
+        <TextView
+            android:id="@+id/textViewColour"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/product_detail_colour"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/textViewAvailability"
+            app:layout_constraintStart_toStartOf="@+id/txtProductName"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTitleQuantity" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewColor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layoutDirection="rtl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/textViewColour"
+            app:layout_constraintTop_toBottomOf="@+id/textViewColour" />
+
+        <TextView
+            android:id="@+id/textViewSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_size"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/textViewAvailability"
+            app:layout_constraintStart_toStartOf="@+id/txtProductName"
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewColor" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSizeCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            app:layout_constraintEnd_toEndOf="@id/textViewSize"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/textViewSize"
+            app:layout_constraintTop_toBottomOf="@id/textViewSize"
+            tools:listitem="@layout/layout_size_options" />
+
+
+        <TextView
+            android:id="@+id/textViewPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Price :"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/textViewDiscountedPrice"
+            app:layout_constraintStart_toStartOf="@id/textViewTitleQuantity"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewSizeCount" />
+
+        <TextView
+            android:id="@+id/textViewDiscountedPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/title_discounted_price"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/textViewPrice"
+            app:layout_constraintTop_toTopOf="@id/textViewPrice" />
+
+        <TextView
+            android:id="@+id/textViewActualPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="@string/title_actual_price"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewDiscountedPrice"
+            app:layout_constraintStart_toEndOf="@+id/textViewDiscountedPrice" />
+
+        <TextView
+            android:id="@+id/textViewProductTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/title_product_detail"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/textViewAvailability"
+            app:layout_constraintStart_toStartOf="@+id/textViewPrice"
+            app:layout_constraintTop_toBottomOf="@id/textViewDiscountedPrice" />
+
+
+        <WebView
+            android:id="@+id/webViewDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/white"
+            android:focusable="false"
+            android:importantForAutofill="auto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewProductTitle"
+            tools:targetApi="o" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutAlsoRecommended"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/webViewDescription"
+            tools:layout_editor_absoluteY="1079dp">
+
+            <TextView
+                android:id="@+id/textViewAlsoRecommended"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_also_recommended"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewAlsoRecommended"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewAlsoRecommended"
+                tools:listitem="@layout/layout_product_item" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
