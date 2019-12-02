@@ -38,8 +38,8 @@ fun setToolBarColor(
     toolbar: Toolbar
 ) {
     try {
-        imageView.setColorFilter(Color.parseColor(ApplicationThemeUtils.TEXT_COLOR))
-        imageView.invalidate()
+        /*imageView.setColorFilter(Color.parseColor(ApplicationThemeUtils.TEXT_COLOR))
+        imageView.invalidate()*/
         toolbar.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.TOOL_BAR_COLOR))
         toolbarTitle.setTextColor(Color.parseColor(ApplicationThemeUtils.TEXT_COLOR))
 

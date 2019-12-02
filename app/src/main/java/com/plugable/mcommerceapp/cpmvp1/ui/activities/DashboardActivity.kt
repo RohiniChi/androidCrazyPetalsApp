@@ -138,12 +138,9 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                                     )
                                 )
                                 getHeaderView(0).textViewNavigationHeader.textColor = Color.WHITE
+                                getHeaderView(0).setBackgroundColor(Color.GRAY)
                                 getHeaderView(0)
-                                    .textViewNavigationHeader.setBackgroundColor(
-                                    Color.parseColor(
-                                        ApplicationThemeUtils.TOOL_BAR_COLOR
-                                    )
-                                )
+                                    .textViewNavigationHeader.setBackgroundColor(Color.GRAY)
                                 if (userName != null && SharedPreferences.getInstance(this@DashboardActivity).isUserLoggedIn) {
                                     getHeaderView(0).textViewNavigationHeader.text =
                                         getString(R.string.title_hello).plus(" ")
@@ -258,8 +255,9 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         with(nav_view) {
             setNavigationItemSelectedListener(this@DashboardActivity)
             getHeaderView(0).setBackgroundColor(Color.parseColor(ApplicationThemeUtils.TOOL_BAR_COLOR))
+            getHeaderView(0).setBackgroundColor(Color.GRAY)
             getHeaderView(0)
-                .textViewNavigationHeader.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.TOOL_BAR_COLOR))
+                .textViewNavigationHeader.setBackgroundColor(Color.GRAY) //
             getHeaderView(0).textViewNavigationHeader.textColor = Color.WHITE
             if (customerName != null && SharedPreferences.getInstance(this@DashboardActivity).isUserLoggedIn) {
                 getHeaderView(0).textViewNavigationHeader.text =

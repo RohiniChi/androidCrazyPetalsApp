@@ -189,7 +189,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 Glide.with(this).load(imageBitmap)
                     .apply(
                         RequestOptions.circleCropTransform()
-                            .placeholder(R.drawable.kmm_profile)
+                            .placeholder(R.drawable.cp_profile)
                     )
                     .into(imageViewLogo)
               /*  imageViewCamera.hide()
@@ -199,7 +199,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             } else if (imageData != null) { // From Gallery
 //                imageViewProfile.setImageURI(imageData)
                 Glide.with(this).load(imageData)
-                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.kmm_profile))
+                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
                     .into(imageViewLogo)
             /*    imageViewCamera.hide()
                 textViewAddPhoto.hide()*/
@@ -443,8 +443,8 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                         textInputEditTextEmailId.text?.clear()
                         textInputEditTextPassword.text?.clear()
 
-                        Glide.with(this@RegisterActivity).load(R.drawable.kmm_profile)
-                            .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.kmm_profile))
+                        Glide.with(this@RegisterActivity).load(R.drawable.cp_profile)
+                            .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
                             .into(imageViewLogo)
                     /*    imageViewCamera.show()
                         textViewAddPhoto.show()

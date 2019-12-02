@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -37,6 +39,7 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_search_toolbar.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
+import org.jetbrains.anko.editText
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import org.json.JSONObject
@@ -44,6 +47,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+
 
 /**
  * [SearchActivity] is used to load list of products on basis of keywords
@@ -421,10 +425,15 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
-        imgToolbarHome.setColorFilter(Color.parseColor(ApplicationThemeUtils.TEXT_COLOR))
-        imgToolbarHome.invalidate()
-        toolBar.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.PRIMARY_COLOR))
+        /*imgToolbarHome.setColorFilter(Color.parseColor(ApplicationThemeUtils.TEXT_COLOR))
+        imgToolbarHome.invalidate()*/
+        toolBar.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.TOOL_BAR_COLOR))
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        imgToolbarHome.hide()
+        val textView = searchViewProducts.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
+        textView.setTextColor(Color.BLACK)
     }
 
     override fun showNetworkCondition() {

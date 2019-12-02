@@ -10,7 +10,9 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.*
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
@@ -497,11 +499,12 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
         categoryListAdapter =
             LimitedCategoryListAdapter(categoryList, context!!, eventClickListener)
-        val gridLayoutManager = GridLayoutManager(context, 3)
-        gridLayoutManager.orientation = RecyclerView.VERTICAL
+        val gridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+
         recyclerViewLimitedCategory.layoutManager =
             gridLayoutManager // set LayoutManager to RecyclerView
         recyclerViewLimitedCategory.adapter = categoryListAdapter
+
         setThemeToComponents()
     }
 
