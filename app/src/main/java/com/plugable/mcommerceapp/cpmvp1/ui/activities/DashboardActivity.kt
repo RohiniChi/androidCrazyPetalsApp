@@ -212,9 +212,9 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
 
 
     override fun onResume() {
-        initializeViews()
+        /*initializeViews()
         attemptApiCall()
-        fetchFCMToken()
+        fetchFCMToken()*/
         super.onResume()
     }
 

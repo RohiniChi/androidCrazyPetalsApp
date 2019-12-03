@@ -2,6 +2,7 @@ package com.plugable.mcommerceapp.cpmvp1.ui.activities
 
 import ServiceGenerator
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.LayerDrawable
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
@@ -32,6 +34,7 @@ import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList
+import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setToolBarColor
@@ -39,12 +42,12 @@ import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.cpmvp1.utils.util.CountDrawable
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
-import kotlinx.android.synthetic.main.recycler_filter_item.*
 import kotlinx.android.synthetic.main.activity_products.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
+import kotlinx.android.synthetic.main.recycler_filter_item.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import org.json.JSONObject
@@ -58,7 +61,8 @@ import retrofit2.Response
  *
  */
 class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
-    OnItemCheckListener, OnButtonClickListener {
+    OnItemCheckListener, OnButtonClickListener,
+    BottomNavigationView.OnNavigationItemSelectedListener {
 
 
     private lateinit var gridLayoutManager: GridLayoutManager
@@ -162,12 +166,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         return super.onOptionsItemSelected(item!!)
     }
 
-    override fun onBackPressed() {
-        startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_home)
-        finish()
-        super.onBackPressed()
-    }
-
     override fun onResume() {
 //        this.invalidateOptionsMenu()
 
@@ -205,6 +203,30 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         )
 
         button_cancel.setBackgroundColor(ContextCompat.getColor(this, android.R.color.darker_gray))
+
+
+        val iconsColorStates = ColorStateList(
+            arrayOf(
+                intArrayOf(-android.R.attr.state_checked),
+                intArrayOf(android.R.attr.state_checked)
+            ), intArrayOf(
+                Color.BLACK,
+                Color.parseColor(ApplicationThemeUtils.PRIMARY_COLOR)
+            )
+        )
+
+        val textColorStates = ColorStateList(
+            arrayOf(
+                intArrayOf(-android.R.attr.state_checked),
+                intArrayOf(android.R.attr.state_checked)
+            ), intArrayOf(
+                Color.BLACK,
+                Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR)
+            )
+        )
+
+        bottom_navigation.itemIconTintList = iconsColorStates
+        bottom_navigation.itemTextColor = textColorStates
     }
 
     private fun initializeViews() {
@@ -214,6 +236,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         btnServerError.setOnClickListener(this)
         btnTryAgain.setOnClickListener(this)
 
+        bottom_navigation.setOnNavigationItemSelectedListener(this)
         filter_layout.setOnClickListener(this)
         button_apply_filter.setOnClickListener(this)
         button_cancel.setOnClickListener(this)
@@ -255,6 +278,21 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_crazypetals -> {
+                attemptApiCall()
+                attemptGetFilterApi()
+            }
+
+            R.id.action_exclusive -> {
+                attemptExclusiveProductsApi()
+                attemptGetFilterApi()
+            }
+        }
+        return true
+    }
+
     /* private fun updateGridData(gridLayoutManager: GridLayoutManager) {
          val visibleItemCount = gridLayoutManager.childCount
          val totalItemCount = gridLayoutManager.itemCount
@@ -293,8 +331,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         if (response.body()!!.data.isNotEmpty()) {
 
                             cartItemList.clear()
-                            for(item in response!!.body()!!.data){
-                             cartItemList.add(item.productId.toString())
+                            for (item in response.body()!!.data) {
+                                cartItemList.add(item.productId.toString())
                             }
 
                             SharedPreferences.getInstance(this@ProductsListActivity).setStringValue(
@@ -322,7 +360,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
 
                             cartItemList.clear()
-                            for(item in response!!.body()!!.data){
+                            for (item in response.body()!!.data) {
                                 cartItemList.add(item.productId.toString())
                             }
 
@@ -351,6 +389,65 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }
     }
 
+    private fun attemptExclusiveProductsApi() {
+        if (isNetworkAccessible()) {
+            callExclusiveProducts()
+        } else {
+            showNetworkCondition()
+        }
+    }
+
+    private fun callExclusiveProducts() {
+        App.HostUrl = SharedPreferences.getInstance(this@ProductsListActivity).hostUrl!!
+        val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
+        val call = clientInstance.exclusiveModel(skipCount, takeCount, categoryId, WebApi.APP_ID)
+//        swipeRefreshLayout.isRefreshing = true
+        call.enqueue(object : Callback<Products> {
+            override fun onFailure(call: Call<Products>?, t: Throwable?) {
+//                swipeRefreshLayout.isRefreshing = false
+                showServerErrorMessage()
+            }
+
+            override fun onResponse(call: Call<Products>?, response: Response<Products>?) {
+                if (isNetworkAccessible()) {
+                    showRecyclerViewData()
+//                    swipeRefreshLayout.isRefreshing = false
+                    if (response?.body()?.statusCode.equals("10")) {
+//                        totalCount = response?.body()?.data!!.totalCount
+                        if (response?.body()?.data?.productList?.isNotEmpty()!!) {
+                            productList.clear()
+                            response.body()?.data!!.productList.forEach {
+                                if (AppDatabase.getDatabase(this@ProductsListActivity).productListDao().getSingleWishListProduct(
+                                        it.id
+                                    ) != null
+                                ) {
+                                    it.isFavorite =
+                                        AppDatabase.getDatabase(this@ProductsListActivity)
+                                            .productListDao()
+                                            .getSingleWishListProduct(it.id).isFavorite
+                                }
+                                productList.add(it)
+                            }
+//                            productList.addAll(response.body()?.data!!.productDetailsList)
+                            productListAdapter.notifyDataSetChanged()
+                            sendMixPanelEvent()
+
+                        } else {
+                            showNoDataAvailableScreen()
+                        }
+                    } else {
+                        toast(getString(R.string.message_something_went_wrong))
+                    }
+
+                } else {
+                    showNetworkCondition()
+
+                }
+            }
+
+        })
+
+    }
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
@@ -419,9 +516,9 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
     private fun sendMixPanelEvent() {
-            val productObject = JSONObject()
-            productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
-            mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
+        val productObject = JSONObject()
+        productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
     }
 
 
@@ -449,17 +546,30 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 onBackPressed()
             }
             R.id.btnTryAgain -> {
-                attemptApiCall()
+                if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
+                    attemptApiCall()
+                } else {
+                    attemptExclusiveProductsApi()
+                }
+
                 attemptGetFilterApi()
 
             }
             R.id.btnNoData -> {
-                attemptApiCall()
+                if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
+                    attemptApiCall()
+                } else {
+                    attemptExclusiveProductsApi()
+                }
                 attemptGetFilterApi()
             }
             R.id.btnServerError -> {
                 attemptGetFilterApi()
-                attemptApiCall()
+                if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
+                    attemptApiCall()
+                } else {
+                    attemptExclusiveProductsApi()
+                }
             }
             R.id.filter_layout -> {
                 textViewFilter.hide()
@@ -477,11 +587,22 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 recycler_filter.hide()
                 button_apply_filter.hide()
                 button_cancel.hide()
-                if (checkedId.isNotEmpty()) {
-                    attemptApplyFilterApi()
+
+                if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
+                    if (checkedId.isNotEmpty()) {
+                        attemptApplyFilterApi(false)
+                    } else {
+                        attemptApiCall()
+                    }
                 } else {
-                    attemptApiCall()
+                    if (checkedId.isNotEmpty()) {
+                        attemptApplyFilterApi(true)
+                    } else {
+                        attemptExclusiveProductsApi()
+                    }
                 }
+
+
             }
 
             R.id.button_cancel -> {
@@ -493,7 +614,12 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 button_apply_filter.hide()
                 button_cancel.hide()
                 checkbox_filter.isChecked = false
-                attemptApiCall()
+
+                if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
+                    attemptApiCall()
+                } else {
+                    attemptExclusiveProductsApi()
+                }
             }
 
         }
@@ -510,9 +636,9 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }
     }
 
-    private fun attemptApplyFilterApi() {
+    private fun attemptApplyFilterApi(isExclusive: Boolean) {
         if (isNetworkAccessible()) {
-            callApplyFilterApi()
+            callApplyFilterApi(isExclusive)
         } else {
             toast(getString(R.string.check_internet_connection))
         }
@@ -560,12 +686,13 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         })
     }
 
-    private fun callApplyFilterApi() {
+    private fun callApplyFilterApi(isExclusive: Boolean) {
         val filterData = FilterData(
             CategoryId = categoryId.toString(),
             skip = skipCount.toString(),
             take = takeCount.toString(),
-            Filters = checkedId.toList()
+            Filters = checkedId.toList(),
+            isExclusive = "" + isExclusive
         )
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
@@ -624,6 +751,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutNoDataScreen.hide()
         layoutServerError.hide()
         recyclerViewProducts.hide()
+        bottom_navigation.hide()
         filter_layout.hide()
 
         stopShimmerView()
@@ -650,6 +778,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutNoDataScreen.hide()
         layoutServerError.show()
         recyclerViewProducts.hide()
+        bottom_navigation.hide()
         filter_layout.hide()
 
         stopShimmerView()
@@ -675,6 +804,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutNoDataScreen.hide()
         layoutServerError.hide()
         recyclerViewProducts.show()
+        bottom_navigation.show()
 //        filter_layout.show()
 //        swipeRefreshLayoutProductList.show()
 
@@ -688,7 +818,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutServerError.hide()
         recyclerViewProducts.hide()
         filter_layout.hide()
-
+        //bottom_navigation.hide()
         stopShimmerView()
 /*
 
@@ -840,6 +970,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         }
     }
+
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()

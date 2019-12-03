@@ -221,7 +221,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
             override fun onQueryTextChange(searchText: String?): Boolean {
 
                 if (isNetworkAccessible()) {
-                    if (searchText!!.length >= 3) {
+                    if (searchText!!.trim().length >= 3) {
                         keywordGlobal = searchText
                         productList.clear()
                         callSearchApi(takeCount, keywordGlobal)
@@ -236,7 +236,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     productList.clear()
                     productListAdapter.notifyDataSetChanged()
                     hideNoDataAvailableScreen()
-                    if (searchText.length < 3) toast(getString(R.string.search_min_characters_to_search))
+                    if (searchText!!.trim().length < 3) toast(getString(R.string.search_min_characters_to_search))
                 } else showNetworkCondition()
 
                 return false

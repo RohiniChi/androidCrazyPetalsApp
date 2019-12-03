@@ -1,53 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/_4sdp"
-        app:cardUseCompatPadding="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/_4sdp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_4sdp">
 
         <ImageView
-                android:id="@+id/imageViewProduct"
-                android:layout_width="@dimen/_160sdp"
-                android:layout_height="@dimen/_150sdp"
-                app:layout_constraintBottom_toTopOf="@+id/textViewProductTitle"
-                app:layout_constraintDimensionRatio="w,5:4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_placeholder_category"
-                tools:ignore="ContentDescription" />
+            android:id="@+id/imageViewProduct"
+            android:layout_width="@dimen/_160sdp"
+            android:layout_height="@dimen/_170sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_placeholder_category"
+            android:adjustViewBounds="true"
+            tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/favourite_layout"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="@dimen/_8sdp"
-                android:background="@drawable/circular_favourite_background"
-                android:elevation="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            android:id="@+id/favourite_layout"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:background="@drawable/circular_favourite_background"
+            android:elevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                    android:id="@+id/imageViewFavorite"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:foregroundGravity="center"
-                    android:padding="4dp"
-                    app:layout_constraintBottom_toBottomOf="@id/favourite_layout"
-                    app:layout_constraintEnd_toEndOf="@id/favourite_layout"
-                    app:layout_constraintStart_toStartOf="@id/favourite_layout"
-                    app:layout_constraintTop_toTopOf="@id/favourite_layout"
-                    app:srcCompat="@drawable/selector_favourite_kmm"
-                    tools:ignore="ContentDescription,RtlSymmetry" />
+                android:id="@+id/imageViewFavorite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:foregroundGravity="center"
+                android:padding="4dp"
+                app:layout_constraintBottom_toBottomOf="@id/favourite_layout"
+                app:layout_constraintEnd_toEndOf="@id/favourite_layout"
+                app:layout_constraintStart_toStartOf="@id/favourite_layout"
+                app:layout_constraintTop_toTopOf="@id/favourite_layout"
+                app:srcCompat="@drawable/selector_favourite_kmm"
+                tools:ignore="ContentDescription,RtlSymmetry" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -62,108 +60,98 @@
                 app:layout_constraintTop_toBottomOf="@id/imageViewProduct">
 -->
         <TextView
-                android:id="@+id/textViewProductTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/title_mangoes"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="@dimen/_12ssp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageViewProduct" />
-
-
-        <TextView
-                android:id="@+id/textViewDiscountedPrice"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/title_discounted_price"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="@dimen/_14ssp"
-                app:layout_constraintBottom_toTopOf="@id/textViewQuantity"
-                app:layout_constraintEnd_toStartOf="@id/textViewActualPrice"
-                app:layout_constraintStart_toStartOf="@+id/textViewProductTitle"
-                app:layout_constraintTop_toBottomOf="@id/textViewProductTitle" />
-
-        <TextView
-                android:id="@+id/textViewActualPrice"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="@string/title_actual_price"
-                android:textSize="@dimen/_10ssp"
-                app:layout_constraintBottom_toBottomOf="@id/textViewDiscountedPrice"
-                app:layout_constraintEnd_toStartOf="@id/discountPercentage"
-                app:layout_constraintStart_toEndOf="@id/textViewDiscountedPrice"
-                app:layout_constraintTop_toTopOf="@id/textViewDiscountedPrice" />
-
-        <TextView
-                android:id="@+id/discountPercentage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/discount_percentage"
-                android:textColor="#005389"
-                android:textSize="@dimen/_11ssp"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="@id/textViewProductTitle"
-                app:layout_constraintStart_toEndOf="@id/textViewActualPrice"
-                app:layout_constraintTop_toTopOf="@id/textViewDiscountedPrice" />
+            android:id="@+id/textViewProductTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/title_mangoes"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageViewProduct" />
 
 
         <TextView
-                android:id="@+id/textViewQuantity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:text="250gm"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="@dimen/_12ssp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textViewDiscountedPrice"
-                app:layout_constraintTop_toBottomOf="@id/textViewDiscountedPrice" />
+            android:id="@+id/textViewDiscountedPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/title_discounted_price"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toStartOf="@id/textViewActualPrice"
+            app:layout_constraintStart_toStartOf="@+id/textViewProductTitle"
+            app:layout_constraintTop_toBottomOf="@id/textViewProductTitle" />
+
+        <TextView
+            android:id="@+id/textViewActualPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/title_actual_price"
+            android:textSize="@dimen/_10ssp"
+            app:layout_constraintBottom_toBottomOf="@id/textViewDiscountedPrice"
+            app:layout_constraintEnd_toStartOf="@id/discountPercentage"
+            app:layout_constraintStart_toEndOf="@id/textViewDiscountedPrice"
+            app:layout_constraintTop_toTopOf="@id/textViewDiscountedPrice" />
+
+        <TextView
+            android:id="@+id/discountPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/discount_percentage"
+            android:textColor="#005389"
+            android:textSize="@dimen/_11ssp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/textViewProductTitle"
+            app:layout_constraintStart_toEndOf="@id/textViewActualPrice"
+            app:layout_constraintTop_toTopOf="@id/textViewDiscountedPrice" />
 
 
         <TextView
-                android:id="@+id/textViewOutOfStock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="end"
-                android:text="@string/label_out_of_stock"
-                android:textColor="@color/product_detail_color_red"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.894"
-                app:layout_constraintStart_toEndOf="@id/textViewQuantity"
-                app:layout_constraintTop_toTopOf="@id/textViewQuantity"
-                app:layout_constraintVertical_bias="1.0" />
+            android:id="@+id/textViewQuantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="250gm"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="@dimen/_12ssp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textViewDiscountedPrice"
+            app:layout_constraintTop_toBottomOf="@id/textViewDiscountedPrice" />
+
+
+        <TextView
+            android:id="@+id/textViewOutOfStock"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:text="@string/label_out_of_stock"
+            android:textColor="@color/product_detail_color_red"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="@+id/textViewDiscountedPrice"
+            app:layout_constraintTop_toBottomOf="@id/textViewDiscountedPrice" />
 
         <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonAddToCartProductList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:insetLeft="6dp"
-                android:insetTop="8dp"
-                android:insetRight="6dp"
-                android:insetBottom="8dp"
-                android:text="Add"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.873"
-                app:layout_constraintStart_toStartOf="@+id/textViewQuantity"
-                app:layout_constraintTop_toBottomOf="@id/textViewDiscountedPrice"
-                app:layout_constraintVertical_bias="0.0" />
+            android:id="@+id/buttonAddToCartProductList"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_35sdp"
+            android:insetLeft="6dp"
+            android:insetTop="8dp"
+            android:insetRight="6dp"
+            android:insetBottom="8dp"
+            android:text="Add"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/textViewDiscountedPrice"
+            app:layout_constraintTop_toBottomOf="@id/textViewDiscountedPrice" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->

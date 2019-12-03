@@ -119,6 +119,8 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         setStatusBarColor()
         textViewResendCode.setTextColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
        textViewResendOTP.setTextColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        otp_view.cursorColor=Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR)
+        otp_view.setLineColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
 
         buttonVerify.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
 

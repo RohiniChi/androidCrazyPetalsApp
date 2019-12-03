@@ -1,65 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
-                    android:id="@+id/imageButtonBackArrow"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
-                    android:background="@android:color/transparent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_shape_backarrow"
-                    tools:ignore="ContentDescription" />
+                android:id="@+id/imageButtonBackArrow"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_shape_backarrow"
+                tools:ignore="ContentDescription" />
 
             <ImageView
-                    android:id="@+id/imageViewlogo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:paddingLeft="32dp"
-                    android:paddingRight="32dp"
-                    android:paddingBottom="8dp"
-                    android:src="@drawable/app_logo_cp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageButtonBackArrow"
-                    tools:ignore="ContentDescription" />
+                android:id="@+id/imageViewlogo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:paddingBottom="8dp"
+                android:src="@drawable/app_logo_cp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageButtonBackArrow"
+                tools:ignore="ContentDescription" />
 
             <TextView
-                    android:id="@+id/textViewEnterOtp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="64dp"
-                    android:layout_marginEnd="32dp"
-                    android:gravity="center"
-                    android:text="@string/text_enter_otp"
-                    android:textColor="#828282"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="@+id/imageViewlogo"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/imageViewlogo"
-                    app:layout_constraintTop_toBottomOf="@+id/imageViewlogo" />
+                android:id="@+id/textViewEnterOtp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="@string/text_enter_otp"
+                android:textColor="#828282"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:layout_constraintTop_toBottomOf="@+id/imageViewlogo" />
 
             <!--            <EditText-->
             <!--                    android:id="@+id/textInputEditTextOtpCodeOne"-->
@@ -140,41 +141,49 @@
             <!--                    tools:ignore="Autofill,LabelFor" />-->
 
             <com.mukesh.OtpView
-                    android:id="@+id/otp_view"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
-                    android:cursorVisible="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:textColor="@android:color/black"
-                    android:textSize="30sp"
-                    app:cursorColor="@android:color/holo_orange_dark"
-                    app:itemCount="4"
-                    app:itemWidth="@dimen/_50sdp"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewEnterOtp"
-                    app:layout_constraintStart_toStartOf="@+id/textViewEnterOtp"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewEnterOtp"
-                    app:lineColor="@android:color/holo_orange_dark"
-                    app:viewType="line" />
-            <TextView
-                    android:id="@+id/textViewOTPVerificationError"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:gravity="center"
-                    android:textColor="@color/edittextErrorColor"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewEnterOtp"
-                    app:layout_constraintStart_toStartOf="@+id/textViewEnterOtp"
-                    app:layout_constraintTop_toBottomOf="@+id/otp_view" />
+                android:id="@+id/otp_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:inputType="number"
+                android:textColor="@android:color/black"
+                android:textSize="30sp"
+                app:cursorColor="@android:color/holo_orange_dark"
+                app:itemCount="4"
+                app:itemWidth="@dimen/_50sdp"
+                app:layout_constraintStart_toStartOf="@+id/textViewEnterOtp"
+                app:layout_constraintTop_toBottomOf="@+id/textViewEnterOtp"
+                app:lineColor="@android:color/holo_orange_dark"
+                app:viewType="line" />
 
             <TextView
+                android:id="@+id/textViewOTPVerificationError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:textColor="@color/edittextErrorColor"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/textViewEnterOtp"
+                app:layout_constraintStart_toStartOf="@+id/textViewEnterOtp"
+                app:layout_constraintTop_toBottomOf="@+id/otp_view" />
+
+            <RelativeLayout
+                android:id="@+id/resendLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="@+id/otp_view"
+                app:layout_constraintStart_toStartOf="@+id/otp_view"
+                app:layout_constraintTop_toBottomOf="@+id/otp_view">
+
+                <TextView
                     android:id="@+id/textViewResendCode"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="64dp"
                     android:gravity="center"
@@ -182,57 +191,53 @@
                     android:textColor="@android:color/holo_orange_dark"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/otp_view"
-                    app:layout_constraintStart_toStartOf="@+id/otp_view"
-                    app:layout_constraintTop_toBottomOf="@+id/otp_view" />
+                    android:visibility="visible" />
 
-            <TextView
+                <TextView
                     android:id="@+id/textViewResendOTP"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="64dp"
                     android:gravity="center"
                     android:text="@string/resend_otp"
                     android:textColor="@android:color/holo_orange_dark"
-                    android:visibility="gone"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/otp_view"
-                    app:layout_constraintStart_toStartOf="@+id/otp_view"
-                    app:layout_constraintTop_toBottomOf="@+id/otp_view" />
-
+                    android:visibility="gone" />
+            </RelativeLayout>
 
             <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonVerify"
-                    android:layout_width="0dp"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_marginTop="64dp"
-                    android:background="@android:color/holo_orange_dark"
-                    android:text="@string/verify_button"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/background_light"
-                    android:textSize="18sp"
-                    app:cornerRadius="4dp"
-                    app:layout_constraintEnd_toEndOf="@+id/otp_view"
-                    app:layout_constraintHorizontal_bias="0.401"
-                    app:layout_constraintStart_toStartOf="@+id/otp_view"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewResendCode" />
+                android:id="@+id/buttonVerify"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginTop="64dp"
+                android:background="@android:color/holo_orange_dark"
+                android:text="@string/verify_button"
+                android:textAllCaps="false"
+                android:textColor="@android:color/background_light"
+                android:textSize="18sp"
+                app:cornerRadius="4dp"
+                app:layout_constraintEnd_toEndOf="@id/otp_view"
+                app:layout_constraintHorizontal_bias="0.401"
+                app:layout_constraintStart_toStartOf="@id/otp_view"
+                app:layout_constraintTop_toBottomOf="@id/resendLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
     <androidx.core.widget.ContentLoadingProgressBar
-            android:id="@+id/progressBarOTPActivity"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/progressBarOTPActivity"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

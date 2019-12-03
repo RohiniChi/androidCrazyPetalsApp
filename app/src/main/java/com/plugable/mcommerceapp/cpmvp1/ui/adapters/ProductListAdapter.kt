@@ -142,10 +142,11 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.MyViewHolder>
             .load(productItems.image)
             .placeholder(R.drawable.ic_placeholder_category)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .fallback(R.drawable.ic_placeholder_category).centerInside()
             .apply(RequestOptions().centerInside())
             .error(R.drawable.ic_placeholder_category)
             .into(viewHolder.itemView.imageViewProduct)
+
+
 
         viewHolder.itemView.imageViewFavorite.setOnClickListener {
             productItems.isFavorite = !productItems.isFavorite

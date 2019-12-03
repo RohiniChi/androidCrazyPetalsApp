@@ -12,6 +12,7 @@ import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi.APP_THEME
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi.BANNER_API
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi.BASE_URL_API
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi.DELIVER_ADDRESS
+import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi.EXCLUSIVE_PRODUCTS
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi.GET_ALL_NOTIFICATIONS
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi.GET_CART
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi.GET_FILTERS_API
@@ -71,6 +72,12 @@ interface ProjectApi {
         @Query("categoryId") categoryId: Int
     ): Call<Products>
 
+    @GET(EXCLUSIVE_PRODUCTS)
+    fun exclusiveModel(
+        @Query("skip") skipCount: Int, @Query("take") takeCount: Int,
+        @Query("categoryId") categoryId: Int,
+        @Query("appId") appId: String
+    ): Call<Products>
 
     @GET(GET_FILTERS_API)
     fun getFilters(

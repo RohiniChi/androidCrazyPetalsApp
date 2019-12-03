@@ -63,11 +63,11 @@ class LimitedCategoryListAdapter(
         val click_time_interval = 200
 
         override fun onClick(view: View?) {
-            val now = System.currentTimeMillis()
+           /* val now = System.currentTimeMillis()
             if (now - mLastClickTime < click_time_interval) {
                 return
             }
-            mLastClickTime = now
+            mLastClickTime = now*/
             val position = adapterPosition
             itemClickListener.onItemClickListener(position)
         }

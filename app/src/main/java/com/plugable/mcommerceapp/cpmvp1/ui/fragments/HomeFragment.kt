@@ -138,7 +138,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         initializeViews()
         attemptApiCall()
         attemptBannerApiCall()
-        attemptNotificationApiCall()
+        attemptCartApiCall()
 
     }
 
@@ -148,15 +148,17 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
+
         return inflater.inflate(R.layout.fragment_home, container, false)
 
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        initializeViews()
+        /*initializeViews()
         attemptApiCall()
-        attemptBannerApiCall()
+        attemptBannerApiCall()*/
         attemptCartApiCall()
     }
 
@@ -528,7 +530,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
             viewPagerDashboard?.setCurrentItem(currentItem - 1, true)
         }
 
-        attemptCartApiCall()
+
 
     }
 

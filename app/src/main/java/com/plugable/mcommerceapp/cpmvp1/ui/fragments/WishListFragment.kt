@@ -88,6 +88,7 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        bottom_navigation.hide()
         initializeTheme()
         attemptCartApiCall()
 
@@ -453,6 +454,7 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
                             toast(getString(R.string.message_product_added_to_cart))
                             productListAdapter.notifyDataSetChanged()
                         } else if (response.body()?.statusCode.equals("30")) {
+
                             toast(response.body()!!.message)
                             productListAdapter.notifyDataSetChanged()
 
