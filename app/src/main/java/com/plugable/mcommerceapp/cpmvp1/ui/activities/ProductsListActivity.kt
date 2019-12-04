@@ -64,7 +64,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     OnItemCheckListener, OnButtonClickListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
 
-
     private lateinit var gridLayoutManager: GridLayoutManager
     private var totalCount: Int = 0
     private lateinit var callback: Call<Products>
@@ -170,9 +169,10 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 //        this.invalidateOptionsMenu()
 
         initializeViews()
-        attemptApiCall()
-        attemptGetFilterApi()
+
         attemptCartApiCall()
+
+
         super.onResume()
 
     }
@@ -810,7 +810,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         stopShimmerView()
     }
-
 
     override fun showNoDataAvailableScreen() {
         layoutNetworkCondition.hide()

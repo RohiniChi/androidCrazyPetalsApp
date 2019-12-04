@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -39,7 +38,6 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_search_toolbar.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
-import org.jetbrains.anko.editText
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import org.json.JSONObject
@@ -222,21 +220,14 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
                 if (isNetworkAccessible()) {
                     if (searchText!!.trim().length >= 3) {
-                        keywordGlobal = searchText
+                        keywordGlobal = searchText.trim()
                         productList.clear()
                         callSearchApi(takeCount, keywordGlobal)
-//                searchView.clearFocus()
-                    } /*else {
-                        keywordGlobal = searchText
-                        callSearchApi(takeCount, keywordGlobal)
-                        productList.clear()
-                        productListAdapter.notifyDataSetChanged()
-                        hideNoDataAvailableScreen()
-                    }*/
+                    }
                     productList.clear()
                     productListAdapter.notifyDataSetChanged()
                     hideNoDataAvailableScreen()
-                    if (searchText!!.trim().length < 3) toast(getString(R.string.search_min_characters_to_search))
+                    if (searchText.trim().length < 3) toast(getString(R.string.search_min_characters_to_search))
                 } else showNetworkCondition()
 
                 return false
@@ -390,9 +381,9 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
 
     private fun sendMixPanelEvent() {
-           val productObject = JSONObject()
-           productObject.put(IntentFlags.MIXPANEL_KEYWORD, keywordGlobal)
-           mixPanel.track(IntentFlags.MIXPANEL_SEARCHED_KEYWORD, productObject)
+        val productObject = JSONObject()
+        productObject.put(IntentFlags.MIXPANEL_KEYWORD, keywordGlobal)
+        mixPanel.track(IntentFlags.MIXPANEL_SEARCHED_KEYWORD, productObject)
     }
 
     object LastClickTimeSingleton {
@@ -432,7 +423,8 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         imgToolbarHome.hide()
-        val textView = searchViewProducts.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
+        val textView =
+            searchViewProducts.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
         textView.setTextColor(Color.BLACK)
     }
 
