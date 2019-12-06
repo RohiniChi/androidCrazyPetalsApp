@@ -64,7 +64,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     OnItemCheckListener, OnButtonClickListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var gridLayoutManager: GridLayoutManager
     private var totalCount: Int = 0
     private lateinit var callback: Call<Products>
     lateinit var productListAdapter: ProductListAdapter
@@ -76,13 +75,14 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private lateinit var onButtonClickListener: OnButtonClickListener
     //    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
     private var skipCount = 0
-    private var takeCount = 1000
+    private var takeCount = 10
     private var categoryId = 0
     var categoryList = ArrayList<Categories.Data.Category>()
     private lateinit var mixPanel: MixpanelAPI
     var checkedId = HashSet<Int>()
 
 
+    var isLoading = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
@@ -243,14 +243,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
-        /*     swipeRefreshLayoutProductList.setColorSchemeResources(R.color.colorAccent)
-             swipeRefreshLayoutProductList.setOnRefreshListener {
-                 productList.clear()
-                 skipCount=0
-                 takeCount=25
-                 startShimmerView()
-                 callProductsListAPI(skipCount,takeCount,categoryId)
-             }*/
+
         categoryId = intent.getIntExtra(IntentFlags.CATEGORY_ID, 0)
 
         SharedPreferences.getInstance(this)
@@ -258,15 +251,53 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         eventClickListener = this
         onButtonClickListener = this
-//            onBottomReachedListener = this
 
         productListAdapter =
             ProductListAdapter(productList, this, eventClickListener, onButtonClickListener, this)
-        gridLayoutManager = GridLayoutManager(applicationContext, 2)
-        gridLayoutManager.orientation = LinearLayoutManager.VERTICAL // set Horizontal Orientation
+        val gridLayoutManager = GridLayoutManager(applicationContext, 2)
         recyclerViewProducts.layoutManager = gridLayoutManager
         recyclerViewProducts.itemAnimator = DefaultItemAnimator()
         recyclerViewProducts.adapter = productListAdapter
+
+
+        recyclerViewProducts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+
+                if (!isLoading) {
+                    if (linearLayoutManager != null && productList.size > 8 &&
+                        linearLayoutManager.findLastCompletelyVisibleItemPosition() == productList.size - 1
+                    ) {
+                        //bottom of list!
+
+                        skipCount = skipCount + takeCount
+
+                        isLoading = true
+                        progressBar.show()
+                        if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
+
+                            if (checkedId.isNotEmpty()) {
+                                attemptApplyFilterApi(false)
+                            } else {
+                                attemptApiCall()
+                            }
+
+                        } else {
+                            if (checkedId.isNotEmpty()) {
+                                attemptApplyFilterApi(false)
+                            } else {
+                                attemptExclusiveProductsApi()
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        })
 
         filterList = arrayListOf()
         filterListAdapter = FilterAdapter(filterList, this, this, checkedId)
@@ -279,33 +310,38 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        skipCount = 0
+        recyclerViewProducts.scrollToPosition(0)
+        productList.clear()
+        productListAdapter.notifyDataSetChanged()
+        startShimmerView()
         when (item.itemId) {
             R.id.action_crazypetals -> {
-                attemptApiCall()
-                attemptGetFilterApi()
+
+                if (bottom_navigation.selectedItemId != R.id.action_crazypetals) {
+                    checkedId.clear()
+                    attemptApiCall()
+                    attemptGetFilterApi()
+                }
+
+
             }
 
             R.id.action_exclusive -> {
-                attemptExclusiveProductsApi()
-                attemptGetFilterApi()
+
+                if (bottom_navigation.selectedItemId != R.id.action_exclusive) {
+                    checkedId.clear()
+                    attemptExclusiveProductsApi()
+                    attemptGetFilterApi()
+
+                }
+
+
             }
         }
         return true
     }
 
-    /* private fun updateGridData(gridLayoutManager: GridLayoutManager) {
-         val visibleItemCount = gridLayoutManager.childCount
-         val totalItemCount = gridLayoutManager.itemCount
-         val positionView = gridLayoutManager.findFirstVisibleItemPosition()
-
-         if (positionView + visibleItemCount >= totalItemCount && productList.size < totalCount) {
-             skipCount += 25
-             takeCount = 25
-             callProductsListAPI(skipCount,takeCount,categoryId)
-         }
-     }
-
- */
     private fun attemptCartApiCall() {
         if (SharedPreferences.getInstance(this).isUserLoggedIn) {
 
@@ -413,9 +449,10 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     showRecyclerViewData()
 //                    swipeRefreshLayout.isRefreshing = false
                     if (response?.body()?.statusCode.equals("10")) {
-//                        totalCount = response?.body()?.data!!.totalCount
                         if (response?.body()?.data?.productList?.isNotEmpty()!!) {
-                            productList.clear()
+                            if (skipCount == 0) {
+                                productList.clear()
+                            }
                             response.body()?.data!!.productList.forEach {
                                 if (AppDatabase.getDatabase(this@ProductsListActivity).productListDao().getSingleWishListProduct(
                                         it.id
@@ -432,8 +469,11 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             productListAdapter.notifyDataSetChanged()
                             sendMixPanelEvent()
 
-                        } else {
+                        } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
+                        } else if (isLoading && skipCount != 0) {
+                            skipCount -= takeCount
+
                         }
                     } else {
                         toast(getString(R.string.message_something_went_wrong))
@@ -443,6 +483,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     showNetworkCondition()
 
                 }
+                progressBar.hide()
+                isLoading = false
             }
 
         })
@@ -451,13 +493,13 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
-            callProductsListAPI(skipCount, takeCount, categoryId)
+            callProductsListAPI()
         } else {
             showNetworkCondition()
         }
     }
 
-    private fun callProductsListAPI(skipCount: Int, takeCount: Int, categoryId: Int) {
+    private fun callProductsListAPI() {
         App.HostUrl = SharedPreferences.getInstance(this@ProductsListActivity).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
         callback = clientInstance.productModel(skipCount, takeCount, categoryId)
@@ -475,7 +517,11 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     if (response?.body()?.statusCode.equals("10")) {
                         totalCount = response?.body()?.data!!.totalCount
                         if (response.body()?.data?.productList?.isNotEmpty()!!) {
-                            productList.clear()
+
+                            if (skipCount == 0) {
+                                productList.clear()
+                            }
+
                             response.body()?.data!!.productList.forEach {
                                 if (AppDatabase.getDatabase(this@ProductsListActivity).productListDao().getSingleWishListProduct(
                                         it.id
@@ -492,23 +538,28 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 //                            productList.addAll(response.body()?.data!!.productDetailsList)
                             productListAdapter.notifyDataSetChanged()
 
-                            if (productList.isNotEmpty()) {
+                            /*if (productList.isNotEmpty()) {
                                 recyclerViewProducts.scrollToPosition(0)
-                            }
+                            }*/
 
                             sendMixPanelEvent()
 
-                        } else {
+                        } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
+                        } else if (isLoading && skipCount != 0) {
+                            skipCount -= takeCount
+
                         }
                     } else {
-//                        toast(getString(R.string.message_something_went_wrong))
+                        //  toast(getString(R.string.message_something_went_wrong))
                     }
 
                 } else {
                     showNetworkCondition()
 
                 }
+                progressBar.hide()
+                isLoading = false
             }
 
         })
@@ -520,7 +571,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
     }
-
 
     override fun setToolBar(name: String) {
         val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
@@ -539,37 +589,61 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
-
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.imgToolbarHomeLayout -> {
                 onBackPressed()
             }
             R.id.btnTryAgain -> {
+
+                skipCount = 0
                 if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
-                    attemptApiCall()
+                    if (checkedId.isNotEmpty()) {
+                        attemptApplyFilterApi(false)
+                    } else {
+                        attemptApiCall()
+                    }
                 } else {
-                    attemptExclusiveProductsApi()
+                    if (checkedId.isNotEmpty()) {
+                        attemptApplyFilterApi(true)
+                    } else {
+                        attemptExclusiveProductsApi()
+                    }
                 }
-
-                attemptGetFilterApi()
-
             }
             R.id.btnNoData -> {
+                skipCount = 0
                 if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
-                    attemptApiCall()
+                    if (checkedId.isNotEmpty()) {
+                        attemptApplyFilterApi(false)
+                    } else {
+                        attemptApiCall()
+                    }
                 } else {
-                    attemptExclusiveProductsApi()
+                    if (checkedId.isNotEmpty()) {
+                        attemptApplyFilterApi(true)
+                    } else {
+                        attemptExclusiveProductsApi()
+                    }
                 }
                 attemptGetFilterApi()
             }
             R.id.btnServerError -> {
-                attemptGetFilterApi()
+                skipCount = 0
                 if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
-                    attemptApiCall()
+                    if (checkedId.isNotEmpty()) {
+                        attemptApplyFilterApi(false)
+                    } else {
+                        attemptApiCall()
+                    }
                 } else {
-                    attemptExclusiveProductsApi()
+                    if (checkedId.isNotEmpty()) {
+                        attemptApplyFilterApi(true)
+                    } else {
+                        attemptExclusiveProductsApi()
+                    }
                 }
+                attemptGetFilterApi()
             }
             R.id.filter_layout -> {
                 textViewFilter.hide()
@@ -587,7 +661,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 recycler_filter.hide()
                 button_apply_filter.hide()
                 button_cancel.hide()
-
+                skipCount = 0
                 if (bottom_navigation.selectedItemId == R.id.action_crazypetals) {
                     if (checkedId.isNotEmpty()) {
                         attemptApplyFilterApi(false)
@@ -625,7 +699,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }
 
     }
-
 
     private fun attemptGetFilterApi() {
         if (isNetworkAccessible()) {
@@ -710,7 +783,10 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 //                        totalCount = response?.body()?.data!!.totalCount
                         if (response.body()?.data?.productList?.isNotEmpty()!!) {
                             filter_layout.show()
-                            productList.clear()
+                            if (skipCount == 0) {
+                                productList.clear()
+                                recyclerViewProducts.scrollToPosition(0)
+                            }
                             response.body()?.data!!.productList.forEach {
                                 if (AppDatabase.getDatabase(this@ProductsListActivity).productListDao().getSingleWishListProduct(
                                         it.id
@@ -730,9 +806,14 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             }
                             sendMixPanelEvent()
 
-                        } else {
+                        } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
+                        } else if (isLoading && skipCount != 0) {
+                            skipCount -= takeCount
+                        } else {
+
                         }
+
                     } else {
 //                        toast(getString(R.string.message_something_went_wrong))
                     }
@@ -741,7 +822,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     showNetworkCondition()
 
                 }
-
+                progressBar.hide()
+                isLoading = false
             }
         })
     }
@@ -817,15 +899,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutServerError.hide()
         recyclerViewProducts.hide()
         filter_layout.hide()
-        //bottom_navigation.hide()
         stopShimmerView()
-/*
 
-        skipCount=0
-        takeCount=25
-        productList.clear()
-//        swipeRefreshLayoutProductList.hide()
-*/
 
     }
 

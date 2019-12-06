@@ -9,6 +9,7 @@ import android.widget.EditText
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
@@ -118,20 +119,16 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 //    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
 
     private var skipCount = 0
-    private var takeCount = 100
+    private var takeCount = 10
     private var keywordGlobal = ""
-
+    var isLoading = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         initializeTheme()
         initializeViews()
-    }
 
-    override fun onResume() {
-        super.onResume()
-        attemptCartApiCall()
         if (isNetworkAccessible()) {
             if (intent.getStringExtra(getString(R.string.intent_banner_search)) != null) {
                 val bannerSearch = intent.getStringExtra(getString(R.string.intent_banner_search))!!
@@ -142,21 +139,23 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         searchViewProducts.setQuery(bannerSearch, true)
                     searchViewProducts.clearFocus()
                     keywordGlobal = bannerSearch
-//                callSearchApi(skipCount, takeCount, bannerSearch)
 
                 }
             } else
                 if (searchViewProducts.query.isNotEmpty() && searchViewProducts.query.length >= 3) {
-                    callSearchApi(
-                        takeCount,
-                        keywordGlobal
-                    )
+                    callSearchApi(keywordGlobal)
                 } else {
                     if (searchViewProducts.query.length < 3) toast(getString(R.string.search_min_characters_to_search))
                 }
 
         } else
             showNetworkCondition()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        attemptCartApiCall()
 
     }
 
@@ -193,6 +192,30 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         recyclerViewSearchProduct.itemAnimator = DefaultItemAnimator()
         recyclerViewSearchProduct.adapter = productListAdapter
 
+        recyclerViewSearchProduct.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+
+                if (!isLoading) {
+                    if (linearLayoutManager != null && productList.size > 8 &&
+                        linearLayoutManager.findLastCompletelyVisibleItemPosition() == productList.size - 1
+                    ) {
+                        //bottom of list!
+
+                        skipCount = skipCount + takeCount
+
+                        isLoading = true
+                        progressBar.show()
+                        callSearchApi(keywordGlobal)
+
+                    }
+                }
+            }
+        })
+
         imgToolbarHomeLayout.setOnClickListener(this)
         btnNoData.setOnClickListener(this)
         btnServerError.setOnClickListener(this)
@@ -222,7 +245,8 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     if (searchText!!.trim().length >= 3) {
                         keywordGlobal = searchText.trim()
                         productList.clear()
-                        callSearchApi(takeCount, keywordGlobal)
+                        skipCount=0
+                        callSearchApi(keywordGlobal)
                     }
                     productList.clear()
                     productListAdapter.notifyDataSetChanged()
@@ -325,10 +349,12 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }
     }
 
-    private fun callSearchApi(take: Int, keyword: String) {
+    private fun callSearchApi(keyword: String) {
         val apiInterface = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = apiInterface.globalSearchApi(take, keyword, skipCount)
-        startShimmerView()
+        val call = apiInterface.globalSearchApi(takeCount, keyword, skipCount)
+
+        if (productList.isEmpty())
+            startShimmerView()
 
         call.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>, throwable: Throwable) {
@@ -338,11 +364,13 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
             override fun onResponse(call: Call<Products>, response: Response<Products>) {
 
-
                 showRecyclerViewData()
                 if (response.body()?.statusCode.equals("10")) {
                     if (response.body()?.data?.productList?.isNotEmpty()!!) {
-                        productList.clear()
+                        if (skipCount == 0) {
+                            productList.clear()
+                            recyclerViewSearchProduct.scrollToPosition(0)
+                        }
                         response.body()?.data!!.productList.forEach {
                             if (AppDatabase.getDatabase(this@SearchActivity).productListDao().getSingleWishListProduct(
                                     it.id
@@ -359,21 +387,24 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             }
                         }
                         productListAdapter.notifyDataSetChanged()
-                        if (productList.isNotEmpty()) {
-                            recyclerViewSearchProduct.scrollToPosition(0)
-                        }
+
                         sendMixPanelEvent()
 
-                    } else {
+                    } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                         if (keywordGlobal.length >= 3)
                             showNoDataAvailableScreen()
+                    } else if (isLoading && skipCount != 0) {
+                        skipCount -= takeCount
+                    } else {
+
                     }
                 } else {
                     if (keywordGlobal.length >= 3)
                         toast(getString(R.string.message_something_went_wrong))
                 }
 
-
+                progressBar.hide()
+                isLoading = false
             }
 
         })
