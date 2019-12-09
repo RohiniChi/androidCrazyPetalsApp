@@ -52,6 +52,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.IndexOutOfBoundsException
 import java.util.*
 
 
@@ -403,6 +404,7 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
     }
 
     override fun onItemClickListener(position: Int) {
+
         if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
         else {
             activity?.startActivity<ProductDetailActivity>(
@@ -415,16 +417,22 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
 
 
     override fun onFavoriteClicked(clickedIndex: Int, isFavorite: Boolean) {
-        AppDatabase.getDatabase(activity!!).productListDao()
-            .deleteProduct(productList[clickedIndex])
-        productList.remove(productList[clickedIndex])
-        with(recyclerViewProducts.adapter!!) {
-            notifyItemRemoved(clickedIndex)
-            notifyItemRangeChanged(clickedIndex, productList.size)
-        }
-        if (productList.isEmpty()) showNoDataAvailableScreen()
+        try {
 
-        toast(getString(R.string.message_item_removed))
+            AppDatabase.getDatabase(activity!!).productListDao()
+                .deleteProduct(productList[clickedIndex])
+            productList.remove(productList[clickedIndex])
+            with(recyclerViewProducts.adapter!!) {
+                notifyItemRemoved(clickedIndex)
+                notifyItemRangeChanged(clickedIndex, productList.size)
+            }
+            if (productList.isEmpty()) showNoDataAvailableScreen()
+
+            toast(getString(R.string.message_item_removed))
+        }
+        catch (a:IndexOutOfBoundsException){
+
+        }
     }
 
     override fun onButtonClicked(productId: Int) {
