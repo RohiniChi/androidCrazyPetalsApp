@@ -307,7 +307,6 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                                     response.body()!!
                                 )
 
-                            productListAdapter.notifyDataSetChanged()
 
                         } else {
                             SharedPreferences.getInstance(this@SearchActivity).setStringValue(

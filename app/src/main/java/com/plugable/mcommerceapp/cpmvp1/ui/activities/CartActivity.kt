@@ -337,6 +337,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(false)
         txtToolbarTitle.text = "Cart"
+        cp_Logo.hide()
         imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
