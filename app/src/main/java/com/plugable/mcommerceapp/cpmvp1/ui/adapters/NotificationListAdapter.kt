@@ -22,6 +22,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.Notifications
 import kotlinx.android.synthetic.main.row_notification.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -36,6 +38,7 @@ class NotificationListAdapter(
     private var notificationList: ArrayList<Notifications.Data.NotificationListItem?>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+
     private val VIEW_TYPE_ITEM = 0
     private val VIEW_TYPE_LOADING = 1
 
@@ -43,13 +46,19 @@ class NotificationListAdapter(
 
         if (viewHolder is MyViewHolder) {
 
+            val timeStamp = notificationList[position]!!.timeStamp
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = timeStamp!!.toLong() * 1000
+            val date = calendar.time
+            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+            val notificationDate = simpleDateFormat.format(date)
 
             viewHolder.itemView.txtTitle.text = notificationList[position]!!.title
             if (notificationList[position]!!.notificationType.equals("Text")) {
                 viewHolder.itemView.txtMessage.visibility = View.VISIBLE
                 viewHolder.itemView.ivBanner.visibility = View.GONE
                 viewHolder.itemView.txtMessage.text = notificationList[position]!!.message
-
+                viewHolder.itemView.notificationDate.text = notificationDate
             } else {
                 viewHolder.itemView.txtMessage.visibility = View.GONE
                 viewHolder.itemView.ivBanner.visibility = View.VISIBLE
@@ -61,6 +70,7 @@ class NotificationListAdapter(
                     .apply(RequestOptions().fitCenter())
                     .error(R.drawable.ic_placeholder_category)
                     .into(viewHolder.itemView.ivBanner)
+                viewHolder.itemView.notificationDate.text = notificationDate
             }
         } else {
 

@@ -40,7 +40,8 @@
                     android:textSize="@dimen/_12ssp"
                     android:layout_marginBottom="@dimen/_2sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtTitle" />
+                    app:layout_constraintTop_toBottomOf="@id/txtTitle"
+                app:layout_constraintBottom_toTopOf="@id/notificationDate"/>
 
         <ImageView
                 android:id="@+id/ivBanner"
@@ -51,10 +52,18 @@
                 android:layout_margin="@dimen/_5sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtTitle"
+            app:layout_constraintBottom_toTopOf="@id/notificationDate"
                 android:scaleType="fitXY"
                 android:visibility="gone" />
 
 
+        <TextView
+            android:id="@+id/notificationDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
