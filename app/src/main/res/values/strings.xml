@@ -89,8 +89,8 @@
     <string name="title_contact_us">Contact Us</string>
     <string name="kerala_mini_mart">Kerala Mini Mart</string>
     <string name="contact_No">Contact Number</string>
-    <string name="mobile_No">+91(721) 806-8071</string>
-    <string name="app_email_id">keralaminimart@gmail.com</string>
+    <string name="mobile_No">+919673085787</string>
+    <string name="app_email_id">CrazypetalsHelp@gmail.com</string>
     <string name="visit_us_at">Visit us at</string>
     <string name="address">serial no.18/2, Avinash colony, waluj, gangapur, Aurangabad, maharashtra, India 431123
     </string>
@@ -343,7 +343,7 @@
     <string name="checkbox_text_instructions">Please agree to our</string>
     <string name="hint_comments">Enter your comments/instructions here</string>
     <string name="delivery_day">Delivery Day</string>
-
+    <string name="text_version">Version</string>
     <string name="please_login_to_continue">Please login to continue</string>
     <string name="delivery_timing_statment">To check early delivery timing, kindly contact to KMM support team.</string>
     <string name="text_cod">Cash on delivery</string>
