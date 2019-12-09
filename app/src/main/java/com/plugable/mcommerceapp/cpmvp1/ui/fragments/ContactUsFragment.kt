@@ -31,7 +31,7 @@ class ContactUsFragment:Fragment() {
         initializeViews()
     }
 
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
 
     private fun initializeViews() {
     /*    mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))

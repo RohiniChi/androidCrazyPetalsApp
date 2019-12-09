@@ -30,7 +30,7 @@ class AboutUsFragment:Fragment() {
 
         initializeViews()
     }
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
 
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -38,17 +38,19 @@ class AboutUsFragment:Fragment() {
         webViewAboutUS.settings.javaScriptEnabled=true
         webViewAboutUS.loadUrl(getString(R.string.about_us_web_url))
 
-        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
-        sendMixPanelEvent()
+//        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+//        sendMixPanelEvent()
 
     }
 
+/*
 
     private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID,getString(R.string.mixpanel_about_us))
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_ABOUT_US_SCREEN, productObject)
     }
+*/
 
     fun setToolBar() {
         txtToolbarTitle.text = ""
@@ -56,9 +58,9 @@ class AboutUsFragment:Fragment() {
 
     }
 
-    override fun onDestroy() {
+   /* override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
     }
-
+*/
 }

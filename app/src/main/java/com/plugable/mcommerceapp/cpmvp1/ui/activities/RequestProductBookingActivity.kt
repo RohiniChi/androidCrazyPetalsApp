@@ -73,7 +73,7 @@ class RequestProductBookingActivity : AppCompatActivity(), View.OnClickListener,
 
     private lateinit var product: Products.Data.ProductDetails
 
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -264,16 +264,16 @@ class RequestProductBookingActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun initializeViews() {
-        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
         submitButton.setOnClickListener(this)
         imgToolbarHomeLayout.setOnClickListener(this)
-        sendMixPanelEvent()
+//        sendMixPanelEvent()
 
     }
 
 
-    private fun sendMixPanelEvent() {
+    /*private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(
             IntentFlags.MIXPANEL_PRODUCT_ID,
@@ -283,7 +283,7 @@ class RequestProductBookingActivity : AppCompatActivity(), View.OnClickListener,
             IntentFlags.MIXPANEL_VISITED_REQUEST_BOOKING_SCREEN_FROM_PRODUCT_DETAIL,
             productObject
         )
-    }
+    }*/
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
@@ -478,7 +478,7 @@ class RequestProductBookingActivity : AppCompatActivity(), View.OnClickListener,
                     submitButton.isClickable = false
                     requestBookingProgressBar.show()
                     attemptApiCall()
-                    sendMixPanelPlacedOrder()
+//                    sendMixPanelPlacedOrder()
 
                 } else {
                     textViewSpinnerError.show()
@@ -488,7 +488,7 @@ class RequestProductBookingActivity : AppCompatActivity(), View.OnClickListener,
         }
     }
 
-    private fun sendMixPanelPlacedOrder() {
+    /*private fun sendMixPanelPlacedOrder() {
         val productObject = JSONObject()
 
         val mixpanelAreaPincode =
@@ -509,7 +509,7 @@ class RequestProductBookingActivity : AppCompatActivity(), View.OnClickListener,
         mixPanel.track(IntentFlags.MIXPANEL_SUCCESSFULLY_PLACED_ORDER, productObject)
     }
 
-
+*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -520,11 +520,11 @@ class RequestProductBookingActivity : AppCompatActivity(), View.OnClickListener,
     }
 
 
-    override fun onDestroy() {
+   /* override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
     }
-
+*/
     /* @TargetApi(Build.VERSION_CODES.M)
      private fun getCurrentLocation() {
          if (ContextCompat.checkSelfPermission(

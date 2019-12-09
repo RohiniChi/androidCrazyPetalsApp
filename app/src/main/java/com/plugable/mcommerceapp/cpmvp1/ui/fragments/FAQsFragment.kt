@@ -18,7 +18,7 @@ class FAQsFragment:Fragment() {
         setHasOptionsMenu(true)
     }
 
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -35,13 +35,13 @@ class FAQsFragment:Fragment() {
         webViewFAQs.settings.javaScriptEnabled=true
         webViewFAQs.loadUrl(getString(R.string.faqs_web_url))
 
-        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+      /*  mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
         sendMixPanelEvent()
-
+*/
     }
 
 
-    private fun sendMixPanelEvent() {
+ /*   private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID,getString(R.string.mixpanel_faqs))
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_FAQS_SCREEN, productObject)
@@ -51,5 +51,5 @@ class FAQsFragment:Fragment() {
         mixPanel.flush()
         super.onDestroy()
     }
-
+*/
 }

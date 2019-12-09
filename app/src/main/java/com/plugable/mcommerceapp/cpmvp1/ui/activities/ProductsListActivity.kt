@@ -78,7 +78,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private var takeCount = 10
     private var categoryId = 0
     var categoryList = ArrayList<Categories.Data.Category>()
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
     var checkedId = HashSet<Int>()
 
 
@@ -241,7 +241,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         button_apply_filter.setOnClickListener(this)
         button_cancel.setOnClickListener(this)
 
-        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
 
         categoryId = intent.getIntExtra(IntentFlags.CATEGORY_ID, 0)
@@ -467,7 +467,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             }
 //                            productList.addAll(response.body()?.data!!.productDetailsList)
                             productListAdapter.notifyDataSetChanged()
-                            sendMixPanelEvent()
+//                            sendMixPanelEvent()
 
                         } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
@@ -542,7 +542,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                                 recyclerViewProducts.scrollToPosition(0)
                             }*/
 
-                            sendMixPanelEvent()
+//                            sendMixPanelEvent()
 
                         } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
@@ -566,12 +566,12 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
-    private fun sendMixPanelEvent() {
+   /* private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
     }
-
+*/
     override fun setToolBar(name: String) {
         val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
         setSupportActionBar(toolBar)
@@ -804,7 +804,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             if (productList.isNotEmpty()) {
                                 recycler_filter.scrollToPosition(0)
                             }
-                            sendMixPanelEvent()
+//                            sendMixPanelEvent()
 
                         } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
@@ -1044,11 +1044,13 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         }
     }
+/*
 
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
     }
+*/
 
 }
 

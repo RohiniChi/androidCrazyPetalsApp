@@ -112,7 +112,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
     }
 
     private var bannerImages = ArrayList<Banners.Data.Banner>()
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
     //    private var position: Int = 0
     var category: Categories.Data.Category? = null
     private var banner: Banners.Data.Banner? = null
@@ -453,7 +453,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
         searchLayout.setOnClickListener(this)
 
-        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+//        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
 
         categoryList = arrayListOf()
 
@@ -533,12 +533,14 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
 
     }
+/*
 
     private fun sendMixPanelEvent() {
             val productObject = JSONObject()
             productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, category?.id)
             mixPanel.track(IntentFlags.MIXPANEL_VISITED_DASHBOARD, productObject)
     }
+*/
 
     override fun onPause() {
         super.onPause()
@@ -600,7 +602,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
                                 categoryList.addAll(response.body()?.data?.categoryList!!)
                                 Log.e("priceDetailFields size", categoryList.size.toString())
                                 categoryListAdapter.notifyDataSetChanged()
-                                sendMixPanelEvent()
+//                                sendMixPanelEvent()
 
                             } else {
                                 showNoDataAvailableScreen()
@@ -719,9 +721,9 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         return activity?.supportFragmentManager?.findFragmentById(R.id.fragmentContainer) is HomeFragment
 
     }
-    override fun onDestroy() {
+  /*  override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
     }
-
+*/
 }

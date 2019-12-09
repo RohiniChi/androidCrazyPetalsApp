@@ -113,7 +113,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
     var productList = ArrayList<Products.Data.ProductDetails>()
     private lateinit var productListAdapter: ProductListAdapter
 //    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
@@ -181,7 +181,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
     private fun initializeViews() {
-        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
 //        onBottomReachedListener=this
         productListAdapter = ProductListAdapter(productList, this, this, this, this)
@@ -387,7 +387,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         }
                         productListAdapter.notifyDataSetChanged()
 
-                        sendMixPanelEvent()
+//                        sendMixPanelEvent()
 
                     } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                         if (keywordGlobal.length >= 3)
@@ -409,12 +409,14 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         })
     }
 
+/*
 
     private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_KEYWORD, keywordGlobal)
         mixPanel.track(IntentFlags.MIXPANEL_SEARCHED_KEYWORD, productObject)
     }
+*/
 
     object LastClickTimeSingleton {
         var lastClickTime: Long = 0
@@ -566,11 +568,13 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
             }
         }
     }
+/*
 
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
     }
+*/
 
 
 }
