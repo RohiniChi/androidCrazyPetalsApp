@@ -343,7 +343,7 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> {
                 if (currentFragment !is HomeFragment) {
                     fragment = HomeFragment()
-                    setToolBar(ApplicationThemeUtils.APP_NAME)
+                    setToolBar(ApplicationThemeUtils.APP_NAME,false)
                 }
             }
 

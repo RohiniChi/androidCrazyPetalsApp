@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
  *
  */
 abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
-    open fun setToolBar(name: String, shouldShowTitle: Boolean=false){}
+    open fun setToolBar(name: String, shouldShowTitle: Boolean=true){}
     open fun setToolBar(name: String){}
     open fun showNetworkCondition(){}
 

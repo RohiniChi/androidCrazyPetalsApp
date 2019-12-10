@@ -48,6 +48,7 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import kotlinx.android.synthetic.main.recycler_filter_item.*
+import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import org.json.JSONObject
@@ -573,20 +574,17 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 */
     override fun setToolBar(name: String) {
-        val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
-        setSupportActionBar(toolBar)
-        setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = categoryName
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        txtToolbarTitle.hide()
-//        txtToolbarTitle.allCaps = false
-//        txtToolbarTitle.text = categoryName
-        imgToolbarHome.hide()
-//        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
-        setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
+       val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
+       setSupportActionBar(toolBar)
+       setStatusBarColor()
+       supportActionBar?.setDisplayShowTitleEnabled(true)
+       cp_Logo.hide()
+       supportActionBar?.setDisplayHomeAsUpEnabled(true)
+       txtToolbarTitle.show()
+       txtToolbarTitle.allCaps = true
+       txtToolbarTitle.text = categoryName?.plus(" Collection")
+       imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+       setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
     override fun onClick(view: View?) {
