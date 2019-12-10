@@ -118,7 +118,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewPhoneNoError" />
 
             <androidx.core.widget.ContentLoadingProgressBar
-                    android:id="@+id/progressBar"
+                    android:id="@+id/progressBarMobileVerification"
                     style="@style/Widget.AppCompat.ProgressBar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

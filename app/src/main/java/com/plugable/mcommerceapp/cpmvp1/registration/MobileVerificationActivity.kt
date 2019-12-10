@@ -52,7 +52,7 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setThemeToComponents() {
-        progressBar.indeterminateDrawable.setColorFilter(
+        progressBarMobileVerification.indeterminateDrawable.setColorFilter(
             Color.BLACK,
             PorterDuff.Mode.MULTIPLY
         )
@@ -64,6 +64,7 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
         imageButtonBackArrow.setOnClickListener(this)
         buttonGetOtp.setOnClickListener(this)
         textChangeListeners()
+        buttonGetOtp.isClickable = true
     }
 
     override fun onClick(v: View?) {
@@ -86,15 +87,17 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onResume() {
         buttonGetOtp.isClickable = true
-        progressBar.hide()
+        progressBarMobileVerification.hide()
         super.onResume()
     }
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
-            progressBar.show()
+            progressBarMobileVerification.show()
             mobileVerificationApi()
         } else {
+            progressBarMobileVerification.hide()
+            buttonGetOtp.isClickable = true
             toast(getString(R.string.oops_no_internet_connection))
         }
     }
@@ -109,6 +112,7 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
         call.enqueue(object : Callback<SendOTPResponse> {
             override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
+                buttonGetOtp.isClickable = true
             }
 
             override fun onResponse(
@@ -126,11 +130,12 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
                         )
                         startActivity(intent)
 
+                        buttonGetOtp.isClickable = true
                         textInputEditTextPhoneNo.text?.clear()
                         textInputLayoutPhoneNo.error = null
                     } else {
                         buttonGetOtp.isClickable = true
-                        progressBar.hide()
+                        progressBarMobileVerification.hide()
                         textViewPhoneNoError.show()
                         textViewPhoneNoError.text =
                             getString(R.string.mobileVerification_validation_meassage)
