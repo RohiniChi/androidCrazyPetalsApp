@@ -349,6 +349,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             progressBarRegister.show()
             callRegisterApiWithData()
         } else {
+            buttonRegister.isClickable = true
             toast(getString(R.string.oops_no_internet_connection))
         }
     }
