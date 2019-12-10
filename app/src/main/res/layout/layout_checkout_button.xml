@@ -14,11 +14,11 @@
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/_14ssp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewViewPriceDetails"
-        app:layout_constraintEnd_toStartOf="@+id/materialButtonCheckout"
+        app:layout_constraintBottom_toTopOf="@id/textViewViewPriceDetails"
+        app:layout_constraintEnd_toStartOf="@id/materialButtonCheckout"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/materialButtonCheckout" />
+        app:layout_constraintTop_toTopOf="@id/materialButtonCheckout" />
 
     <TextView
         android:id="@+id/textViewViewPriceDetails"
@@ -28,10 +28,10 @@
         android:text="View Price Details"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/materialButtonCheckout"
-        app:layout_constraintEnd_toEndOf="@+id/textViewCheckoutButtonSubtotal"
+        app:layout_constraintEnd_toEndOf="@id/textViewCheckoutButtonSubtotal"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/textViewCheckoutButtonSubtotal"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCheckoutButtonSubtotal" />
+        app:layout_constraintStart_toStartOf="@id/textViewCheckoutButtonSubtotal"
+        app:layout_constraintTop_toBottomOf="@id/textViewCheckoutButtonSubtotal" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/materialButtonCheckout"
@@ -47,6 +47,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textViewCheckoutButtonSubtotal"
+        app:layout_constraintStart_toEndOf="@id/textViewCheckoutButtonSubtotal"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,13 +28,12 @@ import com.plugable.mcommerceapp.cpmvp1.utils.extension.setToolBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
-import kotlinx.android.synthetic.main.layout_checkout_button.*
-import kotlinx.android.synthetic.main.layout_empty_cart.*
-import kotlinx.android.synthetic.main.layout_sub_total_amount.*
 import kotlinx.android.synthetic.main.activity_cart.*
-import kotlinx.android.synthetic.main.activity_products.*
+import kotlinx.android.synthetic.main.layout_checkout_button.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
+import kotlinx.android.synthetic.main.layout_empty_cart.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
+import kotlinx.android.synthetic.main.layout_sub_total_amount.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import retrofit2.Call
@@ -196,13 +195,13 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                             productList.add(it)
                         }
                         cartAdapter.notifyDataSetChanged()
-                           SharedPreferences.getInstance(this@CartActivity).setStringValue(
-                               SHARED_PREFERENCES_CART_COUNT,
-                               productList.size.toString()
-                           )
+                        SharedPreferences.getInstance(this@CartActivity).setStringValue(
+                            SHARED_PREFERENCES_CART_COUNT,
+                            productList.size.toString()
+                        )
                         progressBarCartList.hide()
 
-                    }else{
+                    } else {
                         SharedPreferences.getInstance(this@CartActivity).setStringValue(
                             SHARED_PREFERENCES_CART_COUNT,
                             "0"
@@ -268,6 +267,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         cartAdapter = CartAdapter(productList, this, this, this)
         recyclerViewCart.adapter = cartAdapter
 
+        textViewCheckoutButtonSubtotal.setOnClickListener(this)
         textViewViewPriceDetails.setOnClickListener(this)
         imgToolbarHomeLayout.setOnClickListener(this)
         materialButtonCheckout.setOnClickListener(this)
@@ -278,7 +278,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         materialButtonCheckout.isClickable = true
 
         bottomSheetBehavior = BottomSheetBehavior.from(constraintLayoutBottomSheet)
-        bottomSheetBehavior.setBottomSheetCallback( object :
+        bottomSheetBehavior.setBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(p0: View, p1: Float) {
 
@@ -335,26 +335,27 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     override fun setToolBar(name: String) {
         setSupportActionBar(toolBar)
         setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        txtToolbarTitle.text = "Cart"
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.title = name
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        txtToolbarTitle.text = "Cart"
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
+
     override fun onBackPressed() {
         if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.WISHLIST) {
             startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_wishList)
             finish()
-        }
-        else if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.ORDER_DETAIL){
+        } else if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.ORDER_DETAIL) {
             startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_my_order)
             finish()
-        }
-        else if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.HOME_FRAGMENT){
+        } else if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.HOME_FRAGMENT) {
             startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_home)
             finish()
-        }
-        else {
+        } else {
             finish()
         }
     }
@@ -362,12 +363,9 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.imgToolbarHomeLayout -> onBackPressed()
-            R.id.textViewViewPriceDetails -> if (!layout_subtotal.isVisible) {
-                expandBottomSheet()
-//                nestedScrollViewCart.post { nestedScrollViewCart.fullScroll(View.FOCUS_DOWN) }
-            } else {
-                collapseBottomSheet()
-            }
+
+            R.id.textViewCheckoutButtonSubtotal -> showHideBootomSheet()
+            R.id.textViewViewPriceDetails -> showHideBootomSheet()
             R.id.materialButtonCheckout -> {
                 materialButtonCheckout.isClickable = false
 
@@ -412,6 +410,14 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         }
     }
 
+    fun showHideBootomSheet() {
+        if (!layout_subtotal.isVisible) {
+            expandBottomSheet()
+        } else {
+            collapseBottomSheet()
+        }
+    }
+
     private fun expandBottomSheet() {
         layout_subtotal.show()
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -448,8 +454,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                     if (response.body()?.statusCode.equals("10")) {
                         callTotalPriceApi()
                         toast(response.body()!!.message)
-                    }
-                    else if (response.body()?.statusCode.equals("30")){
+                    } else if (response.body()?.statusCode.equals("30")) {
                         toast(response.body()!!.message)
                     }
                 }
