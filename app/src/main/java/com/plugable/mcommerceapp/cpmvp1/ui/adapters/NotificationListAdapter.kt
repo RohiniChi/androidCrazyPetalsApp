@@ -53,22 +53,23 @@ class NotificationListAdapter(
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
             val notificationDate = simpleDateFormat.format(date)
 
+            val now=Calendar.getInstance()
+            if (now.get(Calendar.DATE)==calendar.get(Calendar.DATE)){
+                viewHolder.itemView.notificationDate.text="Today"
+            }
+            else if (now.get(Calendar.DATE)-calendar.get(Calendar.DATE)==1){
+                viewHolder.itemView.notificationDate.text="Yesterday"
+            }
+            else{
+                viewHolder.itemView.notificationDate.text = notificationDate
+            }
             viewHolder.itemView.txtTitle.text = notificationList[position]!!.title
             if (notificationList[position]!!.notificationType.equals("Text")) {
                 viewHolder.itemView.txtMessage.visibility = View.VISIBLE
                 viewHolder.itemView.ivBanner.visibility = View.GONE
                 viewHolder.itemView.txtMessage.text = notificationList[position]!!.message
 //                viewHolder.itemView.notificationDate.text = notificationDate
-             val now=Calendar.getInstance()
-                if (now.get(Calendar.DATE)==calendar.get(Calendar.DATE)){
-                    viewHolder.itemView.notificationDate.text="Today"
-                }
-                else if (now.get(Calendar.DATE)-calendar.get(Calendar.DATE)==1){
-                    viewHolder.itemView.notificationDate.text="Yesterday"
-                }
-                else{
-                    viewHolder.itemView.notificationDate.text = notificationDate
-                }
+
             } else {
                 viewHolder.itemView.txtMessage.visibility = View.GONE
                 viewHolder.itemView.ivBanner.visibility = View.VISIBLE
@@ -80,17 +81,7 @@ class NotificationListAdapter(
                     .apply(RequestOptions().fitCenter())
                     .error(R.drawable.ic_placeholder_category)
                     .into(viewHolder.itemView.ivBanner)
-                viewHolder.itemView.notificationDate.text = notificationDate
-                val now=Calendar.getInstance()
-                if (now.get(Calendar.DATE)==calendar.get(Calendar.DATE)){
-                    viewHolder.itemView.notificationDate.text="Today"
-                }
-                else if (now.get(Calendar.DATE)-calendar.get(Calendar.DATE)==1){
-                    viewHolder.itemView.notificationDate.text="Yesterday"
-                }
-                else{
-                    viewHolder.itemView.notificationDate.text = notificationDate
-                }
+//                viewHolder.itemView.notificationDate.text = notificationDate
             }
         } else {
 
