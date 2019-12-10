@@ -12,12 +12,18 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
@@ -34,6 +40,7 @@ import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ColorAdapterMVP1
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ImageSliderAdapter
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ProductListAdapter
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.SizeAdapter
+
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
@@ -41,8 +48,12 @@ import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartIt
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
+import com.plugable.mcommerceapp.cpmvp1.utils.util.WrappingViewPager
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
 import com.plugable.mcommerceapp.cpmvp1.utils.validation.strikeThroughText
+import com.plugable.mcommerceapp.ui.fragments.DescriptionFragment
+import com.plugable.mcommerceapp.ui.fragments.InstructionFragment
+import com.plugable.mcommerceapp.ui.fragments.SpecificationFragment
 import kotlinx.android.synthetic.main.activity_product_detail.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_product_details.*
@@ -66,14 +77,14 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
 
     private var productListId: Int = 0
-    private lateinit var productDetail: ProductDetail.Data
+    private var productDetail = ProductDetail.Data()
     private lateinit var callback: Call<Products>
 //    private lateinit var mixPanel: MixpanelAPI
     private var productImages = ArrayList<ProductDetail.Data.Image>()
     private lateinit var product: Products.Data.ProductDetails
     private lateinit var eventClickListener: EventListener
     private lateinit var onButtonClickListener: OnButtonClickListener
-//    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
+    //    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
     private var skipCount = 0
     private var takeCount = 4
     private var categoryId = 0
@@ -85,6 +96,9 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_detail)
+
+        colorSelectedId = 0
+        sizeSelectedId = 0
 
         initializeViews()
         initializeTheme()
@@ -100,7 +114,6 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             showNetworkCondition()
         }
     }
-
 
     private fun initializeTheme() {
         val configDetail = SharedPreferences.getInstance(this).themeDataPreference
@@ -159,7 +172,8 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         onButtonClickListener = this
 //        onBottomReachedListener = this
 
-        productListAdapter = ProductListAdapter(productList, this, eventClickListener,onButtonClickListener,this)
+        productListAdapter =
+            ProductListAdapter(productList, this, eventClickListener, onButtonClickListener, this)
         val gridLayoutManager = GridLayoutManager(this, 1)
         gridLayoutManager.orientation =
             RecyclerView.HORIZONTAL // set Horizontal Orientation
@@ -173,11 +187,11 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutCartIcon.isClickable = true
 
 
-        val webSettings = webViewDescription.settings
+        /*val webSettings = webViewDescription.settings
         webSettings.javaScriptEnabled = true
         webViewDescription.isVerticalScrollBarEnabled = false
         webViewDescription.isHorizontalScrollBarEnabled = false
-
+*/
         setCartBadge()
         hideUiComponents()
     }
@@ -203,7 +217,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         super.onResume()
         setCartBadge()
         layoutCartIcon.isClickable = true
-        buttonPlaceOrder.isClickable=true
+        buttonPlaceOrder.isClickable = true
         attemptCartApiCall()
     }
 
@@ -302,8 +316,11 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             ) {
                 if (response?.body()?.statusCode.equals("10")) {
                     showUiComponents()
-                    productImages.addAll(response?.body()!!.data.images)
+                    productImages.addAll(response?.body()!!.data.images!!)
                     viewPagerImage.adapter?.notifyDataSetChanged()
+
+
+
 
 
                     NUM_PAGES = productImages.size
@@ -322,12 +339,12 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         product.isFavorite = true
                         imageViewFavorite.isSelected = true
                     }
-                    loadDataToViews(response.body()!!)
                     productDetail = response.body()!!.data
+                    loadDataToViews(response.body()!!)
 
-                    product.discountedPrice=productDetail.discountedPrice!!
-                    product.originalPrice=productDetail.originalPrice!!
 
+                    product.discountedPrice = productDetail.discountedPrice
+                    product.originalPrice = productDetail.originalPrice
 
 
                 }
@@ -338,7 +355,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
-
+    var pageCount = 1
     private fun loadDataToViews(productDetail: ProductDetail) {
         txtProductName.text = productDetail.data.name
 
@@ -386,7 +403,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             }
         }
         with(textViewAvailability) {
-            text = if (productDetail.data.isAvailable) {
+            text = if (productDetail.data.isAvailable!!) {
                 buttonPlaceOrder.isClickable = true
                 buttonAddToCart.isClickable = true
                 buttonPlaceOrder.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
@@ -404,13 +421,12 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             }
         }
 
-
         when {
-            productDetail.data.colorList.isEmpty() -> {
+            productDetail.data.colorList!!.isEmpty() -> {
                 textViewColour.hide()
                 recyclerViewColor.hide()
             }
-            productDetail.data.colorList.equals(null) -> {
+            productDetail.data.colorList!!.equals(null) -> {
                 textViewColour.hide()
                 recyclerViewColor.hide()
             }
@@ -419,21 +435,19 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 recyclerViewColor.layoutManager =
                     LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true)
 
-                colorAdapter = ColorAdapterMVP1(colorArray, this)
+                colorAdapter = ColorAdapterMVP1(colorArray!!, this)
                 recyclerViewColor.adapter = colorAdapter
 
             }
         }
 
-
-
         when {
-            productDetail.data.sizeList.isEmpty() -> {
+            productDetail.data.sizeList!!.isEmpty() -> {
                 textViewSize.hide()
                 recyclerViewSizeCount.hide()
 
             }
-            productDetail.data.sizeList.equals(null) -> {
+            productDetail.data.sizeList!!.equals(null) -> {
                 textViewSize.hide()
                 recyclerViewSizeCount.hide()
             }
@@ -443,11 +457,49 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 recyclerViewSizeCount.layoutManager =
                     LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true)
 
-                sizeAdapter = SizeAdapter(sizeArray, this)
+                sizeAdapter = SizeAdapter(sizeArray!!, this)
                 recyclerViewSizeCount.adapter = sizeAdapter
             }
         }
-        webViewDescription.loadData(productDetail.data.description, "text/html", "UTF-8")
+        // webViewDescription.loadData(productDetail.data.description, "text/html", "UTF-8")
+
+        tabLayoutProductDetail.addTab(tabLayoutProductDetail.newTab().setText(R.string.title_description))
+
+        if (!productDetail.data.length.isNullOrEmpty() ||
+            !productDetail.data.height.isNullOrEmpty() ||
+            !productDetail.data.width.isNullOrEmpty() ||
+            !productDetail.data.weight.isNullOrEmpty() ||
+            !productDetail.data.materialType.isNullOrEmpty()
+
+        ) {
+            pageCount++
+            tabLayoutProductDetail.addTab(tabLayoutProductDetail.newTab().setText(R.string.title_specification))
+        }
+        if (!productDetail.data.deliveryTime.isNullOrEmpty() ||
+            !productDetail.data.precautions.isNullOrEmpty()
+        ) {
+            pageCount++
+            tabLayoutProductDetail.addTab(tabLayoutProductDetail.newTab().setText(R.string.title_instruction))
+        }
+
+        viewPagerProductDetail.adapter =
+            ViewPagerAdapterProductDetail(supportFragmentManager)
+        tabLayoutProductDetail.setupWithViewPager(viewPagerProductDetail)
+        viewPagerProductDetail.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        viewPagerProductDetail!!.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+
+
+        viewPagerProductDetail!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+
+               viewPagerProductDetail.reMeasureCurrentPage(position)
+            }
+        })
 
 //        sendMixPanelEvent()
     }
@@ -779,17 +831,16 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
     override fun onButtonClicked(productId: Int) {
-        productListId=productId
-        if (SharedPreferences.getInstance(this).isUserLoggedIn){
+        productListId = productId
+        if (SharedPreferences.getInstance(this).isUserLoggedIn) {
 
             callAddToCartApi(
                 "Add to Cart from list",
-               productListId,
+                productListId,
                 colorSelectedId,
                 sizeSelectedId
             )
-        }
-        else{
+        } else {
             val intent = Intent(this, LoginActivity::class.java)
             intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.PRODUCT_DETAIL)
             intent.putExtra(IntentFlags.SHOULD_GO_TO_DASHBOARD, true)
@@ -885,8 +936,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     )
                 }
             }
-        }
-        else if (requestCode == 3) {
+        } else if (requestCode == 3) {
             callAddToCartApi(
                 "Add to Cart from list",
                 productListId,
@@ -930,7 +980,11 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         buttonPlaceOrder.isClickable = true
                         buttonAddToCart.isClickable = true
 
-                        if (clickedButton.equals("Add to Cart", true) || clickedButton.equals("Add to Cart from list",true)) {
+                        if (clickedButton.equals(
+                                "Add to Cart",
+                                true
+                            ) || clickedButton.equals("Add to Cart from list", true)
+                        ) {
 //                            toast(response.message())
 //                            setCartBadge()
                             attemptCartApiCall()
@@ -945,7 +999,11 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 //                            setCartBadge()
                             attemptCartApiCall()
                             startActivity<CartActivity>()
-                        } else if (clickedButton.equals("Add to Cart",true) || clickedButton.equals("Add to Cart from list",true)){
+                        } else if (clickedButton.equals(
+                                "Add to Cart",
+                                true
+                            ) || clickedButton.equals("Add to Cart from list", true)
+                        ) {
                             buttonPlaceOrder.isClickable = true
                             buttonAddToCart.isClickable = true
                             attemptCartApiCall()
@@ -964,5 +1022,81 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         mixPanel.flush()
         super.onDestroy()
     }*/
+
+    inner class ViewPagerAdapterProductDetail(manager: FragmentManager) :
+        FragmentStatePagerAdapter(manager) {
+
+        var mCurrentPosition=-1
+
+        override fun getItem(position: Int): Fragment {
+
+            var fragment: Fragment? = null
+
+
+            if (getPageTitle(position) == getString(R.string.title_description)) {
+                fragment = DescriptionFragment().newInstance(
+                    productDetail.description,
+                    productDetail.includedAccesories
+                )
+
+            } else if (getPageTitle(position) == getString(R.string.title_specification)) {
+                fragment = SpecificationFragment().newInstance(
+                    productDetail.length,
+                    productDetail.height,
+                    productDetail.width,
+                    productDetail.weight,
+                    productDetail.materialType
+                )
+            } else if (getPageTitle(position) == getString(R.string.title_instruction)) {
+                fragment = InstructionFragment().newInstance(
+                    productDetail.deliveryTime,
+                    productDetail.precautions
+                )
+            }
+
+            return fragment!!
+        }
+
+        override fun getCount(): Int {
+            return pageCount
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+
+            var title: String? = null
+            if (position == 0) {
+                title = getString(R.string.title_description)
+
+            } else if (position == 1 && (!productDetail.length.isNullOrEmpty() ||
+                        !productDetail.height.isNullOrEmpty() ||
+                        !productDetail.width.isNullOrEmpty() ||
+                        !productDetail.weight.isNullOrEmpty() ||
+                        !productDetail.materialType.isNullOrEmpty()
+                        )
+            ) {
+                title = getString(R.string.title_specification)
+            } else {
+                title = getString(R.string.title_instruction)
+            }
+            return title
+        }
+
+        /*override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+            super.setPrimaryItem(container, position, `object`)
+
+            if (container !is WrappingViewPager) {
+                throw UnsupportedOperationException("ViewPager is not a WrappingViewPager")
+            }
+
+            val fragment = `object` as Fragment
+            if (fragment != null && fragment.view != null) {
+                if (position != mCurrentPosition) {
+                    mCurrentPosition = position
+                }
+                container.onPageChanged(fragment.view)
+            }
+        }*/
+
+    }
 
 }

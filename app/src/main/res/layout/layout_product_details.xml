@@ -70,14 +70,13 @@
             android:id="@+id/valueBrand"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:text="Double Horse"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textViewBrand"
             app:layout_constraintTop_toBottomOf="@+id/txtProductName" />
-
 
 
         <TextView
@@ -202,53 +201,66 @@
             app:layout_constraintStart_toStartOf="@+id/textViewPrice"
             app:layout_constraintTop_toBottomOf="@id/textViewDiscountedPrice" />
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/textViewDiscountedPrice"
+    android:layout_height="wrap_content">
 
-        <WebView
-            android:id="@+id/webViewDescription"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutProductDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/viewPagerProductDetail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tabMode="scrollable"
+        app:tabTextAppearance="@style/TabLayoutTextStyle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDiscountedPrice"/>
+
+
+    <com.plugable.mcommerceapp.cpmvp1.utils.util.WrappingViewPager
+        android:id="@+id/viewPagerProductDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutAlsoRecommended"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewPagerProductDetail"
+        tools:layout_editor_absoluteY="1079dp">
+
+        <TextView
+            android:id="@+id/textViewAlsoRecommended"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@android:color/white"
-            android:focusable="false"
-            android:importantForAutofill="auto"
+            android:layout_marginTop="16dp"
+            android:text="@string/title_also_recommended"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewProductTitle"
-            tools:targetApi="o" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layoutAlsoRecommended"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAlsoRecommended"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/webViewDescription"
-            tools:layout_editor_absoluteY="1079dp">
+            app:layout_constraintTop_toBottomOf="@id/textViewAlsoRecommended"
+            tools:listitem="@layout/layout_product_item" />
 
-            <TextView
-                android:id="@+id/textViewAlsoRecommended"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/title_also_recommended"
-                android:textColor="@color/colorBlack"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewAlsoRecommended"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewAlsoRecommended"
-                tools:listitem="@layout/layout_product_item" />
+</LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

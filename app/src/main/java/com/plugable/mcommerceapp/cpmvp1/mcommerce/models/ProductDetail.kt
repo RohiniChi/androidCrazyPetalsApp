@@ -1,5 +1,6 @@
 package com.plugable.mcommerceapp.cpmvp1.mcommerce.models
 
+import android.graphics.Color
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -18,39 +19,40 @@ data class ProductDetail(
     val message: String,
     val statusCode: String
 ) {
+
     data class Data(
-        val colorList: List<Color>,
-//        val deliveryTime: String?=null,
-        val description: String,
-//        val discountPercent: Int,
-        val discountedPrice: Int,
-//        val height: String?=null,
-        val id: Int,
-        val images: List<Image>,
-//        val includedAccesories: String?=null,
-        val isAvailable: Boolean,
-     /*   val length: String?=null,
-        val materialType: String?=null,*/
-        val name: String,
-        val originalPrice: Int,
-//        val precautions: String?=null,
-        val sizeList: List<Size>,
-//        val weight: String?=null,
-        val brand: String?=null,
-        val unitName: String?=null,
-        val quantity: String?=null
-//        val width: String?=null
+        var colorList: List<Color>? = null,
+        var deliveryTime: String? = null,
+        var description: String? = null,
+        var discountPercent: Int = 0,
+        var discountedPrice: Int = 0,
+        var height: String? = null,
+        var id: Int = 0,
+        var images: List<Image>? = null,
+        var includedAccesories: String? = null,
+        var isAvailable: Boolean? = false,
+        var length: String? = null,
+        var materialType: String? = null,
+        var name: String? = null,
+        var originalPrice: Int = 0,
+        var precautions: String? = null,
+        var sizeList: List<Size>? = null,
+        var weight: String? = null,
+        var brand: String?=null,
+        var unitName: String?=null,
+        var quantity: String?=null,
+        var width: String? = null
     ) {
         data class Color(
             val colorName: String,
             val hashCode: String,
             val id: Int,
-            var isChecked: Boolean
+            var isChecked:Boolean
         )
 
         data class Image(
             val image: String
-        ) : Parcelable {
+        ):Parcelable {
             constructor(parcel: Parcel) : this(parcel.readString()!!)
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -79,5 +81,4 @@ data class ProductDetail(
 
     }
 }
-
 

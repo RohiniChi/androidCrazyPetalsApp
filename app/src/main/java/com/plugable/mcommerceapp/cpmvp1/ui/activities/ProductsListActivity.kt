@@ -69,7 +69,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private lateinit var callback: Call<Products>
     lateinit var productListAdapter: ProductListAdapter
     var productList = ArrayList<Products.Data.ProductDetails>()
-    internal lateinit var filterList: ArrayList<GetFilters.Data.Filter>
+    internal var filterList= ArrayList<GetFilters.Data.Filter>()
     lateinit var filterListAdapter: FilterAdapter
     var products: Products.Data.ProductDetails? = null
     private lateinit var eventClickListener: EventListener
@@ -300,7 +300,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
             }
         })
 
-        filterList = arrayListOf()
         filterListAdapter = FilterAdapter(filterList, this, this, checkedId)
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = RecyclerView.VERTICAL

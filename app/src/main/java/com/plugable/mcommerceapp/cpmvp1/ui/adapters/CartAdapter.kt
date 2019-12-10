@@ -75,13 +75,12 @@ class CartAdapter(
                 drawable.setColor(Color.parseColor(productItems.colorCode))
             }
 
-            if (productItems.colorCode.isNullOrEmpty()) {
+            if (productItems.size.isNullOrEmpty()) {
                 tvSize.hide()
             } else {
                 tvSize.show()
                 tvSize.text = "Size: ".plus(productItems.size)
             }
-            tvSize.text = "Size: ".plus(productItems.size)
             Glide.with(context)
                 .load(productItems.productImageURL)
                 .placeholder(R.drawable.ic_placeholder_category)
