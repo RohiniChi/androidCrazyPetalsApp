@@ -430,7 +430,7 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
 
             toast(getString(R.string.message_item_removed))
         }
-        catch (a:IndexOutOfBoundsException){
+        catch (a:ArrayIndexOutOfBoundsException){
 
         }
     }
