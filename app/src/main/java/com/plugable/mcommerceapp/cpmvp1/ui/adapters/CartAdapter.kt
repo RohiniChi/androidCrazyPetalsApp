@@ -49,7 +49,7 @@ class CartAdapter(
                     productItems.discountedPrice
                 )
             if (productItems.originalPrice == 0 || productItems.originalPrice == null) {
-                viewHolder.itemView.textViewActualPrice.hide()
+                viewHolder.itemView.textViewActualPrice.visibility = View.INVISIBLE
             } else {
                 viewHolder.itemView.textViewActualPrice.text =
                     String.format(
@@ -63,6 +63,25 @@ class CartAdapter(
                 cartItemActionListener.onItemRemoved(productItems)
             }
 
+
+            if (productItems.colorCode.isNullOrEmpty()) {
+                tvColorLabel.hide()
+                textViewColor.hide()
+            } else {
+                tvColorLabel.show()
+                textViewColor.show()
+                textViewColor.setBackgroundResource(R.drawable.circular_shape_view)
+                val drawable = textViewColor.background.current as GradientDrawable
+                drawable.setColor(Color.parseColor(productItems.colorCode))
+            }
+
+            if (productItems.colorCode.isNullOrEmpty()) {
+                tvSize.hide()
+            } else {
+                tvSize.show()
+                tvSize.text = "Size: ".plus(productItems.size)
+            }
+            tvSize.text = "Size: ".plus(productItems.size)
             Glide.with(context)
                 .load(productItems.productImageURL)
                 .placeholder(R.drawable.ic_placeholder_category)
@@ -91,14 +110,12 @@ class CartAdapter(
 //            numberPickerCartItemCount.max=productItems.availableQuantity
             numberPickerCartItemCount.value = productItems.quantity
 
-            if (productItems.availableQuantity > 10){
-                numberPickerCartItemCount.max=10
-            }
-            else if (productItems.isAvailable && productItems.availableQuantity==0){
-                numberPickerCartItemCount.max=10
-            }
-            else{
-                numberPickerCartItemCount.max=productItems.availableQuantity
+            if (productItems.availableQuantity > 10) {
+                numberPickerCartItemCount.max = 10
+            } else if (productItems.isAvailable && productItems.availableQuantity == 0) {
+                numberPickerCartItemCount.max = 10
+            } else {
+                numberPickerCartItemCount.max = productItems.availableQuantity
             }
             numberPickerCartItemCount.setValueChangedListener { value, actionEnum ->
                 if (actionEnum == ActionEnum.INCREMENT) {
@@ -113,8 +130,7 @@ class CartAdapter(
             numberPickerCartItemCount.setLimitExceededListener { limit, exceededValue ->
                 if (exceededValue > limit) {
                     context.toast("Sorry, can't add more than this items")
-                }
-                else {
+                } else {
                     context.toast("Please remove your item using delete")
                 }
             }
@@ -124,21 +140,13 @@ class CartAdapter(
                 viewHolder.itemView.tvOutOfStock.hide()
                 increment.isEnabled = true
                 increment.setBackgroundColor(
-                    ContextCompat.getColor(
-                        viewHolder.itemView.context,
-                        R.color.number_picker_enabled_color
-                    )
+                    Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR)
                 )
                 decrement.setBackgroundColor(
-                    ContextCompat.getColor(
-                        viewHolder.itemView.context,
-                        R.color.number_picker_enabled_color
-                    )
+                    Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR)
                 )
-                display.setTextColor(ContextCompat.getColor(
-                    viewHolder.itemView.context,
-                    R.color.number_picker_enabled_color
-                ))
+                display.setTextColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+
                 decrement.isEnabled = true
                 numberPickerCartItemCount.background = ContextCompat.getDrawable(
                     viewHolder.itemView.context,
@@ -158,10 +166,12 @@ class CartAdapter(
                         R.color.number_picker_disabled_color
                     )
                 )
-                display.setTextColor(ContextCompat.getColor(
-                    viewHolder.itemView.context,
-                    R.color.number_picker_disabled_color
-                ))
+                display.setTextColor(
+                    ContextCompat.getColor(
+                        viewHolder.itemView.context,
+                        R.color.number_picker_disabled_color
+                    )
+                )
                 numberPickerCartItemCount.background = ContextCompat.getDrawable(
                     viewHolder.itemView.context,
                     R.drawable.button_background_rounded_corner_layout_disabled
