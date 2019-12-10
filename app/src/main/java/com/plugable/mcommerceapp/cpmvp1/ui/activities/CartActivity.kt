@@ -64,19 +64,24 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
 
     override fun onDecremented(getCartResponseData: GetCartResponse.Data) {
         getCartResponseData.quantity -= 1
-        with(recyclerViewCart.adapter!!) {
-            val index = productList.indexOf(getCartResponseData)
-            if (index > -1) {
-                callProductQuantityApi(
-                    getCartResponseData.quantity.toString(),
-                    productList[index].productId
-                )
-                notifyItemChanged(index)
-            }
+      /*  if (getCartResponseData.quantity<1){
+            toast("Please remove your item using delete")
         }
+        else{*/
+            with(recyclerViewCart.adapter!!) {
+                val index = productList.indexOf(getCartResponseData)
+                if (index > -1) {
+                    callProductQuantityApi(
+                        getCartResponseData.quantity.toString(),
+                        productList[index].productId
+                    )
+                    notifyItemChanged(index)
+                }
+//            }
+        }
+
         updateData()
     }
-
     override fun onItemRemoved(getCartResponseData: GetCartResponse.Data) {
         with(recyclerViewCart.adapter!!) {
             removeItemFromCart(getCartResponseData.productId)
