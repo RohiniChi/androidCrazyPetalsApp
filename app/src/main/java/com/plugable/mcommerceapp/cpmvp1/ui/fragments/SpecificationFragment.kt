@@ -1,12 +1,15 @@
-package com.plugable.mcommerceapp.cpmvp1.ui.fragments
+package com.plugable.mcommerceapp.ui.fragments
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.plugable.mcommerceapp.cpmvp1.R
+import com.plugable.mcommerceapp.cpmvp1.ui.fragments.BaseFragment
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import kotlinx.android.synthetic.main.fragment_specification.*
 
@@ -22,9 +25,11 @@ import kotlinx.android.synthetic.main.fragment_specification.*
 class SpecificationFragment : BaseFragment() {
 
 
-    private var brand: String? = null
-    private var quantity: String? = null
-    private var unitName: String? = null
+    private var length: String? = null
+    private var height: String? = null
+    private var width: String? = null
+    private var weight: String? = null
+    private var materialType: String? = null
 
     override fun onClick(p0: View?) {
     }
@@ -49,46 +54,80 @@ class SpecificationFragment : BaseFragment() {
     }
 
     private fun readArguments() {
-        brand = arguments?.getString(BRAND)
-        quantity = arguments?.getString(QUANTITY)
-        unitName = arguments?.getString(UNIT_NAME)
+        length = arguments?.getString(LENGTH)
+        height = arguments?.getString(HEIGHT)
+        width = arguments?.getString(WIDTH)
+        weight = arguments?.getString(WEIGHT)
+        materialType = arguments?.getString(MATERIAL_TYPE)
     }
 
     companion object {
-                const val BRAND = "brand"
-        const val QUANTITY = "quantity"
-        const val UNIT_NAME = "unitName"
+        const val LENGTH = "length"
+        const val HEIGHT = "height"
+        const val WIDTH = "width"
+        const val WEIGHT = "weight"
+        const val MATERIAL_TYPE = "material_type"
+
     }
 
     fun newInstance(
-        brand: String? = null,
-        quantity: String? = null,
-        unitName: String? = null
+        length: String? = null,
+        height: String? = null,
+        width: String? = null,
+        weight: String? = null,
+        material_type: String? = null
     ): SpecificationFragment {
         val f = SpecificationFragment()
         val bundle = Bundle()
-        bundle.putString(BRAND, brand)
-        bundle.putString(QUANTITY, quantity)
-        bundle.putString(UNIT_NAME, unitName)
+        bundle.putString(LENGTH, length)
+        bundle.putString(HEIGHT, height)
+        bundle.putString(WIDTH, width)
+        bundle.putString(WEIGHT, weight)
+        bundle.putString(MATERIAL_TYPE, material_type)
         f.arguments = bundle
         return f
     }
 
     private fun setData() {
-        if (TextUtils.isEmpty(brand)) {
-            textViewBrand.hide()
-            textViewBrandColon.hide()
-            valueBrand.hide()
+        if (TextUtils.isEmpty(height)) {
+            textViewHeight.hide()
+            textViewHeightColon.hide()
+            valueHeight.hide()
         } else {
-            valueBrand.text = brand
+            valueHeight.text = height
         }
 
-        if (TextUtils.isEmpty(quantity)) {
-            textViewQuantity.hide()
-            textViewQuantityColon.hide()
-            valueQuantity.hide()
+        if (TextUtils.isEmpty(width)) {
+            textViewWidth.hide()
+            textViewWidthColon.hide()
+            valueWidth.hide()
         } else {
-            valueQuantity.text = quantity.plus(unitName)
+            valueWidth.text = width
+        }
+
+        if (TextUtils.isEmpty(length)) {
+            textViewLength.hide()
+            textViewLengthColon.hide()
+            valueLength.hide()
+        } else {
+            valueLength.text = length
+        }
+
+
+        if (TextUtils.isEmpty(materialType)) {
+            textViewMaterialType.hide()
+            textViewMaterialTypeColon.hide()
+            valueMaterialType.hide()
+        } else {
+            valueMaterialType.text = materialType
+        }
+
+        if (TextUtils.isEmpty(weight)) {
+            textViewWeight.hide()
+            textViewWeightColon.hide()
+            valueWeight.hide()
+        } else {
+            valueWeight.text = weight
         }
 
     }

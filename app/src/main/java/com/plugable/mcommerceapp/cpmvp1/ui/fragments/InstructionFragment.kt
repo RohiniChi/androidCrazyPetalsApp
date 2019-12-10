@@ -1,5 +1,7 @@
-package com.plugable.mcommerceapp.cpmvp1.ui.fragments
+package com.plugable.mcommerceapp.ui.fragments
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -7,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.plugable.mcommerceapp.cpmvp1.R
+import com.plugable.mcommerceapp.cpmvp1.ui.fragments.BaseFragment
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import kotlinx.android.synthetic.main.fragment_instrucation.*
+
 
 /**
  * A simple [Fragment] subclass.
@@ -18,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_instrucation.*
  * Use the [InstrucationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class InstrucationFragment : BaseFragment() {
+class InstructionFragment : BaseFragment() {
 
     private var precautions: String? = null
     private var delivery_time: String? = null
@@ -77,8 +81,8 @@ class InstrucationFragment : BaseFragment() {
     fun newInstance(
         delivery_time: String? = null,
         precautions: String? = null
-    ): InstrucationFragment {
-        val f = InstrucationFragment()
+    ): InstructionFragment {
+        val f = InstructionFragment()
         val bundle = Bundle()
         bundle.putString(DELIVERY_TIME, delivery_time)
         bundle.putString(PRECAUTIONS, precautions)
