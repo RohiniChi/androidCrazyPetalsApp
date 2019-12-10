@@ -343,7 +343,7 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> {
                 if (currentFragment !is HomeFragment) {
                     fragment = HomeFragment()
-                    setToolBar(ApplicationThemeUtils.APP_NAME)
+                    setToolBar(ApplicationThemeUtils.APP_NAME,false)
                 }
             }
 
@@ -351,33 +351,33 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_wishList -> {
                 if (currentFragment !is WishListFragment) {
                     fragment = WishListFragment()
-                    setToolBar(getString(R.string.title_wish_list))
+                    setToolBar(getString(R.string.title_wish_list),true)
                 }
             }
 
             R.id.nav_my_order -> {
                 if (currentFragment !is MyOrderFragment) {
                     fragment = MyOrderFragment()
-                    setToolBar(getString(R.string.title_my_order))
+                    setToolBar(getString(R.string.title_my_order),true)
                 }
             }
 
             R.id.nav_about_us -> {
                 if (currentFragment !is AboutUsFragment) {
                     fragment = AboutUsFragment()
-                    setToolBar(getString(R.string.menu_about_us))
+                    setToolBar(getString(R.string.menu_about_us),true)
                 }
             }
             R.id.nav_faqs -> {
                 if (currentFragment !is FAQsFragment) {
                     fragment = FAQsFragment()
-                    setToolBar(getString(R.string.title_faqs))
+                    setToolBar(getString(R.string.title_faqs),true)
                 }
             }
             R.id.nav_contact_us -> {
                 if (currentFragment !is ContactUsFragment) {
                     fragment = ContactUsFragment()
-                    setToolBar(getString(R.string.title_contact_us))
+                    setToolBar(getString(R.string.title_contact_us),true)
                 }
             }
 

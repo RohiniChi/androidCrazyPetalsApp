@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
+import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
+import kotlinx.android.synthetic.main.activity_contact_us.*
 import org.json.JSONObject
 
 class ContactUsFragment:Fragment() {
@@ -29,15 +31,18 @@ class ContactUsFragment:Fragment() {
         initializeViews()
     }
 
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
 
     private fun initializeViews() {
-        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+    /*    mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
         sendMixPanelEvent()
+*/
+        val versionNumber= SharedPreferences.getInstance(activity!!).getStringValue(IntentFlags.VERSION_NUMBER)
+        textViewVersionNumber.text=getString(R.string.text_version).plus(" ").plus(versionNumber)
 
     }
 
-    private fun sendMixPanelEvent() {
+    /*private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID,getString(R.string.mixpanel_contact_us))
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_CONTACT_US_SCREEN, productObject)
@@ -46,5 +51,5 @@ class ContactUsFragment:Fragment() {
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
-    }
+    }*/
 }

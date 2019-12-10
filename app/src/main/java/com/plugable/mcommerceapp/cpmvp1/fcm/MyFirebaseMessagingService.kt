@@ -95,7 +95,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         val mBuilder = NotificationCompat.Builder(applicationContext, "default")
-            .setSmallIcon(R.drawable.notification_logo) // notification icon
+            .setSmallIcon(R.drawable.ic_notification_icon_cp) // notification icon
             .setContentTitle(title) // title for notification
             .setContentText(message)// message for notification
             .setAutoCancel(true) // clear notification after click

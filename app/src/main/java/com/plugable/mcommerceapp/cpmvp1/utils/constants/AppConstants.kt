@@ -132,6 +132,7 @@ object IntentFlags {
     const val PRODUCT_ID = "ProductId"
     const val SHOULD_GO_TO_DASHBOARD = "should.go.to.dashboard"
     const val FRAGMENT_TO_BE_LOADED = "fragment.to.be.loaded"
+    const val VERSION_NUMBER = "VersionNumber"
 
     const val MIXPANEL_PRODUCT_NAME = "Product Name"
     const val MIXPANEL_VISITED_PRODUCTS = "Visited Product"

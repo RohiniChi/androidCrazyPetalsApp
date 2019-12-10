@@ -23,7 +23,7 @@ import org.json.JSONObject
  */
 class SuccessProductBookingActivity : BaseActivity() {
 
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,20 +63,22 @@ class SuccessProductBookingActivity : BaseActivity() {
 
 
     private fun initializeViews() {
-        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
         imgToolbarHomeLayout.setOnClickListener(this)
         browseMoreButton.setOnClickListener(this)
-        sendMixPanelEvent()
+//        sendMixPanelEvent()
     }
 
 
+/*
 
     private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID,getString(R.string.mixpanel_booking_successful) )
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_BOOKING_SUCCESSFUL_SCREEN, productObject)
     }
+*/
 
     override fun setToolBar(name: String) {
         setSupportActionBar(toolBar)
@@ -97,9 +99,9 @@ class SuccessProductBookingActivity : BaseActivity() {
             }
         }
     }
-
+/*
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
-    }
+    }*/
 }

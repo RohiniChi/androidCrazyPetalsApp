@@ -48,6 +48,7 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import kotlinx.android.synthetic.main.recycler_filter_item.*
+import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import org.json.JSONObject
@@ -78,7 +79,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private var takeCount = 10
     private var categoryId = 0
     var categoryList = ArrayList<Categories.Data.Category>()
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
     var checkedId = HashSet<Int>()
 
 
@@ -241,7 +242,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         button_apply_filter.setOnClickListener(this)
         button_cancel.setOnClickListener(this)
 
-        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
 
         categoryId = intent.getIntExtra(IntentFlags.CATEGORY_ID, 0)
@@ -467,7 +468,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             }
 //                            productList.addAll(response.body()?.data!!.productDetailsList)
                             productListAdapter.notifyDataSetChanged()
-                            sendMixPanelEvent()
+//                            sendMixPanelEvent()
 
                         } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
@@ -542,7 +543,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                                 recyclerViewProducts.scrollToPosition(0)
                             }*/
 
-                            sendMixPanelEvent()
+//                            sendMixPanelEvent()
 
                         } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
@@ -566,27 +567,24 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
-    private fun sendMixPanelEvent() {
+   /* private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
     }
-
+*/
     override fun setToolBar(name: String) {
-        val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
-        setSupportActionBar(toolBar)
-        setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = categoryName
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        txtToolbarTitle.hide()
-//        txtToolbarTitle.allCaps = false
-//        txtToolbarTitle.text = categoryName
-        imgToolbarHome.hide()
-//        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
-        setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
+       val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
+       setSupportActionBar(toolBar)
+       setStatusBarColor()
+       supportActionBar?.setDisplayShowTitleEnabled(true)
+       cp_Logo.hide()
+       supportActionBar?.setDisplayHomeAsUpEnabled(true)
+       txtToolbarTitle.show()
+       txtToolbarTitle.allCaps = true
+       txtToolbarTitle.text = categoryName?.plus(" Collection")
+       imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+       setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
     override fun onClick(view: View?) {
@@ -804,7 +802,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             if (productList.isNotEmpty()) {
                                 recycler_filter.scrollToPosition(0)
                             }
-                            sendMixPanelEvent()
+//                            sendMixPanelEvent()
 
                         } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
@@ -1044,11 +1042,13 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         }
     }
+/*
 
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
     }
+*/
 
 }
 

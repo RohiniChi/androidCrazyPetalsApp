@@ -52,6 +52,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.IndexOutOfBoundsException
 import java.util.*
 
 
@@ -69,7 +70,7 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
 
     private lateinit var productListAdapter: ProductListAdapter
     private var productList = ArrayList<Products.Data.ProductDetails>()
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
 
 //    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
 
@@ -135,15 +136,17 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
         recyclerViewProducts.adapter = productListAdapter
 
         if (productList.isEmpty()) showNoDataAvailableScreen() else showRecyclerViewData()
-        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
-        sendMixPanelEvent()
+//        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+//        sendMixPanelEvent()
     }
+/*
 
     private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, getString(R.string.mixpanel_wishlist))
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_WISH_LIST, productObject)
     }
+*/
 
 
     override fun setToolBar(name: String) {
@@ -401,6 +404,7 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
     }
 
     override fun onItemClickListener(position: Int) {
+
         if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
         else {
             activity?.startActivity<ProductDetailActivity>(
@@ -413,16 +417,22 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
 
 
     override fun onFavoriteClicked(clickedIndex: Int, isFavorite: Boolean) {
-        AppDatabase.getDatabase(activity!!).productListDao()
-            .deleteProduct(productList[clickedIndex])
-        productList.remove(productList[clickedIndex])
-        with(recyclerViewProducts.adapter!!) {
-            notifyItemRemoved(clickedIndex)
-            notifyItemRangeChanged(clickedIndex, productList.size)
-        }
-        if (productList.isEmpty()) showNoDataAvailableScreen()
+        try {
 
-        toast(getString(R.string.message_item_removed))
+            AppDatabase.getDatabase(activity!!).productListDao()
+                .deleteProduct(productList[clickedIndex])
+            productList.remove(productList[clickedIndex])
+            with(recyclerViewProducts.adapter!!) {
+                notifyItemRemoved(clickedIndex)
+                notifyItemRangeChanged(clickedIndex, productList.size)
+            }
+            if (productList.isEmpty()) showNoDataAvailableScreen()
+
+            toast(getString(R.string.message_item_removed))
+        }
+        catch (a:ArrayIndexOutOfBoundsException){
+
+        }
     }
 
     override fun onButtonClicked(productId: Int) {
@@ -480,9 +490,9 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
         }
     }
 
-    override fun onDestroy() {
+    /*override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
-    }
+    }*/
 
 }

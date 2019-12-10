@@ -79,7 +79,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private var productListId: Int = 0
     private var productDetail = ProductDetail.Data()
     private lateinit var callback: Call<Products>
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
     private var productImages = ArrayList<ProductDetail.Data.Image>()
     private lateinit var product: Products.Data.ProductDetails
     private lateinit var eventClickListener: EventListener
@@ -157,7 +157,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         imageViewFavorite.setOnClickListener(this)
 
-        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
         product = intent.getParcelableExtra(IntentFlags.PRODUCT_MODEL)!!
 
@@ -501,7 +501,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             }
         })
 
-        sendMixPanelEvent()
+//        sendMixPanelEvent()
     }
 
     private fun attemptListApiCall() {
@@ -554,7 +554,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             }
 //                            productList.addAll(response.body()?.data!!.productDetailsList)
                             productListAdapter.notifyDataSetChanged()
-                            sendMixPanelEvent()
+//                            sendMixPanelEvent()
 
                         } else {
                             textViewAlsoRecommended.hide()
@@ -601,13 +601,13 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }
     }
 
-    private fun sendMixPanelEvent() {
+  /*  private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, product.id)
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_NAME, product.name)
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCTS, productObject)
     }
-
+*/
 
     private fun hideUiComponents() {
         nestedScrollProductDetail.hide()
@@ -1017,11 +1017,11 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             toast(getString(R.string.check_internet_connection))
         }
     }
-
+/*
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
-    }
+    }*/
 
     inner class ViewPagerAdapterProductDetail(manager: FragmentManager) :
         FragmentStatePagerAdapter(manager) {

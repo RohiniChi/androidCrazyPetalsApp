@@ -22,6 +22,7 @@ import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.VersionInfo
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.webservices.ProjectApi
 import com.plugable.mcommerceapp.cpmvp1.registration.LoginActivity
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
+import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferencesForBaseUrl
@@ -193,7 +194,12 @@ class SplashScreenActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
 
                     if (response.body()?.statusCode?.equals("10")!!) {
-                        if (response.body()!!.data.versionNumber > BuildConfig.VERSION_CODE) {
+
+                        SharedPreferences.getInstance(this@SplashScreenActivity).setStringValue(
+                            IntentFlags.VERSION_NUMBER,
+                            BuildConfig.VERSION_NAME
+                        )
+                        if (response.body()!!.data.versionNumber > BuildConfig.VERSION_NAME) {
 //                            showPopUpForLatestUpdate()//remove thisline for force update
 //                            ("Uncomment following code while going live. for testing purpose it is keep force update commented")
                             if (response.body()!!.data.updateType.equals(getString(R.string.forceful_update))) {

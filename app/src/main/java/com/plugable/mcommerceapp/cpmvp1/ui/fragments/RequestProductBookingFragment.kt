@@ -85,7 +85,7 @@ class RequestProductBookingFragment : BaseFragment(), View.OnTouchListener {
 
     private lateinit var selectedPincode: String
     private lateinit var deliveryLocationToPass: DeliveryLocation
-    private lateinit var mixPanel: MixpanelAPI
+//    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -320,9 +320,9 @@ class RequestProductBookingFragment : BaseFragment(), View.OnTouchListener {
     }
 
     private fun initializeViews() {
-        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+//        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
         submitButton.setOnClickListener(this)
-        sendMixPanelEvent()
+//        sendMixPanelEvent()
     }
 
 
@@ -452,7 +452,7 @@ class RequestProductBookingFragment : BaseFragment(), View.OnTouchListener {
     }
 
 
-    private fun sendMixPanelEvent() {
+  /*  private fun sendMixPanelEvent() {
         val productObject = JSONObject()
         productObject.put(
             IntentFlags.MIXPANEL_PRODUCT_ID,
@@ -462,7 +462,7 @@ class RequestProductBookingFragment : BaseFragment(), View.OnTouchListener {
             IntentFlags.MIXPANEL_VISITED_REQUEST_BOOKING_SCREEN_FROM_HAMBURGER_MENU,
             productObject
         )
-    }
+    }*/
 
     private fun startSuccessFragment(orderNumber: String) {
         val intent = Intent(activity, SuccessProductBookingActivity::class.java)
@@ -618,7 +618,7 @@ class RequestProductBookingFragment : BaseFragment(), View.OnTouchListener {
                     submitButton.isClickable = false
                     requestBookingProgressBar.show()
                     attemptApiCall()
-                    sendMixPanelPlacedOrder()
+//                    sendMixPanelPlacedOrder()
 
                 } else {
                     textViewSpinnerError.show()
@@ -628,6 +628,7 @@ class RequestProductBookingFragment : BaseFragment(), View.OnTouchListener {
             }
         }
     }
+/*
 
     private fun sendMixPanelPlacedOrder() {
         val productObject = JSONObject()
@@ -653,11 +654,12 @@ class RequestProductBookingFragment : BaseFragment(), View.OnTouchListener {
         mixPanel.track(IntentFlags.MIXPANEL_SUCCESSFULLY_PLACED_ORDER, productObject)
     }
 
+*/
 
-    override fun onDestroy() {
+    /*override fun onDestroy() {
         super.onDestroy()
         mixPanel.flush()
 
-    }
+    }*/
 }
 

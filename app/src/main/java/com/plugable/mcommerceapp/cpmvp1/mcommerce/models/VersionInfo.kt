@@ -26,6 +26,6 @@ data class VersionInfo(
         val date: String,
         val id: Int,
         val updateType: String,
-        val versionNumber: Double
+        val versionNumber: String
     )
 }
