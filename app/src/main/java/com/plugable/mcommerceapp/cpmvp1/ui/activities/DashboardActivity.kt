@@ -211,13 +211,6 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-    override fun onResume() {
-        /*initializeViews()
-        attemptApiCall()
-        fetchFCMToken()*/
-        super.onResume()
-    }
-
     private fun initializeTheme() {
         val configDetail = SharedPreferences.getInstance(this).themeDataPreference
         ApplicationThemeUtils.APP_NAME = configDetail!!.appName
@@ -308,10 +301,12 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                 menu.findItem(R.id.nav_login_signUp).isVisible = false
                 menu.findItem(R.id.nav_log_out).isVisible = true
                 menu.findItem(R.id.nav_my_order).isVisible = true
+                menu.findItem(R.id.nav_appointmentList).isVisible = true
             } else {
                 menu.findItem(R.id.nav_login_signUp).isVisible = true
                 menu.findItem(R.id.nav_log_out).isVisible = false
                 menu.findItem(R.id.nav_my_order).isVisible = false
+                menu.findItem(R.id.nav_appointmentList).isVisible = false
             }
         }
     }
@@ -343,7 +338,7 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> {
                 if (currentFragment !is HomeFragment) {
                     fragment = HomeFragment()
-                    setToolBar(ApplicationThemeUtils.APP_NAME,false)
+                    setToolBar(ApplicationThemeUtils.APP_NAME, false)
                 }
             }
 
@@ -351,33 +346,39 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_wishList -> {
                 if (currentFragment !is WishListFragment) {
                     fragment = WishListFragment()
-                    setToolBar(getString(R.string.title_wish_list),true)
+                    setToolBar(getString(R.string.title_wish_list), true)
                 }
             }
 
             R.id.nav_my_order -> {
                 if (currentFragment !is MyOrderFragment) {
                     fragment = MyOrderFragment()
-                    setToolBar(getString(R.string.title_my_order),true)
+                    setToolBar(getString(R.string.title_my_order), true)
+                }
+            }
+            R.id.nav_appointmentList -> {
+                if (currentFragment !is AppointmentListFragment) {
+                    fragment = AppointmentListFragment()
+                    setToolBar(getString(R.string.title_appointments), true)
                 }
             }
 
             R.id.nav_about_us -> {
                 if (currentFragment !is AboutUsFragment) {
                     fragment = AboutUsFragment()
-                    setToolBar(getString(R.string.menu_about_us),true)
+                    setToolBar(getString(R.string.menu_about_us), true)
                 }
             }
             R.id.nav_faqs -> {
                 if (currentFragment !is FAQsFragment) {
                     fragment = FAQsFragment()
-                    setToolBar(getString(R.string.title_faqs),true)
+                    setToolBar(getString(R.string.title_faqs), true)
                 }
             }
             R.id.nav_contact_us -> {
                 if (currentFragment !is ContactUsFragment) {
                     fragment = ContactUsFragment()
-                    setToolBar(getString(R.string.title_contact_us),true)
+                    setToolBar(getString(R.string.title_contact_us), true)
                 }
             }
 
