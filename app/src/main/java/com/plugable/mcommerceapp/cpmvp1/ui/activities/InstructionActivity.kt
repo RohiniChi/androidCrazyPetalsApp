@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setToolBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
@@ -15,6 +16,7 @@ import org.jetbrains.anko.allCaps
 class InstructionActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
+            android.R.id.home -> onBackPressed()
             R.id.imgToolbarHomeLayout->{
                 onBackPressed()
             }
@@ -51,15 +53,18 @@ class InstructionActivity : AppCompatActivity(), View.OnClickListener {
         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID,getString(R.string.mixpanel_about_us))
         mixPanel.track(IntentFlags.MIXPANEL_VISITED_ABOUT_US_SCREEN, productObject)
     }*/
+
+
     fun setToolBar(name: String) {
         setSupportActionBar(toolBar)
         setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        /*supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        txtToolbarTitle.show()*/
-        txtToolbarTitle.allCaps = false
-        txtToolbarTitle.text ="Terms of use"
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.title = name
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        cp_Logo.hide()
+        txtToolbarTitle.text = "Terms of use"
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 }

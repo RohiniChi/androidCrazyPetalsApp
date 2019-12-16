@@ -1,18 +1,19 @@
 package com.plugable.mcommerceapp.cpmvp1.ui.activities
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.widget.ImageViewCompat
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.PlaceOrderResponse
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setToolBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
-import kotlinx.android.synthetic.main.activity_success_booking.*
-import kotlinx.android.synthetic.main.activity_success_booking.browseMoreButton
 import kotlinx.android.synthetic.main.activity_success_order_status.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import org.jetbrains.anko.startActivity
@@ -38,9 +39,11 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setPlaceOrderResponseData() {
-        textViewOrderStatusOrderNumberDescription.text = String.format("%s",placeOrderResponse!!.orderNumber)
-        textViewOrderStatusOrderAmountDescription.text = String.format("%s",placeOrderResponse!!.deliveryDay)
-        textViewOrderStatusOrderPaymentDescription.text = String.format("%s","Cash on delivery")
+        textViewOrderStatusOrderNumberDescription.text =
+            String.format("%s", placeOrderResponse!!.orderNumber)
+        textViewOrderStatusOrderAmountDescription.text =
+            String.format("%s", placeOrderResponse!!.deliveryDay)
+        textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Cash on delivery")
     }
 
     private fun readIntent() {
@@ -62,6 +65,11 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setThemeToComponent() {
         browseMoreButton.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        browseMoreButton.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        ImageViewCompat.setImageTintList(
+            imageView,
+            ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        )
     }
 
 
@@ -74,18 +82,22 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     fun setToolBar(name: String) {
         setSupportActionBar(toolBar)
         setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.title = name
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        cp_Logo.hide()
         txtToolbarTitle.text = getString(R.string.title_order_status)
-//        txtToolbarTitle.gravity = Gravity.CENTER_HORIZONTAL
-        imgToolbarHome.setImageResource(android.R.color.transparent)
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
+            android.R.id.home -> onBackPressed()
             R.id.imgToolbarHome -> onBackPressed()
             R.id.browseMoreButton -> {
-                browseMoreButton.isClickable=false
+                browseMoreButton.isClickable = false
 
                 startActivity<DashboardActivity>()
                 ActivityCompat.finishAffinity(this)
@@ -94,6 +106,9 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onBackPressed() {
-        // for restrict hardware back press
+        browseMoreButton.isClickable = false
+
+        startActivity<DashboardActivity>()
+        ActivityCompat.finishAffinity(this)
     }
 }

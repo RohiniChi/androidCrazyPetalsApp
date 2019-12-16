@@ -30,6 +30,7 @@ import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreference
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.activity_delivery_address.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
+import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.toast
@@ -39,6 +40,12 @@ import retrofit2.Response
 
 class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, EventListener,
     AddressListActionListener {
+
+    private var addressList = ArrayList<AddressListResponse.Data>()
+    private lateinit var deliveryAddressAdapter: DeliveryAddressAdapter
+    private var isAddressSelected = false
+    private var selectedAddress: AddressListResponse.Data? = null
+
     override fun onAddressSelected(address: AddressListResponse.Data) {
 
         if (!isNetworkAccessible()) {
@@ -125,12 +132,6 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
 
         }
     }
-
-
-    private var addressList = ArrayList<AddressListResponse.Data>()
-    private lateinit var deliveryAddressAdapter: DeliveryAddressAdapter
-    private var isAddressSelected = false
-    private var selectedAddress: AddressListResponse.Data? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -240,13 +241,7 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
 
         materialButtonDeliveryAddressReviewOrder.setOnClickListener(this)
 
-        tvViewStandardDeliveryChart.setOnClickListener {
-            startActivity<DeliveryScheduleActivity>()
-        }
-
-
     }
-
 
     private fun initializeTheme() {
         val configDetail = SharedPreferences.getInstance(this).themeDataPreference
@@ -263,6 +258,7 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
 
     private fun setThemeToComponents() {
 
+        viewSeparator.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         dividerDeliveryAddressFirst.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         dividerDeliveryAddressSecond.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         dividerDeliveryAddressThird.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
@@ -299,13 +295,17 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         textViewDeliveryAddressDeliverDate.setText(spannedText, TextView.BufferType.SPANNABLE)
     }
 
-    fun setToolBar(name: String) {
-        setSupportActionBar(toolBar)
-        setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        txtToolbarTitle.text = getString(R.string.message_delivery_address)
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
-        setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
+   fun setToolBar(name: String) {
+       setSupportActionBar(toolBar)
+       setStatusBarColor()
+       supportActionBar?.setDisplayShowTitleEnabled(true)
+       supportActionBar?.title = name
+       supportActionBar?.setDisplayHomeAsUpEnabled(true)
+       supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+       cp_Logo.hide()
+       txtToolbarTitle.text = getString(R.string.message_delivery_address)
+       imgToolbarHome.hide()
+       setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
     override fun onClick(view: View?) {

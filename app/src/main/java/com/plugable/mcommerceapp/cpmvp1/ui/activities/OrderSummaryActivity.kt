@@ -185,11 +185,16 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     fun setToolBar(name: String) {
         setSupportActionBar(toolBar)
         setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        txtToolbarTitle.text = "Order Summary"
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.title = name
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        cp_Logo.hide()
+        txtToolbarTitle.text ="Order Summary"
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
+
 
     private fun callCartApi() {
         val applicationUserId =
@@ -246,6 +251,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
     override fun onClick(view: View?) {
         when (view?.id) {
+            android.R.id.home -> onBackPressed()
             R.id.imgToolbarHomeLayout -> onBackPressed()
             R.id.materialButtonOrderSummaryPlaceOrder -> {
                 if (checkboxInstructions.isChecked) {

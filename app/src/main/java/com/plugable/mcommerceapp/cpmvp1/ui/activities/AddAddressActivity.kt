@@ -28,7 +28,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
+class AddAddressActivity : AppCompatActivity(),
     View.OnClickListener {
     companion object {
         const val ADD_REQUEST = 1
@@ -47,41 +47,10 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         setContentView(R.layout.activity_add_address)
         initializeTheme()
         initializeViews()
-        fetchDeliveryChart()
+
         readIntent()
     }
 
-    private fun fetchDeliveryChart() {
-        App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
-        val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.getDeliveryChart()
-
-        callback.enqueue(object : Callback<DeliveryChartResponse> {
-            override fun onFailure(call: Call<DeliveryChartResponse>, t: Throwable) {
-                toast(getString(R.string.message_something_went_wrong))
-            }
-
-            override fun onResponse(
-                call: Call<DeliveryChartResponse>,
-                response: Response<DeliveryChartResponse>
-            ) {
-                if (response.body()?.statusCode.equals("10")) {
-                    data.addAll(response.body()!!.data)
-                    pinCode = arrayOfNulls(data.size + 1)
-                    pinCode[0] = "Select a pin code"
-                    data.forEachIndexed { index, it ->
-                        pinCode[index + 1] = String.format(
-                            "%s(%s)", it!!.area, it.pinCode
-                        )
-                    }
-                    setUpSpinner()
-                    readIntent()
-                } else {
-                    toast(getString(R.string.message_something_went_wrong))
-                }
-            }
-        })
-    }
 
     private fun readIntent() {
         addRequest = intent.getIntExtra(REQUEST_CODE, ADD_REQUEST) == ADD_REQUEST
@@ -108,19 +77,14 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         editTextCity.show()
         editTextArea.show()
         textViewArea.show()
-        dividerSpinner.show()
+
         editTextLocality.setText(addressRequest!!.Landmark)
         editTextCity.setText("Pune")
         editTextArea.isEnabled = false
         editTextCity.isEnabled = false
         editTextPhoneNo.setText(addressRequest!!.MobileNumber)
         editTextFlatNo.setText(addressRequest!!.Address)
-        pinCode.forEachIndexed { index, s ->
-            if (s!!.contains(addressRequest!!.PinCode) && s.contains(addressRequest!!.Locality)) {
-                spinnerPinCode.setSelection(index)
-            }
-        }
-
+        etPinCode.setText(addressRequest!!.PinCode)
 
     }
 
@@ -136,9 +100,6 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-
-        spinnerPinCode.onItemSelectedListener = this
-        spinnerPinCode.adapter = arrayAdapter
     }
 
 
@@ -163,11 +124,16 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
     fun setToolBar(name: String) {
         setSupportActionBar(toolBar)
         setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.title = name
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        cp_Logo.hide()
         txtToolbarTitle.text = "New Address"
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
+
 
     override fun onClick(view: View?) {
         when (view?.id) {
@@ -180,9 +146,9 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
                 localityValidation()
                 flatNoValidation()
                 phoneNoValidation()
-                spinnerValidation()
+                pinCodeValidation()
 
-                if (phoneNoValidation() && flatNoValidation() && localityValidation() && spinnerValidation()) {
+                if (phoneNoValidation() && flatNoValidation() && localityValidation() && pinCodeValidation()) {
                     buttonAddAddress.isEnabled = false
                     if (addRequest) callAddOrEditAddressApi(makeAddressObject()) else editAddress(
                         makeAddressObject()
@@ -229,11 +195,11 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
                 ID = if (!addRequest) addressRequest!!.ID else null,
                 Address = editTextFlatNo.text.toString().capitalize(),
                 Landmark = editTextLocality.text.toString().capitalize(),
-                Locality = data[spinnerPinCode.selectedItemPosition - 1]!!.area,
+                Locality = "",
                 ApplicationUserId = SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)!!,
                 MobileNumber = editTextPhoneNo.text.toString(),
-                PinCode = data[spinnerPinCode.selectedItemPosition - 1]!!.pinCode,
-                PinCodeId = data[spinnerPinCode.selectedItemPosition - 1]!!.id
+                PinCode = editTextPhoneNo.text.toString(),
+                PinCodeId = 0
             )
         return addressRequest!!
     }
@@ -267,36 +233,7 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         })
     }
 
-    override fun onNothingSelected(p0: AdapterView<*>?) {
 
-    }
-
-    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-//        Toast.makeText(applicationContext,pinCode[p2],Toast.LENGTH_LONG).show()
-
-
-        if (p2 != 0) {
-            if (textViewSpinnerError.visibility == View.VISIBLE) {
-                textViewSpinnerError.invisible()
-            }
-            textViewCity.show()
-            editTextCity.show()
-            editTextArea.show()
-            textViewArea.show()
-            dividerSpinner.show()
-            editTextArea.setText(data[p2 - 1]!!.area)
-            editTextCity.setText("Pune")
-            editTextArea.isEnabled = false
-            editTextCity.isEnabled = false
-
-        } else {
-            textViewCity.hide()
-            editTextCity.hide()
-            editTextArea.hide()
-            textViewArea.hide()
-            dividerSpinner.hide()
-        }
-    }
 
     private fun textChangeListeners() {
 
@@ -373,6 +310,12 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
                 return false
             }
+            editTextFlatNo.text.toString().length > 6 -> {
+                textViewFlatNoError.show()
+                textViewFlatNoError.text = "Please enter your address details "
+
+                return false
+            }
             else -> textViewFlatNoError.invisible()
         }
         return true
@@ -392,14 +335,18 @@ class AddAddressActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         return true
     }
 
-    private fun spinnerValidation(): Boolean {
-        return if (spinnerPinCode.selectedItemPosition > 0) {
-            textViewSpinnerError.invisible()
-            true
-        } else {
-            textViewSpinnerError.text = "Please select a pin code"
-            textViewSpinnerError.show()
-            false
+    private fun pinCodeValidation(): Boolean {
+
+        when {
+            editTextLocality.text.toString().isEmpty() -> {
+                textViewSpinnerError.show()
+                textViewSpinnerError.text = "Please select a pin code"
+                return false
+            }
+            else -> textViewSpinnerError.invisible()
         }
+        return true
     }
+
+
 }

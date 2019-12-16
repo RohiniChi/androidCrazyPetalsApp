@@ -345,7 +345,7 @@
     <string name="delivery_day">Delivery Day</string>
     <string name="text_version">Version</string>
     <string name="please_login_to_continue">Please login to continue</string>
-    <string name="delivery_timing_statment">To check early delivery timing, kindly contact to KMM support team.</string>
+    <string name="delivery_timing_statment">To check early delivery timing, kindly contact to CrazyPetals support team.</string>
     <string name="text_cod">Cash on delivery</string>
     <string name="payment_method">Payment Method</string>
     <string name="alert_message_place_order"><![CDATA[Oops! looks like few items went out of stock.Please remove them from the cart list and then place the order.]]></string>

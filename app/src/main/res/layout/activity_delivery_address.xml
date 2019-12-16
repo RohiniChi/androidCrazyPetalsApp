@@ -80,26 +80,7 @@
                 app:layout_constraintTop_toBottomOf="@id/textViewDeliveryAddressDeliverDate" />
 
 
-            <TextView
-                android:id="@+id/tvViewStandardDeliveryChart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_8sdp"
-                android:drawableEnd="@drawable/ic_next_arrow_outlined"
-                android:drawablePadding="@dimen/_8sdp"
-                android:gravity="center_vertical"
-                android:padding="@dimen/_8sdp"
-                android:text="@string/label_view_standard_delivery_chart"
-                android:textColor="@color/colorBlack"
-                app:layout_constraintTop_toBottomOf="@id/viewSeparator" />
 
-
-            <View
-                android:id="@+id/viewSeparatorBottom"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="#ff9500"
-                app:layout_constraintTop_toBottomOf="@id/tvViewStandardDeliveryChart" />
 
 
             <View
@@ -110,7 +91,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewSeparatorBottom" />
+                app:layout_constraintTop_toBottomOf="@id/viewSeparator" />
 
 
             <View

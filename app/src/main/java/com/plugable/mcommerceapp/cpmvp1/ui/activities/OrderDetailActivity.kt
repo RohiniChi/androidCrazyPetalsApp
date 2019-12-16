@@ -1,5 +1,6 @@
 package com.plugable.mcommerceapp.cpmvp1.ui.activities
 
+import ServiceGenerator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -25,7 +26,6 @@ import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
-import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import retrofit2.Call
@@ -34,15 +34,15 @@ import retrofit2.Response
 
 class OrderDetailActivity : BaseActivity() {
 
-    private lateinit var orderId:String
+    private lateinit var orderId: String
     lateinit var orderDetail: OrderDetailResponse.Data.OrderDetails
-    var productArrayList=ArrayList<OrderDetailResponse.Data.ProductListItem?>()
+    var productArrayList = ArrayList<OrderDetailResponse.Data.ProductListItem?>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_detail)
 
 
-        orderId=intent.getStringExtra("order_id")
+        orderId = intent.getStringExtra("order_id")
 
         initializeViews()
         initializeTheme()
@@ -77,23 +77,25 @@ class OrderDetailActivity : BaseActivity() {
     override fun setToolBar(name: String) {
         setSupportActionBar(toolBar)
         setStatusBarColor()
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        /*supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        txtToolbarTitle.show()*/
-        txtToolbarTitle.allCaps = false
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.title = name
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        cp_Logo.hide()
         txtToolbarTitle.text = getString(R.string.title_order_detail)
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
     override fun onBackPressed() {
-        if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.ORDER_DETAIL){
+        if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.ORDER_DETAIL) {
             startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_my_order)
             finish()
         } else {
             finish()
         }
     }
+
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.imgToolbarHomeLayout -> {
@@ -172,9 +174,9 @@ class OrderDetailActivity : BaseActivity() {
                     showRecyclerViewData()
 
                     if (response?.body()?.statusCode.equals("10")) {
-                        orderDetail= response?.body()?.data!!.orderDetails!!
+                        orderDetail = response?.body()?.data!!.orderDetails!!
                         productArrayList.clear()
-                        productArrayList.addAll(response?.body()?.data!!.productList)
+                        productArrayList.addAll(response.body()?.data!!.productList)
 
                         viewPager.adapter = ViewPagerAdapter(supportFragmentManager)
                         tabLayout.setupWithViewPager(viewPager)
@@ -196,17 +198,17 @@ class OrderDetailActivity : BaseActivity() {
         override fun getItem(position: Int): Fragment {
 
             var fragment: Fragment? = null
-            var bundle= Bundle()
+            var bundle = Bundle()
             if (position == 0) {
                 fragment = OrderDetailFragment()
-                bundle.putParcelable("details",orderDetail)
-            } else  if (position == 1){
+                bundle.putParcelable("details", orderDetail)
+            } else if (position == 1) {
                 fragment = OrderProductListFragment()
-                bundle.putParcelable("details",orderDetail)
-                bundle.putParcelableArrayList("products",productArrayList)
+                bundle.putParcelable("details", orderDetail)
+                bundle.putParcelableArrayList("products", productArrayList)
             }
 
-            fragment!!.arguments=bundle
+            fragment!!.arguments = bundle
             return fragment
         }
 
