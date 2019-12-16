@@ -349,5 +349,20 @@
     <string name="text_cod">Cash on delivery</string>
     <string name="payment_method">Payment Method</string>
     <string name="alert_message_place_order"><![CDATA[Oops! looks like few items went out of stock.Please remove them from the cart list and then place the order.]]></string>
+    <string name="appointment_no">1234567890</string>
+    <string name="appointment_date">12/12/2019</string>
+    <string name="appointment_time">5pm to 6pm</string>
+    <string name="appointment_status">Status: Confirmed</string>
+    <string name="title_add_menu">add_appointment</string>
+    <string name="menu_appointments">Appointments</string>
+    <string name="title_appointments">Appointments</string>
+    <string name="hint_appoinment_agenda">Set agenda for appointment</string>
+    <string name="contact_no_appointment">Contact No.</string>
+    <string name="button_book">Book</string>
+    <string name="appointment_type">Appointment Type :</string>
+    <string name="title_date">Date :</string>
+    <string name="title_time">Time :</string>
+    <string name="text_appointment_detail">Need customization in jewellery.</string>
+    <string name="text_appointment_type">jewellery Customization</string>
 
 </resources>

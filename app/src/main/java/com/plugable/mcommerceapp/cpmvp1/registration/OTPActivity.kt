@@ -54,7 +54,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         textChangeListener()
 
         progressBarOTPActivity.hide()
-        buttonVerify.isClickable=true
+        buttonVerify.isClickable = true
 
         val appSignatureHashHelper = AppSignatureHashHelper(this)
 
@@ -75,7 +75,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                 textViewResendCode.hide()
                 textViewResendOTP.show()
                 textViewResendOTP.text = getString(R.string.resend_otp)
-
+                progressBarOTPActivity.hide()
             }
         }
         timer.start()
@@ -98,7 +98,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         textViewResendOTP.setOnClickListener(this)
         imageButtonBackArrow.setOnClickListener(this)
         buttonVerify.setOnClickListener(this)
-        buttonVerify.isClickable=true
+        buttonVerify.isClickable = true
 
         otp_view.setOtpCompletionListener(this)
     }
@@ -118,12 +118,13 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
     private fun setThemeToComponents() {
         setStatusBarColor()
         textViewResendCode.setTextColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-       textViewResendOTP.setTextColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-        otp_view.cursorColor=Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR)
+        textViewResendOTP.setTextColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        otp_view.cursorColor = Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR)
         otp_view.setLineColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
 
         buttonVerify.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
 
+        progressBarOTPActivity.hide()
         progressBarOTPActivity.indeterminateDrawable.setColorFilter(
             Color.BLACK,
             PorterDuff.Mode.MULTIPLY
@@ -165,6 +166,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
 
         timer.cancel()
         textViewOTPVerificationError.hide()
+        buttonVerify.isClickable = true
 
         val otp = sms.substring(34, 38)
         otp_view.setText(otp)
@@ -182,11 +184,14 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         textViewResendCode.hide()
         textViewResendOTP.show()
         textViewResendOTP.text = getString(R.string.resend_otp)
-
+        buttonVerify.isClickable = true
+        progressBarOTPActivity.hide()
     }
 
     override fun onOTPReceivedError(error: String) {
 //        toast("Error")
+        buttonVerify.isClickable = true
+        progressBarOTPActivity.hide()
     }
 
     override fun onOtpCompleted(otp: String?) {
@@ -195,9 +200,18 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
+            buttonVerify.isClickable = false
+            progressBarOTPActivity.show()
             otpVerificationApi()
         } else {
-            toast(getString(R.string.check_internet_connection))
+            timer.cancel()
+            buttonVerify.isClickable = true
+            progressBarOTPActivity.hide()
+            toast(getString(R.string.oops_no_internet_connection))
+
+            textViewResendCode.hide()
+            textViewResendOTP.show()
+            textViewResendOTP.text = getString(R.string.resend_otp)
         }
     }
 
@@ -216,7 +230,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         call.enqueue(object : Callback<OTPVerification> {
             override fun onFailure(call: Call<OTPVerification>, t: Throwable) {
                 progressBarOTPActivity.hide()
-                buttonVerify.isClickable=true
+                buttonVerify.isClickable = true
 
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -227,7 +241,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
             ) {
                 if (response.isSuccessful) {
                     if (response.body()?.statusCode.equals("10")) {
-                        buttonVerify.isClickable=true
+                        buttonVerify.isClickable = true
 
                         progressBarOTPActivity.hide()
                         if (intent.hasExtra(IntentFlags.REDIRECT_FROM)) {
@@ -262,13 +276,12 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                             }
                         }
                     } else {
-                        buttonVerify.isClickable=true
+                        buttonVerify.isClickable = true
 
                         progressBarOTPActivity.hide()
                         textViewOTPVerificationError.show()
                         textViewOTPVerificationError.text =
                             getString(R.string.otp_validation_message)
-
                     }
                 }
             }
@@ -280,7 +293,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
 
     override fun onResume() {
         progressBarOTPActivity.hide()
-        buttonVerify.isClickable=true
+        buttonVerify.isClickable = true
 
         super.onResume()
     }
@@ -300,16 +313,15 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                     progressBarOTPActivity.show()
                     mobileVerificationApi()
                 } else {
+                    buttonVerify.isClickable = true
                     progressBarOTPActivity.hide()
                     toast(getString(R.string.oops_no_internet_connection))
                 }
             }
-            R.id.buttonVerify->{
+            R.id.buttonVerify -> {
                 val view = View(this)
                 hideKeyboard(view)
                 attemptApiCall()
-                progressBarOTPActivity.show()
-                buttonVerify.isClickable=false
             }
         }
     }
@@ -331,7 +343,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                         )
                     call.enqueue(object : Callback<SendOTPResponse> {
                         override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {
-                            buttonVerify.isClickable=true
+                            buttonVerify.isClickable = true
 
                             progressBarOTPActivity.hide()
                             toast(getString(R.string.message_something_went_wrong))
@@ -343,7 +355,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                         ) {
                             if (response.isSuccessful) {
                                 if (response.body()!!.statusCode == "10") {
-                                    buttonVerify.isClickable=true
+                                    buttonVerify.isClickable = true
 
                                     progressBarOTPActivity.hide()
                                     toast(getString(R.string.message_otp_code_sent))
@@ -353,7 +365,8 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                                         override fun onTick(millisUntilFinished: Long) {
                                             textViewResendOTP.hide()
                                             textViewResendCode.show()
-                                            textViewResendCode.text = "Auto-detecting code: " + millisUntilFinished / 1000
+                                            textViewResendCode.text =
+                                                "Auto-detecting code: " + millisUntilFinished / 1000
                                         }
 
                                         override fun onFinish() {
@@ -367,12 +380,13 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                                     timer.start()
                                 } else {
                                     progressBarOTPActivity.hide()
+                                    buttonVerify.isClickable = true
 
                                     toast(getString(R.string.message_something_went_wrong))
                                 }
                             } else {
                                 progressBarOTPActivity.hide()
-                                buttonVerify.isClickable=true
+                                buttonVerify.isClickable = true
 
                                 toast(getString(R.string.message_something_went_wrong))
                             }
@@ -389,7 +403,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                     call.enqueue(object : Callback<SendOTPResponse> {
                         override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {
                             progressBarOTPActivity.hide()
-                            buttonVerify.isClickable=true
+                            buttonVerify.isClickable = true
 
                             toast(getString(R.string.message_something_went_wrong))
                         }
@@ -401,7 +415,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                             if (response.isSuccessful) {
                                 if (response.body()!!.statusCode == "10") {
                                     progressBarOTPActivity.hide()
-                                    buttonVerify.isClickable=true
+                                    buttonVerify.isClickable = true
 
                                     toast(getString(R.string.message_otp_code_sent))
                                     startSMSListener()
@@ -410,7 +424,8 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                                         override fun onTick(millisUntilFinished: Long) {
                                             textViewResendOTP.hide()
                                             textViewResendCode.show()
-                                            textViewResendCode.text = "Auto-detecting code: " + millisUntilFinished / 1000
+                                            textViewResendCode.text =
+                                                "Auto-detecting code: " + millisUntilFinished / 1000
                                         }
 
                                         override fun onFinish() {
@@ -423,7 +438,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                                     }
                                     timer.start()
                                 } else {
-                                    buttonVerify.isClickable=true
+                                    buttonVerify.isClickable = true
                                     progressBarOTPActivity.hide()
                                     textViewResendCode.hide()
                                     textViewResendOTP.show()
@@ -433,7 +448,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                                 }
                             } else {
                                 progressBarOTPActivity.hide()
-                                buttonVerify.isClickable=true
+                                buttonVerify.isClickable = true
                                 textViewResendCode.hide()
                                 textViewResendOTP.show()
                                 textViewResendOTP.text = getString(R.string.resend_otp)
