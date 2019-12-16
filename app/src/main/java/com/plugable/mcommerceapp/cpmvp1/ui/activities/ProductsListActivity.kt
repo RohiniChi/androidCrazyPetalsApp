@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
 import com.plugable.mcommerceapp.cpmvp1.callbacks.OnButtonClickListener
@@ -51,7 +50,6 @@ import kotlinx.android.synthetic.main.recycler_filter_item.*
 import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,7 +67,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private lateinit var callback: Call<Products>
     lateinit var productListAdapter: ProductListAdapter
     var productList = ArrayList<Products.Data.ProductDetails>()
-    internal var filterList= ArrayList<GetFilters.Data.Filter>()
+    internal var filterList = ArrayList<GetFilters.Data.Filter>()
     lateinit var filterListAdapter: FilterAdapter
     var products: Products.Data.ProductDetails? = null
     private lateinit var eventClickListener: EventListener
@@ -79,7 +77,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private var takeCount = 10
     private var categoryId = 0
     var categoryList = ArrayList<Categories.Data.Category>()
-//    private lateinit var mixPanel: MixpanelAPI
+    //    private lateinit var mixPanel: MixpanelAPI
     var checkedId = HashSet<Int>()
 
 
@@ -310,15 +308,18 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        skipCount = 0
-        recyclerViewProducts.scrollToPosition(0)
-        productList.clear()
-        productListAdapter.notifyDataSetChanged()
-        startShimmerView()
+
         when (item.itemId) {
             R.id.action_crazypetals -> {
 
                 if (bottom_navigation.selectedItemId != R.id.action_crazypetals) {
+                    hideFilterLayout()
+                    skipCount = 0
+                    recyclerViewProducts.scrollToPosition(0)
+                    productList.clear()
+                    productListAdapter.notifyDataSetChanged()
+                    startShimmerView()
+
                     checkedId.clear()
                     attemptApiCall()
                     attemptGetFilterApi()
@@ -330,6 +331,13 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
             R.id.action_exclusive -> {
 
                 if (bottom_navigation.selectedItemId != R.id.action_exclusive) {
+                    skipCount = 0
+                    recyclerViewProducts.scrollToPosition(0)
+                    productList.clear()
+                    productListAdapter.notifyDataSetChanged()
+                    startShimmerView()
+                    hideFilterLayout()
+
                     checkedId.clear()
                     attemptExclusiveProductsApi()
                     attemptGetFilterApi()
@@ -340,6 +348,14 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
             }
         }
         return true
+    }
+
+    fun hideFilterLayout() {
+        textViewFilter.show()
+        show_filter.show()
+        recycler_filter.hide()
+        button_apply_filter.hide()
+        button_cancel.hide()
     }
 
     private fun attemptCartApiCall() {
@@ -566,24 +582,24 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
-   /* private fun sendMixPanelEvent() {
-        val productObject = JSONObject()
-        productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
-        mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
-    }
-*/
+    /* private fun sendMixPanelEvent() {
+         val productObject = JSONObject()
+         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
+         mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
+     }
+ */
     override fun setToolBar(name: String) {
-       val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
-       setSupportActionBar(toolBar)
-       setStatusBarColor()
-       supportActionBar?.setDisplayShowTitleEnabled(true)
-       cp_Logo.hide()
-       supportActionBar?.setDisplayHomeAsUpEnabled(true)
-       txtToolbarTitle.show()
-       txtToolbarTitle.allCaps = true
-       txtToolbarTitle.text = categoryName?.plus(" Collection")
-       imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
-       setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
+        val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
+        setSupportActionBar(toolBar)
+        setStatusBarColor()
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        cp_Logo.hide()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        txtToolbarTitle.show()
+        txtToolbarTitle.allCaps = true
+        txtToolbarTitle.text = categoryName?.plus(" Collection")
+        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
     override fun onClick(view: View?) {
