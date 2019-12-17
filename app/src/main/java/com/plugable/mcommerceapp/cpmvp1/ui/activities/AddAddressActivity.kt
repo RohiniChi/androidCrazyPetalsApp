@@ -41,6 +41,7 @@ class AddAddressActivity : AppCompatActivity(),
     var addRequest = true
     var data: ArrayList<DeliveryChartResponse.Data?> = ArrayList()
     private var phPattern: String = "[6-9][0-9]{9}"
+    private var pincodePattern: String = "[1-9][0-9]{5}"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_address)
@@ -272,6 +273,26 @@ class AddAddressActivity : AppCompatActivity(),
 
         }
 
+
+        editTextArea.setOnFocusChangeListener { view, isFocused ->
+
+            if (!isFocused) {
+                this.hideKeyboard(view)
+                areaValidation()
+            }
+
+
+        }
+        editTextCity.setOnFocusChangeListener { view, isFocused ->
+
+            if (!isFocused) {
+                this.hideKeyboard(view)
+                cityValidation()
+            }
+
+
+        }
+
         editTextPhoneNo.onTextChanged {
             textViewPhoneNoError.invisible()
         }
@@ -280,6 +301,12 @@ class AddAddressActivity : AppCompatActivity(),
         }
         editTextLocality.onTextChanged {
             textViewLocalityError.invisible()
+        }
+        editTextArea.onTextChanged {
+            textViewAreaError.invisible()
+        }
+        editTextCity.onTextChanged {
+            textViewCityError.invisible()
         }
 
     }
@@ -371,12 +398,23 @@ class AddAddressActivity : AppCompatActivity(),
 
     private fun pinCodeValidation(): Boolean {
 
+
+
         when {
-            editTextLocality.text.toString().isEmpty() -> {
+            etPinCode.text.toString().isEmpty() -> {
                 textViewSpinnerError.show()
                 textViewSpinnerError.text = "Please enter a pin code."
                 return false
             }
+            !etPinCode.text.toString().matches(pincodePattern.toRegex()) -> {
+
+                textViewSpinnerError.show()
+                textViewSpinnerError.text = "Please enter a vaild pin code."
+
+
+                return false
+            }
+
             else -> textViewSpinnerError.invisible()
         }
         return true

@@ -34,7 +34,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.AddAddressActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.DeliveryAddressActivity"
