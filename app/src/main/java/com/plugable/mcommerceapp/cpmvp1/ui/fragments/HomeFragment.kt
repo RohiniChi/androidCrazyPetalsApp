@@ -457,23 +457,23 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
         categoryList = arrayListOf()
 
-//        bannerImages = intArrayOf(R.drawable.banner_1, R.drawable.banner_2)
+
         dotsIndicatorDashboard.setDotIndicatorColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         dotsIndicatorDashboard.setStrokeDotsIndicatorColor(Color.parseColor(ApplicationThemeUtils.TOOL_BAR_COLOR))
-
-        dotsIndicatorDashboard.setViewPager(viewPagerDashboard)
         viewPagerDashboard.adapter = HelpSliderAdapter(context!!, bannerImages, this)
-
+        dotsIndicatorDashboard.setViewPager(viewPagerDashboard)
         eventClickListener = this
 
         categoryListAdapter =
             LimitedCategoryListAdapter(categoryList, context!!, eventClickListener)
-        val gridLayoutManager = GridLayoutManager(context, 3)
+        val gridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
 
         recyclerViewLimitedCategory.layoutManager =
             gridLayoutManager // set LayoutManager to RecyclerView
         recyclerViewLimitedCategory.adapter = categoryListAdapter
+
         setThemeToComponents()
+
     }
 
     private fun setThemeToComponents() {
@@ -493,21 +493,11 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         ) {
             mHandler?.postDelayed(mRunnable, 3000)
         }
+
         dotsIndicatorDashboard.setDotIndicatorColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         dotsIndicatorDashboard.setStrokeDotsIndicatorColor(Color.parseColor(ApplicationThemeUtils.TOOL_BAR_COLOR))
 
         dotsIndicatorDashboard.setViewPager(viewPagerDashboard)
-        eventClickListener = this
-
-        categoryListAdapter =
-            LimitedCategoryListAdapter(categoryList, context!!, eventClickListener)
-        val gridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
-
-        recyclerViewLimitedCategory.layoutManager =
-            gridLayoutManager // set LayoutManager to RecyclerView
-        recyclerViewLimitedCategory.adapter = categoryListAdapter
-
-        setThemeToComponents()
     }
 
     override fun onResume() {

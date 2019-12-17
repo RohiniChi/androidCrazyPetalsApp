@@ -48,6 +48,11 @@ import retrofit2.Response
 class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     CartItemActionListener {
     override fun onIncremented(getCartResponseData: GetCartResponse.Data) {
+        if (!isNetworkAccessible()) {
+            toast(R.string.oops_no_internet_connection)
+            return
+        }
+
         getCartResponseData.quantity += 1
         with(recyclerViewCart.adapter!!) {
             val index = productList.indexOf(getCartResponseData)
@@ -63,11 +68,14 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     }
 
     override fun onDecremented(getCartResponseData: GetCartResponse.Data) {
-        getCartResponseData.quantity -= 1
-      /*  if (getCartResponseData.quantity<1){
-            toast("Please remove your item using delete")
+
+        if (!isNetworkAccessible()) {
+
+            toast(R.string.oops_no_internet_connection)
+            return
         }
-        else{*/
+        getCartResponseData.quantity -= 1
+
             with(recyclerViewCart.adapter!!) {
                 val index = productList.indexOf(getCartResponseData)
                 if (index > -1) {
@@ -77,12 +85,17 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                     )
                     notifyItemChanged(index)
                 }
-//            }
         }
 
         updateData()
     }
     override fun onItemRemoved(getCartResponseData: GetCartResponse.Data) {
+        if (!isNetworkAccessible()) {
+
+            toast(R.string.oops_no_internet_connection)
+            return
+        }
+
         with(recyclerViewCart.adapter!!) {
             removeItemFromCart(getCartResponseData.productId)
 

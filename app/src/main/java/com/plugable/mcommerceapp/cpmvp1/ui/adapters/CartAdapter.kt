@@ -90,16 +90,10 @@ class CartAdapter(
                 .error(R.drawable.ic_placeholder_category)
                 .into(imageViewProduct)
 
-//            viewHolder.viewColor.setBackgroundResource(R.drawable.circular_shape_view)
-//            val drawableColor = viewHolder.viewColor.background.current as GradientDrawable
-//            drawableColor.setColor(Color.parseColor(productItems.colorCode))
-
             val drawableSize = GradientDrawable()
             drawableSize.setStroke(3, Color.BLACK)
             drawableSize.shape = GradientDrawable.OVAL
             drawableSize.setColor(Color.WHITE)
-//            viewHolder.sizeLayout.backgroundDrawable = drawableSize
-//            viewHolder.viewSize.text = productItems.size
 
             val increment =
                 numberPickerCartItemCount.findViewById<AppCompatButton>(R.id.increment)
@@ -123,6 +117,7 @@ class CartAdapter(
                     cartItemActionListener.onDecremented(productItems)
                 }
             }
+
 
 //            numberPickerCartItemCount.setOnClickListener {
 
