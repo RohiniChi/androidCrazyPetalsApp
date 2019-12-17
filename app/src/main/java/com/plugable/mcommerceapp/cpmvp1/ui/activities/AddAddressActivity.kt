@@ -248,7 +248,7 @@ class AddAddressActivity : AppCompatActivity(),
         editTextPhoneNo.setOnFocusChangeListener { view, isFocused ->
 
             if (!isFocused) {
-                this.hideKeyboard(view)
+                //this.hideKeyboard(view)
                 phoneNoValidation()
             }
 
@@ -257,7 +257,7 @@ class AddAddressActivity : AppCompatActivity(),
         editTextFlatNo.setOnFocusChangeListener { view, isFocused ->
 
             if (!isFocused) {
-                this.hideKeyboard(view)
+                //this.hideKeyboard(view)
                 flatNoValidation()
             }
 
@@ -266,7 +266,7 @@ class AddAddressActivity : AppCompatActivity(),
         editTextLocality.setOnFocusChangeListener { view, isFocused ->
 
             if (!isFocused) {
-                this.hideKeyboard(view)
+                //this.hideKeyboard(view)
                 localityValidation()
             }
 
@@ -277,7 +277,7 @@ class AddAddressActivity : AppCompatActivity(),
         editTextArea.setOnFocusChangeListener { view, isFocused ->
 
             if (!isFocused) {
-                this.hideKeyboard(view)
+                //this.hideKeyboard(view)
                 areaValidation()
             }
 
@@ -286,7 +286,7 @@ class AddAddressActivity : AppCompatActivity(),
         editTextCity.setOnFocusChangeListener { view, isFocused ->
 
             if (!isFocused) {
-                this.hideKeyboard(view)
+                //this.hideKeyboard(view)
                 cityValidation()
             }
 

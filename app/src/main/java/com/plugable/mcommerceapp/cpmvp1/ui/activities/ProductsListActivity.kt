@@ -165,15 +165,9 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
     override fun onResume() {
-//        this.invalidateOptionsMenu()
-
-        initializeViews()
-
         attemptCartApiCall()
 
-
         super.onResume()
-
     }
 
     private fun initializeTheme() {
@@ -401,7 +395,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                                     response.body()!!
                                 )
 
-                            productListAdapter.notifyDataSetChanged()
 
                         } else {
                             SharedPreferences.getInstance(this@ProductsListActivity).setStringValue(
@@ -420,13 +413,11 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                                 .setAddToCartData(
                                     response.body()!!
                                 )
-                            productListAdapter.notifyDataSetChanged()
 
 
                         }
                     } else {
 //                        toast(getString(R.string.message_something_went_wrong))
-                        productListAdapter.notifyDataSetChanged()
 
                     }
 
