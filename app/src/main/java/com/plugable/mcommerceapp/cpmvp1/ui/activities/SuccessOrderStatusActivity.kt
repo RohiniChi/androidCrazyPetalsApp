@@ -3,6 +3,7 @@ package com.plugable.mcommerceapp.cpmvp1.ui.activities
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -103,6 +104,15 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
                 ActivityCompat.finishAffinity(this)
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {

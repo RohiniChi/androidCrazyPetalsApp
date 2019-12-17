@@ -42,10 +42,11 @@ class DeliveryAddressAdapter(
                 textViewDeliveryAddressPersonName.text = address.name.capitalizeAll()
                 textViewDeliveryAddressCompleteAddress.text =
                     String.format(
-                        "%s, %s, %s - %s",
+                        "%s, %s, %s, %s- %s",
                         address.address,
                         address.landmark,
                         address.locality,
+                        address.city,
                         address.pinCode
                     ).capitalizeAll()
                 textViewDeliveryAddressContactNumber.text =

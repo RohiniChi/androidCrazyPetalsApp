@@ -58,6 +58,7 @@ import kotlinx.android.synthetic.main.activity_product_detail.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_product_details.*
 import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.onPageChangeListener
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -485,9 +486,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         viewPagerProductDetail.adapter =
             ViewPagerAdapterProductDetail(supportFragmentManager)
         tabLayoutProductDetail.setupWithViewPager(viewPagerProductDetail)
-        viewPagerProductDetail.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-        viewPagerProductDetail!!.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        //viewPagerProductDetail.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
 
         viewPagerProductDetail!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -497,7 +496,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
             override fun onPageSelected(position: Int) {
 
-               viewPagerProductDetail.reMeasureCurrentPage(position)
+               viewPagerProductDetail.reMeasureCurrentPage(viewPagerProductDetail.currentItem)
             }
         })
 
@@ -1085,17 +1084,19 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             super.setPrimaryItem(container, position, `object`)
 
             if (container !is WrappingViewPager) {
-                throw UnsupportedOperationException("ViewPager is not a WrappingViewPager")
+                return
             }
-
+            if (position != mCurrentPosition) {
             val fragment = `object` as Fragment
             if (fragment != null && fragment.view != null) {
-                if (position != mCurrentPosition) {
+
                     mCurrentPosition = position
-                }
-                container.onPageChanged(fragment.view)
-            }
+                container.reMeasureCurrentPage(position)
+            }}
         }*/
+
+
+
 
     }
 

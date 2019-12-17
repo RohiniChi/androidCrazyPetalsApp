@@ -26,9 +26,9 @@ import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.cpmvp1.utils.util.capitalizeAll
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
-import kotlinx.android.synthetic.main.layout_sub_total_amount.*
 import kotlinx.android.synthetic.main.activity_order_summary.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
+import kotlinx.android.synthetic.main.layout_sub_total_amount.*
 import org.jetbrains.anko.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -109,12 +109,13 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     }
 
     private fun showAddress() {
-        textViewDeliveryAddressPersonName.text = String.format("%s", address?.name)
+        textViewDeliveryAddressPersonName.text = String.format("%s", address?.name).capitalizeAll()
         textViewDeliveryAddressCompleteAddress.text = String.format(
-            "%s,%s, %s - %s",
+            "%s, %s, %s, %s - %s",
             address?.address,
             address?.landmark,
             address?.locality,
+            address?.city,
             address?.pinCode
         ).capitalizeAll()
         textViewDeliveryAddressContactNumber.text =
@@ -144,9 +145,9 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                         "₹".plus(data!!.subTotal.toString())
                     textViewSubTotalDiscountDescription.text =
                         "₹".plus(data!!.productDiscounts.toString())
-                    if (data!!.deliveryCharges.toString().equals("0")){
-                        textViewSubTotalDeliveryChargesDescription.text ="Free"
-                    }else{
+                    if (data!!.deliveryCharges.toString().equals("0")) {
+                        textViewSubTotalDeliveryChargesDescription.text = "Free"
+                    } else {
                         textViewSubTotalDeliveryChargesDescription.text =
                             "₹".plus(data!!.deliveryCharges.toString())
                     }
@@ -190,7 +191,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        txtToolbarTitle.text ="Order Summary"
+        txtToolbarTitle.text = "Order Summary"
         imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
@@ -337,13 +338,12 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     materialButtonOrderSummaryPlaceOrder.isClickable = false
 
                     startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
-                } else if (response.body()?.statusCode.equals("30")){
+                } else if (response.body()?.statusCode.equals("30")) {
                     progressBar.hide()
 //                    toast(response.body()!!.message)
                     showAlert()
                     materialButtonOrderSummaryPlaceOrder.isClickable = true
-                }
-                else{
+                } else {
                     materialButtonOrderSummaryPlaceOrder.isClickable = true
                     progressBar.hide()
                     toast(getString(R.string.message_something_went_wrong))

@@ -32,6 +32,7 @@ data class AddressRequest(
     var ID: String? = null,
     var name: String? = null,
     var Landmark: String? = null,
+    var city: String? = null,
     var PinCodeId: Int? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -40,6 +41,7 @@ data class AddressRequest(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -55,6 +57,7 @@ data class AddressRequest(
         parcel.writeString(ID)
         parcel.writeString(name)
         parcel.writeString(Landmark)
+        parcel.writeString(city)
         parcel.writeInt(PinCodeId!!)
     }
 
@@ -109,6 +112,7 @@ data class AddressListResponse(
         val landmark: String,
         val mobileNumber: String,
         val name: String,
+        val city: String,
         val pinCode: String,
         val pinCodeId: Int,
         var isSelected: Boolean = false
@@ -118,6 +122,7 @@ data class AddressListResponse(
             parcel.readString()!!,
             parcel.readInt(),
             parcel.readInt(),
+            parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
@@ -135,6 +140,7 @@ data class AddressListResponse(
             parcel.writeString(landmark)
             parcel.writeString(mobileNumber)
             parcel.writeString(name)
+            parcel.writeString(city)
             parcel.writeString(pinCode)
             parcel.writeInt(if (isSelected) 1 else 0)
         }

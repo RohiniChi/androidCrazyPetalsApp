@@ -6,7 +6,6 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.plugable.mcommerceapp.cpmvp1.R
@@ -79,11 +78,17 @@ class AddAddressActivity : AppCompatActivity(),
         textViewArea.show()
 
         editTextLocality.setText(addressRequest!!.Landmark)
-        editTextCity.setText("Pune")
-        editTextArea.isEnabled = false
-        editTextCity.isEnabled = false
+
+        /*
+            editTextCity.setText("Pune")
+            editTextArea.isEnabled = false
+            editTextCity.isEnabled = false
+        */
+
         editTextPhoneNo.setText(addressRequest!!.MobileNumber)
         editTextFlatNo.setText(addressRequest!!.Address)
+        editTextArea.setText(addressRequest!!.Locality)
+        editTextCity.setText(addressRequest!!.city)
         etPinCode.setText(addressRequest!!.PinCode)
 
     }
@@ -147,8 +152,10 @@ class AddAddressActivity : AppCompatActivity(),
                 flatNoValidation()
                 phoneNoValidation()
                 pinCodeValidation()
+                areaValidation()
+                cityValidation()
 
-                if (phoneNoValidation() && flatNoValidation() && localityValidation() && pinCodeValidation()) {
+                if (phoneNoValidation() && flatNoValidation() && localityValidation() && pinCodeValidation() && areaValidation() && cityValidation()) {
                     buttonAddAddress.isEnabled = false
                     if (addRequest) callAddOrEditAddressApi(makeAddressObject()) else editAddress(
                         makeAddressObject()
@@ -195,10 +202,11 @@ class AddAddressActivity : AppCompatActivity(),
                 ID = if (!addRequest) addressRequest!!.ID else null,
                 Address = editTextFlatNo.text.toString().capitalize(),
                 Landmark = editTextLocality.text.toString().capitalize(),
-                Locality = "",
+                Locality = editTextArea.text.toString().capitalize(),
                 ApplicationUserId = SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)!!,
                 MobileNumber = editTextPhoneNo.text.toString(),
-                PinCode = editTextPhoneNo.text.toString(),
+                city = editTextCity.text.toString().capitalize(),
+                PinCode = etPinCode.text.toString(),
                 PinCodeId = 0
             )
         return addressRequest!!
@@ -232,7 +240,6 @@ class AddAddressActivity : AppCompatActivity(),
 
         })
     }
-
 
 
     private fun textChangeListeners() {
@@ -306,16 +313,16 @@ class AddAddressActivity : AppCompatActivity(),
 
             editTextFlatNo.text.toString().isEmpty() -> {
                 textViewFlatNoError.show()
-                textViewFlatNoError.text = "Please enter your address details "
+                textViewFlatNoError.text = "Please enter flat no/house no/floor/building."
 
                 return false
             }
-            editTextFlatNo.text.toString().length > 6 -> {
+            /*editTextFlatNo.text.toString().length > 6 -> {
                 textViewFlatNoError.show()
                 textViewFlatNoError.text = "Please enter your address details "
 
                 return false
-            }
+            }*/
             else -> textViewFlatNoError.invisible()
         }
         return true
@@ -327,7 +334,7 @@ class AddAddressActivity : AppCompatActivity(),
         when {
             editTextLocality.text.toString().isEmpty() -> {
                 textViewLocalityError.show()
-                textViewLocalityError.text = "Please enter your address details"
+                textViewLocalityError.text = "Please enter colony/street/landmark."
                 return false
             }
             else -> textViewLocalityError.invisible()
@@ -335,12 +342,39 @@ class AddAddressActivity : AppCompatActivity(),
         return true
     }
 
+    private fun areaValidation(): Boolean {
+
+        when {
+            editTextArea.text.toString().isEmpty() -> {
+                textViewAreaError.show()
+                textViewAreaError.text = "Please enter area/locality."
+                return false
+            }
+            else -> textViewAreaError.invisible()
+        }
+        return true
+    }
+
+    private fun cityValidation(): Boolean {
+
+        when {
+            editTextCity.text.toString().isEmpty() -> {
+                textViewCityError.show()
+                textViewCityError.text = "Please enter city."
+                return false
+            }
+            else -> textViewCityError.invisible()
+        }
+        return true
+    }
+
+
     private fun pinCodeValidation(): Boolean {
 
         when {
             editTextLocality.text.toString().isEmpty() -> {
                 textViewSpinnerError.show()
-                textViewSpinnerError.text = "Please select a pin code"
+                textViewSpinnerError.text = "Please enter a pin code."
                 return false
             }
             else -> textViewSpinnerError.invisible()
