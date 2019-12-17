@@ -293,6 +293,16 @@ class AddAddressActivity : AppCompatActivity(),
 
         }
 
+        etPinCode.setOnFocusChangeListener { view, isFocused ->
+
+            if (!isFocused) {
+                this.hideKeyboard(view)
+                pinCodeValidation()
+            }
+
+
+        }
+
         editTextPhoneNo.onTextChanged {
             textViewPhoneNoError.invisible()
         }
@@ -307,6 +317,9 @@ class AddAddressActivity : AppCompatActivity(),
         }
         editTextCity.onTextChanged {
             textViewCityError.invisible()
+        }
+        etPinCode.onTextChanged {
+            textViewSpinnerError.invisible()
         }
 
     }
