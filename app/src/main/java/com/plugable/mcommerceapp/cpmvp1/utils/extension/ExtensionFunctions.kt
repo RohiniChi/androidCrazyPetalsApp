@@ -31,6 +31,16 @@ fun Activity.setStatusBarColor() {
 
 }
 
+fun Activity.disableWindowClicks() {
+    window.setFlags(
+        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+    )
+}
+
+fun Activity.enableWindowClicks() {
+    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+}
 
 fun setToolBarColor(
     imageView: ImageView,

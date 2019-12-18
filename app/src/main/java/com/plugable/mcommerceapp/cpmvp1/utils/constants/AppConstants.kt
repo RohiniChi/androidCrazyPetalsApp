@@ -112,6 +112,7 @@ object IntentFlags {
     const val CATEGORY_NAME = "categoryName"
 
     const val APPLICATION_USER_ID = ""
+    const val APPOINTMENT_ID = ""
 
     const val PRODUCT_MODEL = "productModel"
 
