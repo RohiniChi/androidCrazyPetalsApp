@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -121,7 +122,14 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_add_appointment -> {
-                startActivity<BookAppointmentActivity>()
+                if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return true
+                else {
+
+                    startActivity<BookAppointmentActivity>()
+                }
+
+                LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+
             }
         }
         return super.onOptionsItemSelected(item)
@@ -130,7 +138,13 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.buttonBookAppointment -> {
-                startActivity<BookAppointmentActivity>()
+                if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
+                else {
+
+                    startActivity<BookAppointmentActivity>()
+                }
+                LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+
             }
 
             R.id.btnTryAgain -> {
@@ -185,10 +199,16 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     }
 
     override fun onItemClickListener(position: Int) {
-        val appointmentId = appointmentArrayList[position].appointmentId
-        val intent = Intent(activity, AppointmentDetailActivity::class.java)
-        intent.putExtra(IntentFlags.APPOINTMENT_ID, appointmentId)
-        startActivity(intent)
+        if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
+        else {
+
+            val appointmentId = appointmentArrayList[position].appointmentId
+            val intent = Intent(activity, AppointmentDetailActivity::class.java)
+            intent.putExtra(IntentFlags.APPOINTMENT_ID, appointmentId)
+            startActivity(intent)
+        }
+        LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+
     }
 
     override fun onAppointmentListSuccess(response: AppointmentListResponse) {
@@ -199,6 +219,10 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
         } else {
             showRecyclerViewData()
         }
+    }
+
+    object LastClickTimeSingleton {
+        var lastClickTime: Long = 0
     }
 
 

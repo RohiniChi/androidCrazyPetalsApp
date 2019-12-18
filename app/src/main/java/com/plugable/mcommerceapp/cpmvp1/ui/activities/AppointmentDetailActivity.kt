@@ -38,14 +38,15 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
         imgToolbarHomeLayout.setOnClickListener(this)
 
 
-
         val appointmentId = intent.getIntExtra(IntentFlags.APPOINTMENT_ID, 0)
         if (isNetworkAccessible()) {
             if (appointmentId != 0) {
                 appointmentPresenter.getAppointmentDetail(appointmentId)
+                showProgress()
             }
         } else {
             showNetworkCondition()
+            hideProgress()
         }
     }
 

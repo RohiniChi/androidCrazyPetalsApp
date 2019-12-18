@@ -28,7 +28,6 @@ import com.plugable.mcommerceapp.cpmvp1.utils.validation.onTextChanged
 import kotlinx.android.synthetic.main.activity_book_appointment.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import org.jetbrains.anko.allCaps
-import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 import java.util.*
@@ -106,18 +105,18 @@ class BookAppointmentActivity : BaseActivity(),
         textChangeListeners()
         buttonAddAppointment.isClickable = true
         hideProgress()
-     /*   val arrayAdapterType =
-            ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_spinner_item,
-                appointmentType
-            )
-        arrayAdapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        /*   val arrayAdapterType =
+               ArrayAdapter<String>(
+                   this,
+                   android.R.layout.simple_spinner_item,
+                   appointmentType
+               )
+           arrayAdapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        spinnerAppointmentType.onItemSelectedListener = this
-        spinnerAppointmentType.adapter = arrayAdapterType
+           spinnerAppointmentType.onItemSelectedListener = this
+           spinnerAppointmentType.adapter = arrayAdapterType
 
-*/
+   */
 
         val contactNumber = SharedPreferences.getInstance(this).getProfile()?.mobileNumber
         editTextphoneNumber.setText(contactNumber)
@@ -221,15 +220,15 @@ class BookAppointmentActivity : BaseActivity(),
     }
 
     override fun onGetAppointmentTypeSuccess(response: GetAppointmentTypeResponse) {
-        appointmentType=response.data
+        appointmentType = response.data
 
 
         appointmentType.forEachIndexed { index, appointmentTypeData ->
-//            appointmentType[0].name="Select  appointment type"
-            appointmentName=appointmentType[index].name
+            //            appointmentType[0].name="Select  appointment type"
+            appointmentName = appointmentType[index].name
         }
-      val spinnerAdapter  =SpinnerAdapter(this,this,checkedId, appointmentType)
-        spinnerAppointmentType.adapter=spinnerAdapter
+        val spinnerAdapter = SpinnerAdapter(this, this, checkedId, appointmentType)
+        spinnerAppointmentType.adapter = spinnerAdapter
     }
 
     override fun onBookAppointmentSuccess(response: BookAppointmentResponse) {
@@ -347,7 +346,7 @@ class BookAppointmentActivity : BaseActivity(),
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        spinnerAppointmentType.prompt=checkedId.toString()
+        spinnerAppointmentType.prompt = checkedId.toString()
     }
 
     override fun onItemCheck(clickedId: Int, isChecked: Boolean) {
