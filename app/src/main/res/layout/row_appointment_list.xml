@@ -30,7 +30,7 @@
             android:maxLines="1"
             android:text="@string/appointment_no"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,14 +45,14 @@
             app:layout_constraintBottom_toBottomOf="@id/tvAppointmentDate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tvAppointmentDate"
-            app:layout_constraintTop_toBottomOf="@id/tvAppointmentNo" />
+            app:layout_constraintTop_toTopOf="@id/tvAppointmentDate" />
 
         <TextView
             android:id="@+id/tvAppointmentDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginTop="8dp"
             android:text="@string/appointment_date"
             android:textSize="@dimen/_12ssp"
             app:layout_constraintEnd_toStartOf="@id/imageViewClock"
@@ -64,28 +64,28 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:src="@drawable/ic_clock"
-            app:layout_constraintBottom_toBottomOf="@id/tvAppointmenttime"
+            app:layout_constraintBottom_toBottomOf="@id/tvAppointmentTime"
             app:layout_constraintStart_toEndOf="@id/tvAppointmentDate"
-            app:layout_constraintEnd_toStartOf="@id/tvAppointmenttime"
-            app:layout_constraintTop_toBottomOf="@id/tvAppointmentNo"/>
+            app:layout_constraintEnd_toStartOf="@id/tvAppointmentTime"
+            app:layout_constraintTop_toTopOf="@id/tvAppointmentTime"/>
 
         <TextView
-            android:id="@+id/tvAppointmenttime"
+            android:id="@+id/tvAppointmentTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginTop="8dp"
             android:text="@string/appointment_time"
             android:textSize="@dimen/_12ssp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvAppointmentNo"
-            app:layout_constraintStart_toEndOf="@id/imageViewClock"/>
+            app:layout_constraintStart_toEndOf="@id/imageViewClock"
+            app:layout_constraintTop_toBottomOf="@id/tvAppointmentNo" />
 
         <TextView
             android:id="@+id/tvAppointmentStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginTop="8dp"
             android:text="@string/appointment_status"
             android:textSize="@dimen/_12ssp"
             app:layout_constraintBottom_toBottomOf="parent"

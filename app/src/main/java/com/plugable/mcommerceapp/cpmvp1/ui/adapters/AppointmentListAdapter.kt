@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
 import com.plugable.mcommerceapp.cpmvp1.network.model.AppointmentData
+import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
+import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
 import kotlinx.android.synthetic.main.row_appointment_list.view.*
 
 class AppointmentListAdapter(
@@ -46,9 +48,9 @@ class AppointmentListAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.tvAppointmentNo.text="Appointment No. : "+appointmentList[position].appointmentNumber
+        holder.itemView.tvAppointmentNo.text="#"+appointmentList[position].appointmentNumber
         holder.itemView.tvAppointmentDate.text=appointmentList[position].appointmentDate
-        holder.itemView.tvAppointmenttime.text=appointmentList[position].fromTime
+        holder.itemView.tvAppointmentTime.text=appointmentList[position].fromTime
         holder.itemView.tvAppointmentStatus.text="Status : "+appointmentList[position].status
     }
 }

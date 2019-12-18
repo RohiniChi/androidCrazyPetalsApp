@@ -1,11 +1,14 @@
 package com.plugable.mcommerceapp.cpmvp1.ui.fragments
 
+import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.plugable.mcommerceapp.cpmvp1.R
+import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.cpmvp1.network.error.Error
 import com.plugable.mcommerceapp.cpmvp1.network.model.AppointmentData
@@ -16,18 +19,19 @@ import com.plugable.mcommerceapp.cpmvp1.ui.activities.AppointmentDetailActivity
 import com.plugable.mcommerceapp.cpmvp1.ui.activities.BookAppointmentActivity
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.AppointmentListAdapter
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.disableWindowClicks
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.enableWindowClicks
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
+import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.fragment_appointment_list.*
-import kotlinx.android.synthetic.main.fragment_my_order.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
+import kotlinx.android.synthetic.main.layout_no_appointmentlist.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -38,12 +42,12 @@ import kotlin.collections.ArrayList
  * Use the [AppointmentListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AppointmentListFragment : BaseFragment(), View.OnClickListener,AppointmentView,
-    com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener {
+class AppointmentListFragment : BaseFragment(), View.OnClickListener, AppointmentView,
+    EventListener {
 
     private lateinit var appointmentListAdapter: AppointmentListAdapter
-    private var appointmentArrayList=ArrayList<AppointmentData>()
-    private val appointmentPresenter= AppointmentPresenter(this)
+    private var appointmentArrayList = ArrayList<AppointmentData>()
+    private val appointmentPresenter = AppointmentPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,17 +68,25 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener,Appointment
         initializeViews()
     }
 
+
     private fun initializeViews() {
         btnServerError.setOnClickListener(this)
         btnTryAgain.setOnClickListener(this)
         btnNoData.setOnClickListener(this)
+        buttonBookAppointment.setOnClickListener(this)
 
-        appointmentListAdapter = AppointmentListAdapter(appointmentArrayList,activity!!,this)
+        appointmentListAdapter = AppointmentListAdapter(appointmentArrayList, activity!!, this)
         recyclerViewAppointments.itemAnimator = DefaultItemAnimator()
         recyclerViewAppointments.adapter = appointmentListAdapter
 
-        val applicationUserId=SharedPreferences.getInstance(activity!!).getStringValue(IntentFlags.APPLICATION_USER_ID)
-        appointmentPresenter.getAppointment(applicationUserId!!,0,25)
+        val applicationUserId = SharedPreferences.getInstance(activity!!)
+            .getStringValue(IntentFlags.APPLICATION_USER_ID)
+
+        if (activity!!.isNetworkAccessible()) {
+            appointmentPresenter.getAppointment(applicationUserId!!, 0, 1000)
+        } else {
+            showNetworkCondition()
+        }
     }
 
     private fun initializeTheme() {
@@ -94,6 +106,11 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener,Appointment
         btnTryAgain.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         btnNoData.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         btnServerError.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        progressBarAppointmentList.indeterminateDrawable.setColorFilter(
+            Color.BLACK,
+            PorterDuff.Mode.MULTIPLY
+        )
+        buttonBookAppointment.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -111,30 +128,35 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener,Appointment
     }
 
     override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.buttonBookAppointment -> {
+                startActivity<BookAppointmentActivity>()
+            }
 
+            R.id.btnTryAgain -> {
+                initializeViews()
+            }
+        }
     }
 
     override fun showNetworkCondition() {
         layoutNetworkCondition.show()
         layoutServerError.hide()
-        recyclerViewOrders.hide()
+        recyclerViewAppointments.hide()
         layoutNoDataScreen.hide()
-        stopShimmerView()
     }
 
     override fun hideNetworkCondition() {
         layoutNetworkCondition.hide()
         layoutNoDataScreen.hide()
-        recyclerViewOrders.hide()
-        stopShimmerView()
+        recyclerViewAppointments.hide()
     }
 
     override fun showServerErrorMessage() {
         layoutNetworkCondition.hide()
         layoutServerError.show()
-        recyclerViewOrders.hide()
+        recyclerViewAppointments.hide()
         layoutNoDataScreen.hide()
-        stopShimmerView()
     }
 
     override fun hideServerErrorMessage() {
@@ -142,7 +164,6 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener,Appointment
         layoutServerError.hide()
         recyclerViewAppointments.hide()
         layoutNoDataScreen.hide()
-        stopShimmerView()
 
     }
 
@@ -151,43 +172,52 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener,Appointment
         layoutServerError.hide()
         recyclerViewAppointments.show()
         layoutNoDataScreen.hide()
-        stopShimmerView()
     }
 
-    override fun startShimmerView() {
-        shimmerViewContainerAppointmentList.show()
-        shimmerViewContainerAppointmentList.startShimmer()
-
+    fun showEmptyScreen() {
         layoutNetworkCondition.hide()
         layoutServerError.hide()
         recyclerViewAppointments.hide()
         layoutNoDataScreen.hide()
-    }
+        layout_no_appointment_list.show()
 
-    override fun stopShimmerView() {
-        shimmerViewContainerAppointmentList.hide()
-        shimmerViewContainerAppointmentList.stopShimmer()
+
     }
 
     override fun onItemClickListener(position: Int) {
-        startActivity<AppointmentDetailActivity>()
+        val appointmentId = appointmentArrayList[position].appointmentId
+        val intent = Intent(activity, AppointmentDetailActivity::class.java)
+        intent.putExtra(IntentFlags.APPOINTMENT_ID, appointmentId)
+        startActivity(intent)
     }
 
     override fun onAppointmentListSuccess(response: AppointmentListResponse) {
         appointmentArrayList.addAll(response.data)
         appointmentListAdapter.notifyDataSetChanged()
+        if (appointmentArrayList.isEmpty()) {
+            showEmptyScreen()
+        } else {
+            showRecyclerViewData()
+        }
     }
 
 
     override fun showProgress() {
-
+        progressBarAppointmentList.show()
+        activity?.disableWindowClicks()
     }
 
     override fun hideProgress() {
-
+        progressBarAppointmentList.hide()
+        activity?.enableWindowClicks()
     }
 
-    override fun failed(error:Error) {
+    override fun failed(error: Error) {
         toast(error.getErrorMessage())
+    }
+
+    override fun onDestroy() {
+        appointmentPresenter.onStop()
+        super.onDestroy()
     }
 }

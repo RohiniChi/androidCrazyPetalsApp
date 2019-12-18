@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.AppointmentListFragment">
 
     <include
@@ -11,59 +11,29 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <include
         layout="@layout/layout_no_data_condition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <include
         layout="@layout/layout_server_error_condition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmerViewContainerAppointmentList"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        android:visibility="visible"
+    <include
+        layout="@layout/layout_no_appointmentlist"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:shimmer_duration="800">
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-        <!-- Adding 3 rows of placeholders -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="vertical">
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-
-        </LinearLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAppointments"
@@ -77,6 +47,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/row_appointment_list" />
 
-
-
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/progressBarAppointmentList"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
