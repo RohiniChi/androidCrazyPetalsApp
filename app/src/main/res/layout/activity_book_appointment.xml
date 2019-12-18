@@ -18,58 +18,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <include
         layout="@layout/layout_no_data_condition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <include
         layout="@layout/layout_server_error_condition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmerViewContainerProductList"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:shimmer_duration="800">
-
-        <!-- Adding 3 rows of placeholders -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-        </LinearLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -81,122 +44,142 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <Spinner
-            android:id="@+id/spinnerAppointmentType"
+        <ImageView
+            android:id="@+id/imageViewAppointmentType"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_appointment"
+            app:layout_constraintBottom_toBottomOf="@id/layoutSpinnerAppointmentType"
+            app:layout_constraintEnd_toStartOf="@id/layoutSpinnerAppointmentType"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layoutSpinnerAppointmentType" />
+
+
+        <LinearLayout
+            android:id="@+id/layoutSpinnerAppointmentType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:spinnerMode="dialog"
+            android:background="@drawable/rounded_background_unselected"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/imageViewAppointmentType"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!--
+            <Spinner
+                android:id="@+id/spinnerAppointmentType"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:spinnerMode="dialog"/>
 
-                <Spinner
-                    android:id="@+id/spinnerAppointmentDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:spinnerMode="dialog"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/spinnerAppointmentType" />
+        </LinearLayout>
 
-
-                <Spinner
-                    android:id="@+id/spinnerAppointmentTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:spinnerMode="dialog"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/spinnerAppointmentDate" />
-
-        -->
+        <TextView
+            android:id="@+id/textViewSpinnerTypeError"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittextErrorColor"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/layoutSpinnerAppointmentType"
+            app:layout_constraintTop_toBottomOf="@id/layoutSpinnerAppointmentType" />
 
         <ImageView
             android:id="@+id/imageViewDate"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_marginTop="@dimen/_8sdp"
             android:src="@drawable/ic_calendar"
             app:layout_constraintBottom_toBottomOf="@id/editTextDate"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinnerAppointmentType" />
+            app:layout_constraintTop_toTopOf="@id/editTextDate" />
 
         <EditText
             android:id="@+id/editTextDate"
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/rounded_background_unselected"
+            android:editable="false"
             android:hint=" Select date for appointment"
             android:padding="@dimen/_8sdp"
-            android:inputType="date"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textCursorDrawable="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/imageViewDate"
-            app:layout_constraintTop_toBottomOf="@id/spinnerAppointmentType" />
+            app:layout_constraintTop_toBottomOf="@id/layoutSpinnerAppointmentType" />
+
+        <TextView
+            android:id="@+id/textViewDateError"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittextErrorColor"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/editTextDate"
+            app:layout_constraintTop_toBottomOf="@id/editTextDate" />
 
         <ImageView
             android:id="@+id/imageViewTime"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_marginTop="@dimen/_8sdp"
             android:src="@drawable/ic_clock"
             app:layout_constraintBottom_toBottomOf="@id/editTextTime"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editTextDate" />
+            app:layout_constraintTop_toTopOf="@id/editTextTime" />
 
         <EditText
             android:id="@+id/editTextTime"
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_background_unselected"
+            android:editable="false"
             android:hint=" Select time for appointment"
-            android:inputType="time"
             android:padding="@dimen/_8sdp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:background="@drawable/rounded_background_unselected"
             android:textCursorDrawable="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/imageViewTime"
             app:layout_constraintTop_toBottomOf="@id/editTextDate" />
 
         <TextView
-            android:id="@+id/appointment_contact_no"
+            android:id="@+id/textViewTimeError"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/contact_no_appointment"
-            android:textSize="@dimen/_12sdp"
-            app:layout_constraintBottom_toBottomOf="@id/editTextphoneNumber"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/edittextErrorColor"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/editTextTime"
             app:layout_constraintTop_toBottomOf="@id/editTextTime" />
+
+        <ImageView
+            android:id="@+id/imageViewAppointmentContact"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_appointment_call"
+            app:layout_constraintBottom_toBottomOf="@id/editTextphoneNumber"
+            app:layout_constraintEnd_toStartOf="@id/editTextphoneNumber"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/editTextphoneNumber" />
+
 
         <EditText
             android:id="@+id/editTextphoneNumber"
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/rounded_background_unselected"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:padding="@dimen/_8sdp"
             android:inputType="phone"
             android:maxLength="10"
+            android:padding="@dimen/_8sdp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textCursorDrawable="@null"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/appointment_contact_no"
+            app:layout_constraintStart_toEndOf="@id/imageViewAppointmentContact"
             app:layout_constraintTop_toBottomOf="@id/editTextTime" />
 
         <TextView
@@ -224,12 +207,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:text="@string/title_description"
             android:textSize="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/imageViewNotepad"
-            app:layout_constraintTop_toBottomOf="@id/appointment_contact_no" />
+            app:layout_constraintTop_toBottomOf="@id/editTextphoneNumber" />
 
         <EditText
             android:id="@+id/editTextDescription"
@@ -251,7 +234,7 @@
             tools:ignore="Autofill,LabelFor" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonBookAppointment"
+            android:id="@+id/buttonAddAppointment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="64dp"
@@ -265,6 +248,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/editTextDescription" />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBarBookAppointment"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

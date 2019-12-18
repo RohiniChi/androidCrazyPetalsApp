@@ -127,12 +127,15 @@
     <string name="title_browse_more">Browse More</string>
     <string name="title_add_items">Add Items</string>
     <string name="title_start_shopping">Start Shopping</string>
+    <string name="title_book_appintment">Book Appointment</string>
 
     <string name="title_empty_wishlist">Empty Wish List!</string>
     <string name="title_empty_order_list">Empty Order List!</string>
+    <string name="title_empty_appointment_list">No Appointments!</string>
 
     <string name="message_add_some_items_in_wishlist_to_make_me_happy">Add some items in wish list to make me happy!</string>
-    <string name="message_add_some_items_in_order">You haven\'t place any order yet!</string>
+    <string name="message_add_some_items_in_order">You haven\'t placed any order yet!</string>
+    <string name="message_book_appointment">You haven\'t booked any appointment yet!</string>
     <string name="title_product_details">VIEW DETAILS</string>
     <string name="title_total_items">Total items ( %d )</string>
 
@@ -306,7 +309,7 @@
     <string name="button_add_to_cart">Add to cart</string>
     <string name="text_delivery_time">Delivery Time</string>
     <string name="value_delivery_time">Order will be delivered in 7 days</string>
-    <string name="title_description">Description</string>
+    <string name="title_description">Description :</string>
     <string name="title_specification">Specification</string>
     <string name="title_instruction">Instruction</string>
     <string name="text_colon">:</string>
@@ -349,7 +352,7 @@
     <string name="text_cod">Cash on delivery</string>
     <string name="payment_method">Payment Method</string>
     <string name="alert_message_place_order"><![CDATA[Oops! looks like few items went out of stock.Please remove them from the cart list and then place the order.]]></string>
-    <string name="appointment_no">1234567890</string>
+    <string name="appointment_no">#1234567890</string>
     <string name="appointment_date">12/12/2019</string>
     <string name="appointment_time">5pm to 6pm</string>
     <string name="appointment_status">Status: Confirmed</string>
@@ -357,9 +360,9 @@
     <string name="menu_appointments">Appointments</string>
     <string name="title_appointments">Appointments</string>
     <string name="hint_appoinment_agenda">Set agenda for appointment</string>
-    <string name="contact_no_appointment">Contact No.</string>
+    <string name="contact_no_appointment">Contact No. :</string>
     <string name="button_book">Book</string>
-    <string name="appointment_type">Appointment Type :</string>
+    <string name="appointment_type">Appt. Type :</string>
     <string name="title_date">Date :</string>
     <string name="title_time">Time :</string>
     <string name="text_appointment_detail">Need customization in jewellery.</string>
