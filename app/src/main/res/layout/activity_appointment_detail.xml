@@ -18,70 +18,53 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <include
         layout="@layout/layout_no_data_condition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <include
         layout="@layout/layout_server_error_condition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmerViewContainerProductList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:shimmer_duration="800">
-
-        <!-- Adding 3 rows of placeholders -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
-
-            <include layout="@layout/shimmer_placeholder_expandable_view" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
 
-        </LinearLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutDescription"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
+        android:paddingLeft="@dimen/_8sdp"
         android:layout_marginTop="8dp"
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <TextView
+            android:id="@+id/textViewAppointmentNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/appointment_no"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="@dimen/_15ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textViewAppointmentType"
@@ -90,19 +73,20 @@
             android:layout_marginTop="8dp"
             android:text="@string/appointment_type"
             android:textStyle="bold"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/colorBlack"
             app:layout_constraintEnd_toStartOf="@id/listViewAppointmentType"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/textViewAppointmentNo" />
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listViewAppointmentType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewAppointmentType"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewAppointmentType"
             tools:listitem="@layout/row_appointment_detail" />
 
 
@@ -110,8 +94,10 @@
             android:id="@+id/textViewDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="@string/title_date"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_14sdp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/textViewAppointmentDate"
             app:layout_constraintStart_toStartOf="parent"
@@ -121,19 +107,22 @@
             android:id="@+id/textViewAppointmentDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:text="@string/appointment_date"
+            android:textSize="@dimen/_14sdp"
+            app:layout_constraintBottom_toBottomOf="@id/textViewDate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/listViewAppointmentType"
-            app:layout_constraintTop_toBottomOf="@id/listViewAppointmentType" />
+            app:layout_constraintTop_toTopOf="@id/textViewDate" />
 
         <TextView
             android:id="@+id/textViewTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="@string/title_time"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold"
+            android:textSize="@dimen/_14sdp"
             app:layout_constraintEnd_toStartOf="@id/textViewAppointmentTime"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewDate" />
@@ -143,19 +132,24 @@
             android:id="@+id/textViewAppointmentTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@string/appointment_time"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/textViewAppointmentDate"
-            app:layout_constraintTop_toBottomOf="@id/textViewAppointmentDate" />
+            android:textSize="@dimen/_14sdp"
+            app:layout_constraintTop_toTopOf="@id/textViewTime"
+            app:layout_constraintBottom_toBottomOf="@id/textViewTime"
+            app:layout_constraintStart_toStartOf="@id/textViewAppointmentDate" />
 
         <TextView
             android:id="@+id/textViewPhoneNo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/contact_no_appointment"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_14sdp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textViewDetail"
             app:layout_constraintEnd_toStartOf="@id/textViewAppointmentContactNo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewTime" />
@@ -164,19 +158,23 @@
             android:id="@+id/textViewAppointmentContactNo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="3dp"
             android:text="@string/mobile_No"
+            android:textSize="@dimen/_14sdp"
+            app:layout_constraintBottom_toBottomOf="@id/textViewPhoneNo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/textViewAppointmentTime"
-            app:layout_constraintTop_toBottomOf="@id/textViewAppointmentTime" />
+            app:layout_constraintTop_toTopOf="@id/textViewPhoneNo" />
 
 
         <TextView
             android:id="@+id/textViewDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="@string/title_description"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_14sdp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -186,15 +184,32 @@
 
         <TextView
             android:id="@+id/textViewAppointmentDetail"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="8dp"
             android:text="@string/text_appointment_detail"
+            android:textSize="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewDetail" />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBarAppointmentDetail"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
