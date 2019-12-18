@@ -1,76 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorLightestGray">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLightestGray">
 
-    <include layout="@layout/layout_common_toolbar"
-             android:id="@+id/toolbar" android:layout_width="0dp"
-             android:layout_height="?attr/actionBarSize" app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-    />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_common_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <include layout="@layout/layout_network_condition"
-             app:layout_constraintTop_toBottomOf="@+id/toolbar" app:layout_constraintStart_toStartOf="parent"
-             app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintBottom_toBottomOf="parent"/>
+    <include
+        layout="@layout/layout_network_condition"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-     <include layout="@layout/layout_no_data_condition"
-              app:layout_constraintTop_toBottomOf="@+id/toolbar" app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintBottom_toBottomOf="parent"/>
+    <include
+        layout="@layout/layout_no_data_condition"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-     <include layout="@layout/layout_server_error_condition"
-              app:layout_constraintTop_toBottomOf="@+id/toolbar" app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintBottom_toBottomOf="parent"/>
+    <include
+        layout="@layout/layout_server_error_condition"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmerViewContainerCategorySubCategoryList"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:visibility="visible"
-            android:orientation="vertical"
-            app:shimmer_duration="800"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/toolbar"
-    >
+        android:id="@+id/shimmerViewContainerCategorySubCategoryList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:shimmer_duration="800">
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <include layout="@layout/shimmer_placeholder_expandable_view"/>
-            <include layout="@layout/shimmer_placeholder_expandable_view"/>
-            <include layout="@layout/shimmer_placeholder_expandable_view"/>
-            <include layout="@layout/shimmer_placeholder_expandable_view"/>
-            <include layout="@layout/shimmer_placeholder_expandable_view"/>
-            <include layout="@layout/shimmer_placeholder_expandable_view"/>
-            <include layout="@layout/shimmer_placeholder_expandable_view"/>
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
+
+            <include layout="@layout/shimmer_placeholder_expandable_view" />
 
 
         </LinearLayout>
 
     </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:layout_width="0dp"
-                                                           android:layout_height="0dp"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutCategorySubCategory"
+        android:layout_width="0dp"
 
-                                                           android:id="@+id/swipeRefreshLayoutCategorySubCategory"
-                                                           app:layout_constraintEnd_toEndOf="parent"
-                                                           app:layout_constraintStart_toStartOf="parent"
-                                                           app:layout_constraintTop_toBottomOf="@+id/toolbar"
-                                                           app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewCategorySubCategory"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-        />
+            android:id="@+id/recyclerViewCategorySubCategory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
