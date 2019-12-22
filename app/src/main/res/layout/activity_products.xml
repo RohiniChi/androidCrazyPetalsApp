@@ -173,22 +173,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-  <!--  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayoutProductList"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="0dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/filter_layout"
-            app:layout_constraintTop_toTopOf="@+id/shimmerViewContainerProductList">
 
--->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProducts"
@@ -199,7 +184,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/filter_layout" />
 
-<!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
     <ProgressBar
         android:id="@+id/progressBar"

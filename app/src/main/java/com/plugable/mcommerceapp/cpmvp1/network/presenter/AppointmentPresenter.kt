@@ -6,7 +6,7 @@ import com.plugable.mcommerceapp.cpmvp1.network.model.*
 import com.plugable.mcommerceapp.cpmvp1.network.view.AppointmentView
 import rx.subscriptions.CompositeSubscription
 
-class AppointmentPresenter(private val authenticationView: AppointmentView) {
+class AppointmentPresenter(private val appointmentView: AppointmentView) {
 
     private val subscriptions: CompositeSubscription = CompositeSubscription()
 
@@ -17,7 +17,7 @@ class AppointmentPresenter(private val authenticationView: AppointmentView) {
         skip: Int,
         take: Int
     ) {
-        authenticationView.showProgress()
+        appointmentView.showProgress()
         val subscription = appointmentApi.getAppointment(
             applicationUserId,
             skip,
@@ -25,13 +25,13 @@ class AppointmentPresenter(private val authenticationView: AppointmentView) {
             object : AppointmentApi.AppointmentCallback {
 
                 override fun onAppointmentListSuccess(response: AppointmentListResponse) {
-                    authenticationView.hideProgress()
-                    authenticationView.onAppointmentListSuccess(response)
+                    appointmentView.hideProgress()
+                    appointmentView.onAppointmentListSuccess(response)
                 }
 
                 override fun failed(error: Error) {
-                    authenticationView.hideProgress()
-                    authenticationView.failed(error)
+                    appointmentView.hideProgress()
+                    appointmentView.failed(error)
 
                 }
             })
@@ -41,51 +41,51 @@ class AppointmentPresenter(private val authenticationView: AppointmentView) {
 
 
     fun bookAppointment(bookAppointmentRequest: BookAppointmentRequest) {
-        authenticationView.showProgress()
+        appointmentView.showProgress()
         val subscription = appointmentApi.bookAppointment(bookAppointmentRequest,
             object : AppointmentApi.AppointmentCallback {
                 override fun onBookAppointmentSuccess(response: BookAppointmentResponse) {
-                    authenticationView.hideProgress()
-                    authenticationView.onBookAppointmentSuccess(response)
+                    appointmentView.hideProgress()
+                    appointmentView.onBookAppointmentSuccess(response)
                 }
 
                 override fun failed(error: Error) {
-                    authenticationView.hideProgress()
-                    authenticationView.failed(error)
+                    appointmentView.hideProgress()
+                    appointmentView.failed(error)
                 }
             })
         subscriptions.add(subscription)
     }
 
     fun getAppointmentType() {
-        authenticationView.showProgress()
+        appointmentView.showProgress()
         val subscription =
             appointmentApi.getAppointmentType(object : AppointmentApi.AppointmentCallback {
                 override fun onGetAppointmentTypeSucces(response: GetAppointmentTypeResponse) {
-                    authenticationView.hideProgress()
-                    authenticationView.onGetAppointmentTypeSuccess(response)
+                    appointmentView.hideProgress()
+                    appointmentView.onGetAppointmentTypeSuccess(response)
                 }
 
                 override fun failed(error: Error) {
-                    authenticationView.hideProgress()
-                    authenticationView.failed(error)
+                    appointmentView.hideProgress()
+                    appointmentView.failed(error)
                 }
             })
         subscriptions.add(subscription)
     }
 
     fun getAppointmentDetail(  appointmentId: Int){
-        authenticationView.showProgress()
+        appointmentView.showProgress()
         val subscription=appointmentApi.getAppointmentDetail(appointmentId,
             object :AppointmentApi.AppointmentCallback {
                 override fun onGetAppointmentDetailSucces(response: AppointmentDetailResponse) {
-                    authenticationView.hideProgress()
-                    authenticationView.onGetAppointmentDetailSuccess(response)
+                    appointmentView.hideProgress()
+                    appointmentView.onGetAppointmentDetailSuccess(response)
                 }
 
                 override fun failed(error: Error) {
-                    authenticationView.hideProgress()
-                    authenticationView.failed(error)
+                    appointmentView.hideProgress()
+                    appointmentView.failed(error)
                 }
             })
         subscriptions.add(subscription)
