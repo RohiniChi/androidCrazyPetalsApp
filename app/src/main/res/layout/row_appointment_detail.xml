@@ -8,8 +8,7 @@
         android:id="@+id/tvAppointmentType"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/text_appointment_type"
-        android:textSize="@dimen/_14sdp"
+        android:textSize="@dimen/_12sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
