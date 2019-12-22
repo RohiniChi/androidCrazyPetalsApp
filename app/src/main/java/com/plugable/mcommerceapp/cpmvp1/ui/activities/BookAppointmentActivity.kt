@@ -2,14 +2,15 @@ package com.plugable.mcommerceapp.cpmvp1.ui.activities
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
-import android.widget.AdapterView
 import com.plugable.mcommerceapp.cpmvp1.R
-import com.plugable.mcommerceapp.cpmvp1.callbacks.OnItemCheckListener
+import com.plugable.mcommerceapp.cpmvp1.callbacks.OnButtonCheckedListner
+import com.plugable.mcommerceapp.cpmvp1.callbacks.OnListChekedListner
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.cpmvp1.network.error.Error
 import com.plugable.mcommerceapp.cpmvp1.network.model.BookAppointmentRequest
@@ -31,14 +32,17 @@ import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 
-class BookAppointmentActivity : BaseActivity(),
-    AppointmentView, AdapterView.OnItemSelectedListener, OnItemCheckListener {
+class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedListner,
+    OnButtonCheckedListner {
 
-    private lateinit var appointmentName: String
-    private lateinit var appointmentType: List<GetAppointmentTypeResponse.AppointmentTypeData>
+    private val checkedName = HashSet<String>()
+    private lateinit var spinnerAdapter: SpinnerAdapter
+    private var appointmentType = ArrayList<GetAppointmentTypeResponse.AppointmentTypeData>()
+    private var customDialog: CustomDialogApptType? = null
     private var timeToTimeStamp: Long = 0
     private var dateToTimeStamp: Long = 0
     private val appointmentPresenter = AppointmentPresenter(this)
@@ -54,9 +58,7 @@ class BookAppointmentActivity : BaseActivity(),
     private fun initializeViews() {
         imgToolbarHomeLayout.setOnClickListener(this)
         buttonAddAppointment.setOnClickListener(this)
-//        textViewAppointmentType.setOnClickListener(this)
-//        editTextDate.setOnClickListener(this)
-//        editTextTime.setOnClickListener(this)
+        layoutSpinnerAppointmentType.setOnClickListener(this)
 
         editTextDate.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
@@ -74,6 +76,7 @@ class BookAppointmentActivity : BaseActivity(),
                     month,
                     date
                 )
+                datePickerDialog.datePicker.minDate=System.currentTimeMillis()-1000
 
                 datePickerDialog.show()
             }
@@ -105,18 +108,6 @@ class BookAppointmentActivity : BaseActivity(),
         textChangeListeners()
         buttonAddAppointment.isClickable = true
         hideProgress()
-        /*   val arrayAdapterType =
-               ArrayAdapter<String>(
-                   this,
-                   android.R.layout.simple_spinner_item,
-                   appointmentType
-               )
-           arrayAdapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-           spinnerAppointmentType.onItemSelectedListener = this
-           spinnerAppointmentType.adapter = arrayAdapterType
-
-   */
 
         val contactNumber = SharedPreferences.getInstance(this).getProfile()?.mobileNumber
         editTextphoneNumber.setText(contactNumber)
@@ -127,7 +118,8 @@ class BookAppointmentActivity : BaseActivity(),
             showNetworkCondition()
         }
 
-//        spinnerAppointmentType.adapter=SpinnerAdapter(this,appointmentType)
+        spinnerAdapter = SpinnerAdapter(this, this, checkedId, appointmentType)
+        customDialog = CustomDialogApptType(this, this, spinnerAdapter)
     }
 
 
@@ -178,15 +170,36 @@ class BookAppointmentActivity : BaseActivity(),
             }
 
             R.id.buttonAddAppointment -> {
+                spinnerValidation()
+                dateValidation()
+                timeValidation()
+                contactValidation()
 
-                if (contactValidation() && dateValidation() && timeValidation()) {
+                if ( spinnerValidation() && dateValidation() && timeValidation() && contactValidation()) {
                     buttonAddAppointment.isClickable = false
                     attemptApiCall()
                 }
             }
+
+            R.id.layoutSpinnerAppointmentType -> {
+                customDialog?.show()
+                customDialog?.setCanceledOnTouchOutside(true)
+
+            }
+
         }
     }
 
+    override fun onBackPressed() {
+        if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.APPOINTMENT_LIST) {
+         val intent=Intent(this,DashboardActivity::class.java)
+            intent.putExtra(IntentFlags.FRAGMENT_TO_BE_LOADED,R.id.nav_appointmentList)
+            startActivityForResult(intent,1)
+            finish()
+        } else {
+            finish()
+        }
+    }
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
@@ -215,20 +228,16 @@ class BookAppointmentActivity : BaseActivity(),
         } else {
             buttonAddAppointment.isClickable = true
             hideProgress()
-            showNetworkCondition()
+            toast(getString(R.string.oops_no_internet_connection))
         }
     }
 
     override fun onGetAppointmentTypeSuccess(response: GetAppointmentTypeResponse) {
-        appointmentType = response.data
 
-
-        appointmentType.forEachIndexed { index, appointmentTypeData ->
-            //            appointmentType[0].name="Select  appointment type"
-            appointmentName = appointmentType[index].name
+        response.data.forEach {
+            appointmentType.add(it)
         }
-        val spinnerAdapter = SpinnerAdapter(this, this, checkedId, appointmentType)
-        spinnerAppointmentType.adapter = spinnerAdapter
+        spinnerAdapter.notifyDataSetChanged()
     }
 
     override fun onBookAppointmentSuccess(response: BookAppointmentResponse) {
@@ -281,6 +290,7 @@ class BookAppointmentActivity : BaseActivity(),
         editTextTime.onTextChanged {
             textViewTimeError.invisible()
         }
+
 
     }
 
@@ -335,6 +345,18 @@ class BookAppointmentActivity : BaseActivity(),
         return true
     }
 
+    private fun spinnerValidation():Boolean{
+        when {
+            textViewAppointmentType.text.equals(getString(R.string.text_select_appt_type)) -> {
+                textViewSpinnerTypeError.show()
+                textViewSpinnerTypeError.text=getString(R.string.text_select_appt_type)
+
+                return false
+            }
+        }
+        textViewSpinnerTypeError.invisible()
+        return true
+    }
 
     override fun onDestroy() {
         appointmentPresenter.onStop()
@@ -342,17 +364,34 @@ class BookAppointmentActivity : BaseActivity(),
     }
 
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-    }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        spinnerAppointmentType.prompt = checkedId.toString()
-    }
-
-    override fun onItemCheck(clickedId: Int, isChecked: Boolean) {
-        if (isChecked)
+    override fun onListCheck(clickedId: Int, clickedName: String, isChecked: Boolean) {
+        if (isChecked) {
             checkedId.add(clickedId)
-        else
+            checkedName.add(clickedName)
+
+        } else {
             checkedId.remove(clickedId)
+            checkedName.remove(clickedName)
+        }
     }
+
+    override fun onButtonClicked() {
+        when {
+            checkedName.isEmpty() -> {
+                textViewAppointmentType.text = getString(R.string.text_select_appt_type)
+            }
+            checkedName.size == 1 -> {
+        val selectedTypes=        checkedName.toString().replace("[","").replace("]","")
+                textViewAppointmentType.text = selectedTypes
+                textViewSpinnerTypeError.invisible()
+            }
+            else -> {
+                val selectedTypes=        checkedName.toString().replace("[","").replace("]","")
+                textViewAppointmentType.text = selectedTypes.plus(",")
+                textViewSpinnerTypeError.invisible()
+            }
+        }
+    }
+
+
 }
