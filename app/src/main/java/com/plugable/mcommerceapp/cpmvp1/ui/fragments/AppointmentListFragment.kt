@@ -1,5 +1,6 @@
 package com.plugable.mcommerceapp.cpmvp1.ui.fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -31,7 +32,6 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_appointmentlist.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
-import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 
 
@@ -124,8 +124,8 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
             R.id.action_add_appointment -> {
                 if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return true
                 else {
-
-                    startActivity<BookAppointmentActivity>()
+                    val intent = Intent(activity, BookAppointmentActivity::class.java)
+                    startActivityForResult(intent, 1)
                 }
 
                 LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
@@ -141,7 +141,9 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
                 if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
                 else {
 
-                    startActivity<BookAppointmentActivity>()
+                    val intent = Intent(activity, BookAppointmentActivity::class.java)
+                    intent.putExtra(IntentFlags.REDIRECT_FROM,IntentFlags.APPOINTMENT_LIST)
+                    startActivityForResult(intent, 1)
                 }
                 LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
 
@@ -151,6 +153,23 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
                 initializeViews()
             }
         }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (activity!!.isNetworkAccessible()) {
+                    val applicationUserId = SharedPreferences.getInstance(activity!!)
+                        .getStringValue(IntentFlags.APPLICATION_USER_ID)
+
+                    appointmentPresenter.getAppointment(applicationUserId!!, 0, 1000)
+                } else {
+                    showNetworkCondition()
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun showNetworkCondition() {
