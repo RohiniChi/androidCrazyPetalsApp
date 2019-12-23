@@ -2,14 +2,21 @@ package com.plugable.mcommerceapp.cpmvp1.ui.activities
 
 import ServiceGenerator
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.payumoney.core.PayUmoneyConstants
+import com.payumoney.core.PayUmoneySdkInitializer
+import com.payumoney.core.entity.TransactionResponse
+import com.payumoney.sdkui.ui.utils.PayUmoneyFlowManager
+import com.payumoney.sdkui.ui.utils.ResultModel
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
@@ -24,6 +31,7 @@ import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setToolBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
+import com.plugable.mcommerceapp.cpmvp1.utils.util.HashGenerator.hashCal
 import com.plugable.mcommerceapp.cpmvp1.utils.util.capitalizeAll
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.activity_order_summary.*
@@ -47,11 +55,15 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     var addressId: Int? = null
     lateinit var ordersAdapter: OrdersAdapter
     var data: GetTotalPrice.Data? = null
-
-
+    private val tag = "OrderSummaryActivity : "
+    private var mPaymentParams: PayUmoneySdkInitializer.PaymentParam? = null
+    private var isTestMode: Boolean = true
+    private var totalPrice = "0"
+    var transctionId = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_summary)
+
 
         initializeTheme()
         initializeViews()
@@ -141,6 +153,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             override fun onResponse(call: Call<GetTotalPrice>, response: Response<GetTotalPrice>) {
                 data = response.body()!!.data
                 if (response.body()?.statusCode.equals("10")) {
+                    totalPrice = data!!.subTotal.toString()
                     textViewSubTotalDescription.text =
                         "₹".plus(data!!.subTotal.toString())
                     textViewSubTotalDiscountDescription.text =
@@ -263,7 +276,12 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                             ApplicationThemeUtils.SECONDARY_COLOR
                         )
                     )
-                    placeOrder()
+
+
+                        placeOrder()
+
+
+
                 } else {
                     materialButtonOrderSummaryPlaceOrder.isClickable = true
                     toast("Please agree to terms and conditions")
@@ -337,7 +355,13 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     progressBar.hide()
                     materialButtonOrderSummaryPlaceOrder.isClickable = false
 
-                    startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
+                    //transctionId=order id
+                    initiatePayment(
+                        address!!.name, "cupatil@mailinator.com",
+                        address!!.mobileNumber, totalPrice
+                    )
+
+                    //startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
                 } else if (response.body()?.statusCode.equals("30")) {
                     progressBar.hide()
 //                    toast(response.body()!!.message)
@@ -421,5 +445,106 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 }
             }
         })
+    }
+
+
+    fun initiatePayment(
+        nameData: String,
+        emailData: String,
+        phoneData: String,
+        amountData: String
+    ) {
+        transctionId = System.currentTimeMillis().toString()
+        val builder = PayUmoneySdkInitializer.PaymentParam.Builder()
+        builder.setAmount(amountData)                          // Payment amount
+            .setTxnId(transctionId)                                             // Transaction ID
+            .setPhone(phoneData)                                           // User Phone number
+            .setProductName("Android test")                   // Product Name or description
+            .setFirstName(nameData)                              // User First name
+            .setEmail(emailData)                                            // User Email ID
+            .setsUrl(getString(R.string.pay_u_success_url))                    // Success URL (surl)
+            .setfUrl(getString(R.string.pay_u_failed_url))
+            .setUdf1("")
+            .setUdf2("")
+            .setUdf3("")
+            .setUdf4("")
+            .setUdf5("")
+            .setUdf6("")
+            .setUdf7("")
+            .setUdf8("")
+            .setUdf9("")
+            .setUdf10("")
+            .setIsDebug(isTestMode)                              // Integration environment - true (Debug)/ false(Production)
+            .setKey(getString(R.string.pay_u_merchant_key))                        // Merchant key
+            .setMerchantId(getString(R.string.pay_u_merchant_id))
+
+        mPaymentParams = builder.build()
+        mPaymentParams = calculateServerSideHashAndInitiatePayment1(mPaymentParams!!)
+
+        PayUmoneyFlowManager.startPayUMoneyFlow(
+            mPaymentParams,
+            this@OrderSummaryActivity,
+            R.style.AppTheme_Purple,
+            false
+        )
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // Result Code is -1 send from Payumoney activity
+        Log.d("MainActivity", "request code $requestCode resultcode $resultCode")
+        if (requestCode == PayUmoneyFlowManager.REQUEST_CODE_PAYMENT && resultCode == RESULT_OK && data != null) {
+            val transactionResponse = data.getParcelableExtra<TransactionResponse>(
+                PayUmoneyFlowManager
+                    .INTENT_EXTRA_TRANSACTION_RESPONSE
+            )
+
+            val resultModel = data.getParcelableExtra<ResultModel>(PayUmoneyFlowManager.ARG_RESULT)
+
+            // Check which object is non-null
+            if (transactionResponse?.getPayuResponse() != null) {
+                transactionResponse.transactionDetails
+                if (transactionResponse.transactionStatus == TransactionResponse.TransactionStatus.SUCCESSFUL) {
+                    //Success Transaction
+                  // call update order api
+                    toast("Transaction successful").show()
+                } else {
+                    toast("Transaction unsuccessful").show()
+
+                    //Failure Transaction
+                }
+
+            } else if (resultModel != null && resultModel.error != null) {
+                Log.d(tag, "Error response : " + resultModel.error.transactionResponse)
+            } else {
+                Log.d(tag, "Both objects are null!")
+            }
+        }
+    }
+
+    private fun calculateServerSideHashAndInitiatePayment1(paymentParam: PayUmoneySdkInitializer.PaymentParam): PayUmoneySdkInitializer.PaymentParam {
+
+        val stringBuilder = StringBuilder()
+        val params = paymentParam.params
+        stringBuilder.append(params[PayUmoneyConstants.KEY]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.TXNID]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.AMOUNT]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.PRODUCT_INFO]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.FIRSTNAME]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.EMAIL]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.UDF1]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.UDF2]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.UDF3]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.UDF4]!! + "|")
+        stringBuilder.append(params[PayUmoneyConstants.UDF5]!! + "||||||")
+
+        stringBuilder.append(getString(R.string.pay_u_merchant_salt))
+
+        val hash = hashCal(stringBuilder.toString())
+        paymentParam.setMerchantHash(hash)
+
+        return paymentParam
     }
 }

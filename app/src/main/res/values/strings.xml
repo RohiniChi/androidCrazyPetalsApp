@@ -337,6 +337,7 @@
     <string name="label_view_standard_delivery_chart">View standard delivery chart</string>
     <string name="label_review_order">Review Order</string>
     <string name="label_cash_on_delivery">Cash on Delivery</string>
+    <string name="label_online">Online</string>
     <string name="label_payment_method">Payment Method</string>
     <string name="label_your_order_will_be_delivered_on_s">Your order will be delivered on : %s</string>
     <string name="comments">Comments :</string>
@@ -367,5 +368,11 @@
     <string name="title_time">Time :</string>
     <string name="text_appointment_detail">Need customization in jewellery.</string>
     <string name="text_appointment_type">jewellery Customization</string>
+
+    <string name="pay_u_merchant_key">P74gM77w</string>
+    <string name="pay_u_merchant_id">6849785</string>
+    <string name="pay_u_success_url">https://www.plug-able.com</string>
+    <string name="pay_u_failed_url">https://www.omnibridge.com</string>
+    <string name="pay_u_merchant_salt">yTJSyR18B0</string>
 
 </resources>
