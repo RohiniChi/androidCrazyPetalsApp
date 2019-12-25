@@ -1,6 +1,7 @@
 package com.plugable.mcommerceapp.cpmvp1.ui.fragments
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -32,6 +33,7 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_appointmentlist.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
+import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 
 
@@ -84,6 +86,9 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
             .getStringValue(IntentFlags.APPLICATION_USER_ID)
 
         if (activity!!.isNetworkAccessible()) {
+            if (activity!!.isFinishing){
+                return
+            }
             appointmentPresenter.getAppointment(applicationUserId!!, 0, 1000)
         } else {
             showNetworkCondition()
@@ -124,8 +129,10 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
             R.id.action_add_appointment -> {
                 if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return true
                 else {
-                    val intent = Intent(activity, BookAppointmentActivity::class.java)
-                    startActivityForResult(intent, 1)
+                   /* val intent = Intent(activity, BookAppointmentActivity::class.java)
+                    intent.putExtra(IntentFlags.REDIRECT_FROM,IntentFlags.APPOINTMENT_LIST)
+                    startActivityForResult(intent, 1)*/
+                    startActivity<BookAppointmentActivity>()
                 }
 
                 LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
@@ -141,9 +148,13 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
                 if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
                 else {
 
-                    val intent = Intent(activity, BookAppointmentActivity::class.java)
+                  /*  val intent = Intent(activity, BookAppointmentActivity::class.java)
                     intent.putExtra(IntentFlags.REDIRECT_FROM,IntentFlags.APPOINTMENT_LIST)
-                    startActivityForResult(intent, 1)
+                    startActivityForResult(intent, 1)*/
+                    startActivity<BookAppointmentActivity>(
+                        IntentFlags.REDIRECT_FROM to IntentFlags.APPOINTMENT_LIST,
+                                IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_appointmentList
+                    )
                 }
                 LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
 
@@ -156,21 +167,15 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (activity!!.isNetworkAccessible()) {
-                    val applicationUserId = SharedPreferences.getInstance(activity!!)
-                        .getStringValue(IntentFlags.APPLICATION_USER_ID)
 
-                    appointmentPresenter.getAppointment(applicationUserId!!, 0, 1000)
-                } else {
-                    showNetworkCondition()
-                }
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK && data!=null) {
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
-    }
+    }*/
 
     override fun showNetworkCondition() {
         layoutNetworkCondition.show()
@@ -231,6 +236,9 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     }
 
     override fun onAppointmentListSuccess(response: AppointmentListResponse) {
+        if (activity!!.isFinishing){
+            return
+        }
         appointmentArrayList.addAll(response.data)
         appointmentListAdapter.notifyDataSetChanged()
         if (appointmentArrayList.isEmpty()) {

@@ -43,6 +43,9 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
         val appointmentId = intent.getIntExtra(IntentFlags.APPOINTMENT_ID, 0)
         if (isNetworkAccessible()) {
             if (appointmentId != 0) {
+                if (isFinishing){
+                    return
+                }
                 appointmentPresenter.getAppointmentDetail(appointmentId)
             }
         } else {
@@ -72,14 +75,17 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
     }
 
     override fun setToolBar(name: String) {
+        setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        cp_Logo.hide()
+        supportActionBar?.title = name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        cp_Logo.hide()
         txtToolbarTitle.show()
         txtToolbarTitle.allCaps = false
         txtToolbarTitle.text = "Appointment Detail"
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
