@@ -2,12 +2,13 @@ package com.plugable.mcommerceapp.cpmvp1.ui.activities
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.text.Editable
 import android.view.MotionEvent
 import android.view.View
+import android.widget.CalendarView
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.OnButtonCheckedListner
 import com.plugable.mcommerceapp.cpmvp1.callbacks.OnListChekedListner
@@ -29,7 +30,9 @@ import com.plugable.mcommerceapp.cpmvp1.utils.validation.onTextChanged
 import kotlinx.android.synthetic.main.activity_book_appointment.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import org.jetbrains.anko.allCaps
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -39,6 +42,7 @@ import kotlin.collections.HashSet
 class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedListner,
     OnButtonCheckedListner {
 
+    private  var hour=0
     private val checkedName = HashSet<String>()
     private lateinit var spinnerAdapter: SpinnerAdapter
     private var appointmentType = ArrayList<GetAppointmentTypeResponse.AppointmentTypeData>()
@@ -64,13 +68,22 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
             if (event.action == MotionEvent.ACTION_UP) {
                 this.hideKeyboard(v)
                 val calendar = Calendar.getInstance()
+                val calendarView = CalendarView(this)
                 val year = calendar.get(Calendar.YEAR)
                 val month = calendar.get(Calendar.MONTH)
                 val date = calendar.get(Calendar.DAY_OF_MONTH)
                 val datePickerDialog = DatePickerDialog(
                     this,
                     DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                        editTextDate.setText("$dayOfMonth/$month/$year")
+                        calendar.set(Calendar.YEAR, year)
+                        calendar.set(Calendar.MONTH, month)
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                        calendarView.date = calendar.timeInMillis
+                        val myFormat="dd/MM/yyyy"
+                        val sdf=SimpleDateFormat(myFormat,Locale.ENGLISH)
+                        /*editTextDate.text = Editable.Factory.getInstance()
+                            .newEditable("$dayOfMonth ${DateFormatSymbols.getInstance().months[month]} $year")*/
+                        editTextDate.setText(sdf.format(calendar.time))
                     },
                     year,
                     month,
@@ -94,11 +107,24 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
                 val timePickerDialog = TimePickerDialog(
                     this,
                     TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                        editTextTime.setText("$hourOfDay:$minute")
+                        var isAMorPM = ""
+                          hour = when (hourOfDay == 0) {
+                           true -> 12
+                           false -> hourOfDay
+                       }
+                        if (view.is24HourView){
+                            isAMorPM=if (hourOfDay>12){
+                                hour=hourOfDay-12
+                                " PM"
+                            }else{
+                                " AM"
+                            }
+                        }
+                        editTextTime.text=Editable.Factory.getInstance().newEditable("$hour:$minute$isAMorPM")
                     },
                     hh,
                     mm,
-                    false
+                    true
                 )
 
                 timePickerDialog.show()
@@ -112,8 +138,10 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
         val contactNumber = SharedPreferences.getInstance(this).getProfile()?.mobileNumber
         editTextphoneNumber.setText(contactNumber)
         if (isNetworkAccessible()) {
+            if (isFinishing){
+                return
+            }
             appointmentPresenter.getAppointmentType()
-
         } else {
             showNetworkCondition()
         }
@@ -137,14 +165,17 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
     }
 
     override fun setToolBar(name: String) {
+        setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        cp_Logo.hide()
+        supportActionBar?.title = name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        cp_Logo.hide()
         txtToolbarTitle.show()
         txtToolbarTitle.allCaps = false
         txtToolbarTitle.text = "Book Appointment"
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
@@ -175,7 +206,7 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
                 timeValidation()
                 contactValidation()
 
-                if ( spinnerValidation() && dateValidation() && timeValidation() && contactValidation()) {
+                if (spinnerValidation() && dateValidation() && timeValidation() && contactValidation()) {
                     buttonAddAppointment.isClickable = false
                     attemptApiCall()
                 }
@@ -192,14 +223,13 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
 
     override fun onBackPressed() {
         if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.APPOINTMENT_LIST) {
-         val intent=Intent(this,DashboardActivity::class.java)
-            intent.putExtra(IntentFlags.FRAGMENT_TO_BE_LOADED,R.id.nav_appointmentList)
-            startActivityForResult(intent,1)
+            startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_appointmentList)
             finish()
         } else {
             finish()
         }
     }
+
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
@@ -223,6 +253,9 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
                 timeToTimeStamp.toString(),
                 checkedId
             )
+            if (isFinishing){
+                return
+            }
             appointmentPresenter.bookAppointment(bookData)
 
         } else {
@@ -345,11 +378,11 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
         return true
     }
 
-    private fun spinnerValidation():Boolean{
+    private fun spinnerValidation(): Boolean {
         when {
             textViewAppointmentType.text.equals(getString(R.string.text_select_appt_type)) -> {
                 textViewSpinnerTypeError.show()
-                textViewSpinnerTypeError.text=getString(R.string.text_select_appt_type)
+                textViewSpinnerTypeError.text = getString(R.string.text_select_appt_type)
 
                 return false
             }
@@ -381,13 +414,15 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
                 textViewAppointmentType.text = getString(R.string.text_select_appt_type)
             }
             checkedName.size == 1 -> {
-        val selectedTypes=        checkedName.toString().replace("[","").replace("]","")
+                val selectedTypes = checkedName.toString().replace("[", "").replace("]", "")
                 textViewAppointmentType.text = selectedTypes
+                textViewAppointmentType.setTextColor(Color.BLACK)
                 textViewSpinnerTypeError.invisible()
             }
             else -> {
-                val selectedTypes=        checkedName.toString().replace("[","").replace("]","")
+                val selectedTypes = checkedName.toString().replace("[", "").replace("]", "")
                 textViewAppointmentType.text = selectedTypes.plus(",")
+                textViewAppointmentType.setTextColor(Color.BLACK)
                 textViewSpinnerTypeError.invisible()
             }
         }
