@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
     tools:context=".ui.activities.BookAppointmentActivity">
 
     <include
@@ -37,8 +38,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_3sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +47,7 @@
 
         <ImageView
             android:id="@+id/imageViewAppointmentType"
-            android:layout_width="30dp"
+            android:layout_width="25dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_appointment_type_icon"
             app:layout_constraintBottom_toBottomOf="@id/layoutSpinnerAppointmentType"
@@ -74,6 +75,7 @@
                 android:ellipsize="end"
                 android:gravity="start"
                 android:padding="@dimen/_8sdp"
+                android:focusable="false"
                 android:singleLine="true"
                 android:text="@string/text_select_appt_type"
                 app:layout_constraintEnd_toStartOf="@id/imgViewArrow"
@@ -147,6 +149,7 @@
             android:editable="false"
             android:hint=" Select date for appointment"
             android:padding="@dimen/_8sdp"
+            android:focusable="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textCursorDrawable="@null"
             app:layout_constraintEnd_toEndOf="parent"
@@ -180,6 +183,7 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/rounded_background_unselected"
             android:editable="false"
+            android:focusable="false"
             android:hint=" Select time for appointment"
             android:padding="@dimen/_8sdp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -218,6 +222,7 @@
             android:background="@drawable/rounded_background_unselected"
             android:inputType="phone"
             android:maxLength="10"
+            android:focusable="false"
             android:padding="@dimen/_8sdp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textCursorDrawable="@null"
@@ -265,9 +270,11 @@
             android:background="@drawable/rounded_background_unselected"
             android:ellipsize="end"
             android:gravity="top"
+            android:maxLength="150"
             android:hint="@string/hint_appoinment_agenda"
             android:inputType="text"
             android:maxLines="4"
+            android:focusable="false"
             android:padding="@dimen/_8sdp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textCursorDrawable="@null"
