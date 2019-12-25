@@ -36,19 +36,21 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
         readIntent()
         initializeTheme()
         initializeViews()
-        setPlaceOrderResponseData()
     }
 
-    private fun setPlaceOrderResponseData() {
+    private fun setPlaceOrderResponseData(
+    ) {
+
         textViewOrderStatusOrderNumberDescription.text =
-            String.format("%s", placeOrderResponse!!.orderNumber)
+            String.format("%s", placeOrderResponse?.orderNumber)
         textViewOrderStatusOrderAmountDescription.text =
-            String.format("%s", placeOrderResponse!!.deliveryDay)
-        textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Cash on delivery")
+            String.format("%s", placeOrderResponse?.deliveryDay)
+        textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Online payment")
     }
 
     private fun readIntent() {
         placeOrderResponse = intent.getParcelableExtra(PLACE_ORDER_RESPONSE)
+        setPlaceOrderResponseData()
     }
 
     private fun initializeTheme() {
