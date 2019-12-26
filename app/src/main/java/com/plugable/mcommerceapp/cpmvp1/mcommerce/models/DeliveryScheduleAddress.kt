@@ -114,6 +114,7 @@ data class AddressListResponse(
         val name: String,
         val city: String,
         val pinCode: String,
+        val deliveryDay: String,
         val pinCodeId: Int,
         var isSelected: Boolean = false
     ) : Parcelable {
@@ -122,6 +123,7 @@ data class AddressListResponse(
             parcel.readString()!!,
             parcel.readInt(),
             parcel.readInt(),
+            parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
@@ -142,6 +144,7 @@ data class AddressListResponse(
             parcel.writeString(name)
             parcel.writeString(city)
             parcel.writeString(pinCode)
+            parcel.writeString(deliveryDay)
             parcel.writeInt(if (isSelected) 1 else 0)
         }
 

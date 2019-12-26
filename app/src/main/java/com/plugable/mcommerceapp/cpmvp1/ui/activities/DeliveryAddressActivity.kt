@@ -3,7 +3,6 @@ package com.plugable.mcommerceapp.cpmvp1.ui.activities
 import ServiceGenerator
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -55,6 +54,9 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         getDeliveryDay(address.id.toString())
         isAddressSelected = address.isSelected
         selectedAddress = address
+
+        deliveryDateLayout.show()
+        tvDeliveryAddressDate.text=address.deliveryDay
 
         /*  if (isAddressSelected) {
               materialButtonDeliveryAddressReviewOrder.isEnabled = true
@@ -217,6 +219,9 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
                         }
                         if (addressList.size == 1) {
                             deliveryAddressAdapter.setlectFirstitem()
+
+                            deliveryDateLayout.show()
+                            tvDeliveryAddressDate.text=addressList[0].deliveryDay
                         }
                         deliveryAddressAdapter.notifyDataSetChanged()
                     } else {
@@ -261,16 +266,18 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         viewSeparator.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         dividerDeliveryAddressFirst.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         dividerDeliveryAddressSecond.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-      /*  dividerDeliveryAddressThird.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-        radioButtonDeliveryAddressPaymentMethodCashOnDelivery.buttonTintList =
-            ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-        rdbOnline.buttonTintList =
-            ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))*/
+        /*  dividerDeliveryAddressThird.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+          radioButtonDeliveryAddressPaymentMethodCashOnDelivery.buttonTintList =
+              ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+          rdbOnline.buttonTintList =
+              ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))*/
         materialButtonDeliveryAddressReviewOrder.setBackgroundColor(
             Color.parseColor(
                 ApplicationThemeUtils.SECONDARY_COLOR
             )
         )
+
+        tvDeliveryAddressDate.setTextColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         // setColorToDeliveryDate()
         progressBar.indeterminateDrawable.setColorFilter(
             Color.BLACK,
