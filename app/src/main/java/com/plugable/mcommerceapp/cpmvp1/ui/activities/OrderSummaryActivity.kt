@@ -354,6 +354,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                         materialButtonOrderSummaryPlaceOrder.isClickable = false
 
                         orderId = response.body()!!.orderId
+
+                        SharedPreferences.getInstance(this@OrderSummaryActivity)
+                            .setCartCountString(("0").toString())
+
                         val emailId =
                             SharedPreferences.getInstance(this@OrderSummaryActivity).getProfile()
                                 ?.emailId
@@ -503,28 +507,26 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         Log.d("MainActivity", "request code $requestCode resultcode $resultCode")
         materialButtonOrderSummaryPlaceOrder.isClickable = true
         hideProgress()
-        if (isNetworkAccessible()){
+        if (isNetworkAccessible()) {
             updateTransactionStatus(requestCode, resultCode, data)
-        }
-        else{
-           showNetworkAlert(requestCode, resultCode, data)
+        } else {
+            showNetworkAlert(requestCode, resultCode, data)
         }
     }
 
     private fun showNetworkAlert(requestCode: Int, resultCode: Int, data: Intent?) {
-        alert(getString(R.string.oops_no_internet_connection)){
-            isCancelable=false
-            positiveButton(getString(R.string.try_again)){
+        alert(getString(R.string.oops_no_internet_connection)) {
+            isCancelable = false
+            positiveButton(getString(R.string.try_again)) {
                 if (isNetworkAccessible()) {
                     updateTransactionStatus(requestCode, resultCode, data)
-                }
-                else{
+                } else {
                     showNetworkAlert(requestCode, resultCode, data)
                 }
             }
         }.show().apply {
             getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.let {
-                it.allCaps=false
+                it.allCaps = false
                 it.textColor = Color.BLUE
                 it.background =
                     ContextCompat.getDrawable(

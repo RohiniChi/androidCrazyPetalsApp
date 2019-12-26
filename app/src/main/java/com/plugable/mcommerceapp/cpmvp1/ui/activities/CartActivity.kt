@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
@@ -179,7 +180,8 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     }
 
     private fun callCartApi() {
-        cartItemsShimmerLayout.showShimmer(true)
+        showProgressBar()
+        //cartItemsShimmerLayout.showShimmer(true)
         recyclerViewCart.hide()
         constraintLayoutBottomSheet.hide()
         val applicationUserId =
@@ -201,14 +203,13 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                 call: Call<GetCartResponse>,
                 response: Response<GetCartResponse>
             ) {
+                hideProgressBar()
                 if (response.body()?.statusCode.equals("10")) {
                     cartItemsShimmerLayout.hideShimmer()
                     recyclerViewCart.show()
                     constraintLayoutBottomSheet.show()
 
                     if (response.body()!!.data.isNotEmpty()) {
-
-                        progressBarCartList.hide()
                         productList.clear()
                         response.body()!!.data.forEach {
                             productList.add(it)
@@ -216,7 +217,6 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                         cartAdapter.notifyDataSetChanged()
                         SharedPreferences.getInstance(this@CartActivity)
                             .setCartCountString(productList.size.toString())
-                        progressBarCartList.hide()
 
                     } else {
                         SharedPreferences.getInstance(this@CartActivity)
@@ -224,7 +224,6 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                     }
                     updateData()
                 } else {
-                    progressBarCartList.hide()
                     recyclerViewCart.show()
                     constraintLayoutBottomSheet.show()
 
@@ -484,7 +483,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     }
 
     private fun removeItemFromCart(productId: Int) {
-        progressBarCartList.show()
+        showProgressBar()
         val applicationUserId =
             SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
@@ -499,7 +498,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         callback.enqueue(object : Callback<ResponseAddToCart> {
             override fun onFailure(call: Call<ResponseAddToCart>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
-                progressBarCartList.hide()
+                hideProgressBar()
 
             }
 
@@ -513,7 +512,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                     callCartApi()
                 } else {
 //                    toast(getString(R.string.message_something_went_wrong))
-                    progressBarCartList.hide()
+                    hideProgressBar()
 
                 }
 
@@ -521,5 +520,18 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
 
         })
 
+    }
+
+
+    fun showProgressBar(){
+        progressBarCartList.show()
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    fun hideProgressBar(){
+        progressBarCartList.hide()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 }
