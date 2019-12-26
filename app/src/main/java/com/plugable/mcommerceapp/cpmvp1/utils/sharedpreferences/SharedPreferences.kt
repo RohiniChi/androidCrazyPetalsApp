@@ -41,6 +41,17 @@ class SharedPreferences private constructor(context: Context) {
         return appSharedPreferences!!.getString(KEY_VALUE, "")
     }
 
+
+    fun setCartCountString( value: String) {
+        appSharedPreferences!!.edit().putString(com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT, value).apply()
+    }
+
+    fun getCartCountString(): String? {
+        return appSharedPreferences!!.getString(com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT, "0")
+    }
+
+
+
     fun setProfile(profile: GetMyProfile.Data) {
         appSharedPreferences!!.edit().putString(
             com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.PROFILE,

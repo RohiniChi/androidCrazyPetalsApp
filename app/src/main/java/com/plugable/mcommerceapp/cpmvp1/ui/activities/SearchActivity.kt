@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
 import com.plugable.mcommerceapp.cpmvp1.callbacks.OnButtonClickListener
@@ -19,7 +18,6 @@ import com.plugable.mcommerceapp.cpmvp1.callbacks.OnFavoriteListener
 import com.plugable.mcommerceapp.cpmvp1.callbacks.SetOnBottomReachedListener
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.db.AppDatabase
-import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.GetCartResponse
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.Products
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.RequestAddToCart
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.ResponseAddToCart
@@ -41,7 +39,6 @@ import kotlinx.android.synthetic.main.layout_search_toolbar.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,7 +78,6 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         if (response.body()?.statusCode.equals("10")) {
 //                                toast(getString(R.string.message_product_added_to_cart))
                             toast(getString(R.string.message_product_added_to_cart))
-                            attemptCartApiCall()
                             productListAdapter.notifyDataSetChanged()
                         } else if (response.body()?.statusCode.equals("30")) {
                             toast(response.body()!!.message)
@@ -113,7 +109,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
-//    private lateinit var mixPanel: MixpanelAPI
+    //    private lateinit var mixPanel: MixpanelAPI
     var productList = ArrayList<Products.Data.ProductDetails>()
     private lateinit var productListAdapter: ProductListAdapter
 //    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
@@ -155,7 +151,8 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     override fun onResume() {
         super.onResume()
-        attemptCartApiCall()
+
+        invalidateOptionsMenu()
 
     }
 
@@ -245,7 +242,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     if (searchText!!.trim().length >= 3) {
                         keywordGlobal = searchText.trim()
                         productList.clear()
-                        skipCount=0
+                        skipCount = 0
                         callSearchApi(keywordGlobal)
                     }
                     productList.clear()
@@ -260,92 +257,6 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         })
 
 
-    }
-
-    private fun attemptCartApiCall() {
-        if (SharedPreferences.getInstance(this).isUserLoggedIn) {
-
-            val applicationUserId =
-                SharedPreferences.getInstance(this)
-                    .getStringValue(IntentFlags.APPLICATION_USER_ID)
-            App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
-            val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-            val callback = clientInstance.getCartApi(applicationUserId!!.toInt())
-
-            callback.enqueue(object : Callback<GetCartResponse> {
-                override fun onFailure(call: Call<GetCartResponse>, t: Throwable) {
-//                    toast(getString(R.string.message_something_went_wrong))
-                }
-
-                override fun onResponse(
-                    call: Call<GetCartResponse>,
-                    response: Response<GetCartResponse>
-                ) {
-                    if (response.body()?.statusCode.equals("10")) {
-
-
-                        if (response.body()!!.data.isNotEmpty()) {
-
-                            com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList.clear()
-                            for (item in response.body()!!.data) {
-                                com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList.add(
-                                    item.productId.toString()
-                                )
-                            }
-
-                            SharedPreferences.getInstance(this@SearchActivity).setStringValue(
-                                com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT,
-                                response.body()!!.data.size.toString()
-
-                            )
-
-                            invalidateOptionsMenu()
-
-
-                            SharedPreferences.getInstance(this@SearchActivity)
-                                .setAddToCartData(
-                                    response.body()!!
-                                )
-
-
-                        } else {
-                            SharedPreferences.getInstance(this@SearchActivity).setStringValue(
-                                com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT,
-                                response.body()!!.data.size.toString()
-                            )
-                            invalidateOptionsMenu()
-
-
-                            com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList.clear()
-                            for (item in response.body()!!.data) {
-                                com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList.add(
-                                    item.productId.toString()
-                                )
-                            }
-
-                            SharedPreferences.getInstance(this@SearchActivity)
-                                .setAddToCartData(
-                                    response.body()!!
-                                )
-                            productListAdapter.notifyDataSetChanged()
-
-
-                        }
-                    } else {
-//                        toast(getString(R.string.message_something_went_wrong))
-                        productListAdapter.notifyDataSetChanged()
-
-                    }
-
-                }
-
-            })
-        } else {
-            SharedPreferences.getInstance(this).setStringValue(
-                com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT,
-                "0"
-            )
-        }
     }
 
     private fun callSearchApi(keyword: String) {
@@ -511,7 +422,6 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         stopShimmerView()
     }
-
 
     override fun showNoDataAvailableScreen() {
         layoutNetworkCondition.hide()

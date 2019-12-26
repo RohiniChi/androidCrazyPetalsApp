@@ -12,8 +12,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.text.TextUtils
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -24,7 +22,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
 import com.plugable.mcommerceapp.cpmvp1.callbacks.OnButtonClickListener
@@ -40,7 +37,6 @@ import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ColorAdapterMVP1
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ImageSliderAdapter
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ProductListAdapter
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.SizeAdapter
-
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
@@ -48,7 +44,6 @@ import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartIt
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
-import com.plugable.mcommerceapp.cpmvp1.utils.util.WrappingViewPager
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
 import com.plugable.mcommerceapp.cpmvp1.utils.validation.strikeThroughText
 import com.plugable.mcommerceapp.ui.fragments.DescriptionFragment
@@ -58,8 +53,6 @@ import kotlinx.android.synthetic.main.activity_product_detail.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_product_details.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.onPageChangeListener
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -80,7 +73,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private var productListId: Int = 0
     private var productDetail = ProductDetail.Data()
     private lateinit var callback: Call<Products>
-//    private lateinit var mixPanel: MixpanelAPI
+    //    private lateinit var mixPanel: MixpanelAPI
     private var productImages = ArrayList<ProductDetail.Data.Image>()
     private lateinit var product: Products.Data.ProductDetails
     private lateinit var eventClickListener: EventListener
@@ -105,7 +98,6 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         initializeTheme()
         attemptApiCall()
         attemptListApiCall()
-        attemptCartApiCall()
     }
 
     private fun attemptApiCall() {
@@ -187,21 +179,13 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         buttonAddToCart.isClickable = true
         layoutCartIcon.isClickable = true
 
-
-        /*val webSettings = webViewDescription.settings
-        webSettings.javaScriptEnabled = true
-        webViewDescription.isVerticalScrollBarEnabled = false
-        webViewDescription.isHorizontalScrollBarEnabled = false
-*/
-        setCartBadge()
         hideUiComponents()
     }
 
     private fun setCartBadge() {
-        val cartCount =
-            SharedPreferences.getInstance(this).getStringValue(SHARED_PREFERENCES_CART_COUNT)
+        val cartCount = SharedPreferences.getInstance(this).getCartCountString()!!
 
-        if (cartCount!!.toInt() == 0) {
+        if (cartCount.toInt() == 0) {
             cartIcon.clearBadge()
         } else {
             cartIcon.setBadgeValue(cartCount.toInt())
@@ -219,88 +203,9 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         setCartBadge()
         layoutCartIcon.isClickable = true
         buttonPlaceOrder.isClickable = true
-        attemptCartApiCall()
     }
 
-    private fun attemptCartApiCall() {
-        if (SharedPreferences.getInstance(this).isUserLoggedIn) {
 
-            val applicationUserId =
-                SharedPreferences.getInstance(this)
-                    .getStringValue(IntentFlags.APPLICATION_USER_ID)
-            App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
-            val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-            val callback = clientInstance.getCartApi(applicationUserId!!.toInt())
-
-            callback.enqueue(object : Callback<GetCartResponse> {
-                override fun onFailure(call: Call<GetCartResponse>, t: Throwable) {
-//                    toast(getString(R.string.message_something_went_wrong))
-                }
-
-                override fun onResponse(
-                    call: Call<GetCartResponse>,
-                    response: Response<GetCartResponse>
-                ) {
-                    if (response.body()?.statusCode.equals("10")) {
-
-
-                        if (response.body()!!.data.isNotEmpty()) {
-                            cartItemList.clear()
-                            for (item in response.body()!!.data) {
-                                cartItemList.add(item.productId.toString())
-                            }
-
-
-                            SharedPreferences.getInstance(this@ProductDetailActivity)
-                                .setStringValue(
-                                    SHARED_PREFERENCES_CART_COUNT,
-                                    response.body()!!.count.toString()
-                                )
-                            setCartBadge()
-
-
-                            SharedPreferences.getInstance(this@ProductDetailActivity)
-                                .setAddToCartData(
-                                    response.body()!!
-                                )
-
-                            productListAdapter.notifyDataSetChanged()
-
-                        } else {
-                            SharedPreferences.getInstance(this@ProductDetailActivity)
-                                .setStringValue(
-                                    SHARED_PREFERENCES_CART_COUNT,
-                                    response.body()!!.count.toString()
-                                )
-                            cartItemList.clear()
-                            for (item in response.body()!!.data) {
-                                cartItemList.add(item.productId.toString())
-                            }
-
-
-                            SharedPreferences.getInstance(this@ProductDetailActivity)
-                                .setAddToCartData(
-                                    response.body()!!
-                                )
-
-                            productListAdapter.notifyDataSetChanged()
-
-                        }
-                    } else {
-//                        toast(getString(R.string.message_something_went_wrong))
-                        productListAdapter.notifyDataSetChanged()
-                    }
-
-                }
-
-            })
-        } else {
-            SharedPreferences.getInstance(this).setStringValue(
-                SHARED_PREFERENCES_CART_COUNT,
-                "0"
-            )
-        }
-    }
 
     private fun callProductDetailApi(productId: Int) {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
@@ -492,11 +397,16 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         viewPagerProductDetail!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
 
             override fun onPageSelected(position: Int) {
 
-               viewPagerProductDetail.reMeasureCurrentPage(viewPagerProductDetail.currentItem)
+                viewPagerProductDetail.reMeasureCurrentPage(viewPagerProductDetail.currentItem)
             }
         })
 
@@ -600,13 +510,13 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }
     }
 
-  /*  private fun sendMixPanelEvent() {
-        val productObject = JSONObject()
-        productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, product.id)
-        productObject.put(IntentFlags.MIXPANEL_PRODUCT_NAME, product.name)
-        mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCTS, productObject)
-    }
-*/
+    /*  private fun sendMixPanelEvent() {
+          val productObject = JSONObject()
+          productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, product.id)
+          productObject.put(IntentFlags.MIXPANEL_PRODUCT_NAME, product.name)
+          mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCTS, productObject)
+      }
+  */
 
     private fun hideUiComponents() {
         nestedScrollProductDetail.hide()
@@ -984,9 +894,8 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                                 true
                             ) || clickedButton.equals("Add to Cart from list", true)
                         ) {
-//                            toast(response.message())
-//                            setCartBadge()
-                            attemptCartApiCall()
+                            incrementCartCount()
+                            setCartBadge()
                             toast(getString(R.string.message_product_added_to_cart))
                         } else if (clickedButton == "BuyNow") {
                             startActivity<CartActivity>()
@@ -996,7 +905,8 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             buttonPlaceOrder.isClickable = true
                             buttonAddToCart.isClickable = true
 //                            setCartBadge()
-                            attemptCartApiCall()
+                            incrementCartCount()
+                            setCartBadge()
                             startActivity<CartActivity>()
                         } else if (clickedButton.equals(
                                 "Add to Cart",
@@ -1005,7 +915,8 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         ) {
                             buttonPlaceOrder.isClickable = true
                             buttonAddToCart.isClickable = true
-                            attemptCartApiCall()
+                            incrementCartCount()
+                            setCartBadge()
                             toast(response.body()!!.message)
                         }
                     }
@@ -1025,7 +936,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     inner class ViewPagerAdapterProductDetail(manager: FragmentManager) :
         FragmentStatePagerAdapter(manager) {
 
-        var mCurrentPosition=-1
+        var mCurrentPosition = -1
 
         override fun getItem(position: Int): Fragment {
 
@@ -1094,8 +1005,6 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 container.reMeasureCurrentPage(position)
             }}
         }*/
-
-
 
 
     }

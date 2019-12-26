@@ -9,11 +9,8 @@ import android.os.Handler
 import android.os.SystemClock
 import android.util.Log
 import android.view.*
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
@@ -46,7 +43,6 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.support.v4.startActivity
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -112,19 +108,16 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
     }
 
     private var bannerImages = ArrayList<Banners.Data.Banner>()
-//    private lateinit var mixPanel: MixpanelAPI
+    //    private lateinit var mixPanel: MixpanelAPI
     //    private var position: Int = 0
     var category: Categories.Data.Category? = null
     private var banner: Banners.Data.Banner? = null
     lateinit var categoryListAdapter: LimitedCategoryListAdapter
     var categoryList = ArrayList<Categories.Data.Category>()
     private lateinit var eventClickListener: EventListener
-
-//    private val numPages = 4
-//    private var currentPage = 0
-//    private var timer: Timer1? = null
-//    private val delayInMS: Long = 500//delay in milliseconds before task is to be executed
-//    private val periodInMS: Long = 3000 // time in milliseconds between successive task executions.
+    private lateinit var notificationListApi: Call<Notifications>
+    private lateinit var cartListApi: Call<GetCartResponse>
+    private lateinit var categoriesListApi: Call<Categories>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,7 +135,6 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -152,14 +144,6 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
         return inflater.inflate(R.layout.fragment_home, container, false)
 
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        /*initializeViews()
-        attemptApiCall()
-        attemptBannerApiCall()*/
-        attemptCartApiCall()
     }
 
     override fun onStop() {
@@ -174,7 +158,6 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         if (::categoriesListApi.isInitialized && categoriesListApi != null) categoriesListApi.cancel()
     }
 
-    private lateinit var cartListApi: Call<GetCartResponse>
     private fun attemptCartApiCall() {
         if (SharedPreferences.getInstance(activity!!).isUserLoggedIn) {
 
@@ -204,21 +187,19 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
                                 cartItemList.add(item.productId.toString())
                             }
 
+                            SharedPreferences.getInstance(activity!!)
+                                .setCartCountString(response.body()!!.count.toString())
 
-
-                            SharedPreferences.getInstance(activity!!).setStringValue(
-                                SHARED_PREFERENCES_CART_COUNT,
-                                response.body()!!.count.toString()
-                            )
                         } else {
-                            SharedPreferences.getInstance(activity!!).setStringValue(
-                                SHARED_PREFERENCES_CART_COUNT,
-                                response.body()!!.count.toString()
-                            )
+                            SharedPreferences.getInstance(activity!!)
+                                .setCartCountString("0")
                         }
                     } else {
-//                        toast(getString(R.string.message_something_went_wrong))
+                        SharedPreferences.getInstance(activity!!)
+                            .setCartCountString("0")
                     }
+
+                    activity!!.invalidateOptionsMenu()
 
                 }
 
@@ -234,7 +215,6 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.dashboard, menu)
 
-
         //Custom notification badge count
         val menuItem = menu.findItem(R.id.action_notification)
         val icon = menuItem.icon as LayerDrawable
@@ -248,9 +228,9 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         } else {
             badge = CountDrawable(activity!!)
         }
-
         var notificationCountText = SharedPreferences.getInstance(activity!!)
             .getStringValue(SHARED_PREFERENCES_NOTIFICATION_COUNT)!!
+
 
         if (notificationCountText == "10") {
             notificationCountText = "9+"
@@ -273,8 +253,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
             cartBadge = CountDrawable(activity!!)
         }
 
-        var cartCountText = SharedPreferences.getInstance(activity!!)
-            .getStringValue(SHARED_PREFERENCES_CART_COUNT)!!
+        var cartCountText = SharedPreferences.getInstance(activity!!).getCartCountString()!!
 
         if (cartCountText == "15") {
             cartCountText = "9+"
@@ -341,8 +320,6 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
             callNotificationsListAPI()
         } else showNetworkCondition()
     }
-
-    private lateinit var notificationListApi: Call<Notifications>
 
     //fetch notifications from notification api
     private fun callNotificationsListAPI() {
@@ -521,9 +498,8 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         }
 
 
-
     }
-/*
+    /*
 
     private fun sendMixPanelEvent() {
             val productObject = JSONObject()
@@ -569,7 +545,6 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
     }
 
-    private lateinit var categoriesListApi: Call<Categories>
     private fun callCategoryListApi() {
         startShimmerView()
         App.HostUrl = SharedPreferences.getInstance(activity!!).hostUrl!!
@@ -637,7 +612,6 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         showAllViews()
 
     }
-
 
     override fun showServerErrorMessage() {
         layoutNetworkCondition.hide()
@@ -711,9 +685,10 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         return activity?.supportFragmentManager?.findFragmentById(R.id.fragmentContainer) is HomeFragment
 
     }
-  /*  override fun onDestroy() {
-        mixPanel.flush()
-        super.onDestroy()
-    }
-*/
+
+    /*  override fun onDestroy() {
+          mixPanel.flush()
+          super.onDestroy()
+      }
+  */
 }

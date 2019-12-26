@@ -91,7 +91,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         attemptApiCall()
         attemptGetFilterApi()
         this.invalidateOptionsMenu()
-        attemptCartApiCall()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -165,8 +164,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
     override fun onResume() {
-        attemptCartApiCall()
-
+        invalidateOptionsMenu()
         super.onResume()
     }
 
@@ -350,86 +348,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         recycler_filter.hide()
         button_apply_filter.hide()
         button_cancel.hide()
-    }
-
-    private fun attemptCartApiCall() {
-        if (SharedPreferences.getInstance(this).isUserLoggedIn) {
-
-            val applicationUserId =
-                SharedPreferences.getInstance(this)
-                    .getStringValue(IntentFlags.APPLICATION_USER_ID)
-            App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
-            val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-            val callback = clientInstance.getCartApi(applicationUserId!!.toInt())
-
-            callback.enqueue(object : Callback<GetCartResponse> {
-                override fun onFailure(call: Call<GetCartResponse>, t: Throwable) {
-//                    toast(getString(R.string.message_something_went_wrong))
-                }
-
-                override fun onResponse(
-                    call: Call<GetCartResponse>,
-                    response: Response<GetCartResponse>
-                ) {
-                    if (response.body()?.statusCode.equals("10")) {
-
-
-                        if (response.body()!!.data.isNotEmpty()) {
-
-                            cartItemList.clear()
-                            for (item in response.body()!!.data) {
-                                cartItemList.add(item.productId.toString())
-                            }
-
-                            SharedPreferences.getInstance(this@ProductsListActivity).setStringValue(
-                                SHARED_PREFERENCES_CART_COUNT,
-                                response.body()!!.data.size.toString()
-
-                            )
-
-                            invalidateOptionsMenu()
-
-
-                            SharedPreferences.getInstance(this@ProductsListActivity)
-                                .setAddToCartData(
-                                    response.body()!!
-                                )
-
-
-                        } else {
-                            SharedPreferences.getInstance(this@ProductsListActivity).setStringValue(
-                                SHARED_PREFERENCES_CART_COUNT,
-                                response.body()!!.data.size.toString()
-                            )
-                            invalidateOptionsMenu()
-
-
-                            cartItemList.clear()
-                            for (item in response.body()!!.data) {
-                                cartItemList.add(item.productId.toString())
-                            }
-
-                            SharedPreferences.getInstance(this@ProductsListActivity)
-                                .setAddToCartData(
-                                    response.body()!!
-                                )
-
-
-                        }
-                    } else {
-//                        toast(getString(R.string.message_something_went_wrong))
-
-                    }
-
-                }
-
-            })
-        } else {
-            SharedPreferences.getInstance(this).setStringValue(
-                SHARED_PREFERENCES_CART_COUNT,
-                "0"
-            )
-        }
     }
 
     private fun attemptExclusiveProductsApi() {
@@ -1020,7 +938,6 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     ) {
                         if (response.body()?.statusCode.equals("10")) {
 //                                toast(getString(R.string.message_product_added_to_cart))
-                            attemptCartApiCall()
                             toast(getString(R.string.message_product_added_to_cart))
                             progressBarProductList.hide()
 

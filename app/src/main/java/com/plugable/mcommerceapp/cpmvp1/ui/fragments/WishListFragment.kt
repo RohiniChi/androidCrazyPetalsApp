@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.callbacks.EventListener
 import com.plugable.mcommerceapp.cpmvp1.callbacks.OnButtonClickListener
@@ -19,7 +18,6 @@ import com.plugable.mcommerceapp.cpmvp1.callbacks.OnFavoriteListener
 import com.plugable.mcommerceapp.cpmvp1.callbacks.SetOnBottomReachedListener
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.db.AppDatabase
-import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.GetCartResponse
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.Products
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.RequestAddToCart
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.ResponseAddToCart
@@ -32,8 +30,6 @@ import com.plugable.mcommerceapp.cpmvp1.ui.activities.SearchActivity
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ProductListAdapter
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
@@ -48,11 +44,9 @@ import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.IndexOutOfBoundsException
 import java.util.*
 
 
@@ -90,9 +84,8 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         bottom_navigation.hide()
+        initializeViews()
         initializeTheme()
-        attemptCartApiCall()
-
     }
 
 
@@ -115,9 +108,8 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
 
     override fun onResume() {
         super.onResume()
-        initializeViews()
-//        activity!!.invalidateOptionsMenu()
-        attemptCartApiCall()
+        activity!!.invalidateOptionsMenu()
+
     }
 
     private fun initializeViews() {
@@ -280,13 +272,12 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
             cartBadge = CountDrawable(activity!!)
         }
 
-        var cartCountText = SharedPreferences.getInstance(activity!!)
-            .getStringValue(SHARED_PREFERENCES_CART_COUNT)!!
+        var cartCountText = SharedPreferences.getInstance(activity!!).getCartCountString()
 
         if (cartCountText == "10") {
             cartCountText = "9+"
         }
-        cartBadge.setCount(cartCountText)
+        cartBadge.setCount(cartCountText!!)
         cartIcon.mutate()
         cartIcon.setDrawableByLayerId(R.id.ic_group_count_cart, cartBadge)
 
@@ -328,80 +319,6 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
         return super.onOptionsItemSelected(item)
     }
 
-    private fun attemptCartApiCall() {
-        if (SharedPreferences.getInstance(activity!!).isUserLoggedIn) {
-
-            val applicationUserId =
-                SharedPreferences.getInstance(activity!!)
-                    .getStringValue(IntentFlags.APPLICATION_USER_ID)
-            App.HostUrl = SharedPreferences.getInstance(activity!!).hostUrl!!
-            val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-            cartListApi = clientInstance.getCartApi(applicationUserId!!.toInt())
-
-            cartListApi.enqueue(object : Callback<GetCartResponse> {
-                override fun onFailure(call: Call<GetCartResponse>, t: Throwable) {
-//                    toast(getString(R.string.message_something_went_wrong))
-                }
-
-                override fun onResponse(
-                    call: Call<GetCartResponse>,
-                    response: Response<GetCartResponse>
-                ) {
-                    if (!isVisible) {
-                        return
-                    }
-                    if (response.body()?.statusCode.equals("10")) {
-
-
-                        if (response.body() != null && response.body()!!.data.isNotEmpty()) {
-
-                            SharedPreferences.getInstance(activity!!).setStringValue(
-                                SHARED_PREFERENCES_CART_COUNT,
-                                response.body()!!.count.toString()
-                            )
-                            activity!!.invalidateOptionsMenu()
-
-                            cartItemList.clear()
-                            for (item in response.body()!!.data) {
-                                cartItemList.add(item.productId.toString())
-                            }
-
-                            productListAdapter.notifyDataSetChanged()
-                        } else {
-                            SharedPreferences.getInstance(activity!!).setStringValue(
-                                SHARED_PREFERENCES_CART_COUNT,
-                                response.body()!!.count.toString()
-                            )
-                            activity!!.invalidateOptionsMenu()
-
-                            cartItemList.clear()
-                            for (item in response.body()!!.data) {
-                                cartItemList.add(item.productId.toString())
-                            }
-                            productListAdapter.notifyDataSetChanged()
-                        }
-                    } else {
-//                        toast(getString(R.string.message_something_went_wrong))
-                        productListAdapter.notifyDataSetChanged()
-                    }
-
-                }
-
-            })
-        } else {
-            SharedPreferences.getInstance(activity!!).setStringValue(
-                SHARED_PREFERENCES_CART_COUNT,
-                "0"
-            )
-        }
-    }
-
-    private lateinit var cartListApi: Call<GetCartResponse>
-
-    override fun onPause() {
-        super.onPause()
-        if (::cartListApi.isInitialized && cartListApi != null) cartListApi.cancel()
-    }
 
     override fun onItemClickListener(position: Int) {
 
@@ -429,8 +346,7 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
             if (productList.isEmpty()) showNoDataAvailableScreen()
 
             toast(getString(R.string.message_item_removed))
-        }
-        catch (a:ArrayIndexOutOfBoundsException){
+        } catch (a: ArrayIndexOutOfBoundsException) {
 
         }
     }
@@ -460,7 +376,6 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
                     ) {
                         if (response.body()?.statusCode.equals("10")) {
 //                                toast(getString(R.string.message_product_added_to_cart))
-                            attemptCartApiCall()
                             toast(getString(R.string.message_product_added_to_cart))
                             productListAdapter.notifyDataSetChanged()
                         } else if (response.body()?.statusCode.equals("30")) {

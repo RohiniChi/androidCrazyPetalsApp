@@ -76,19 +76,20 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         }
         getCartResponseData.quantity -= 1
 
-            with(recyclerViewCart.adapter!!) {
-                val index = productList.indexOf(getCartResponseData)
-                if (index > -1) {
-                    callProductQuantityApi(
-                        getCartResponseData.quantity.toString(),
-                        productList[index].productId
-                    )
-                    notifyItemChanged(index)
-                }
+        with(recyclerViewCart.adapter!!) {
+            val index = productList.indexOf(getCartResponseData)
+            if (index > -1) {
+                callProductQuantityApi(
+                    getCartResponseData.quantity.toString(),
+                    productList[index].productId
+                )
+                notifyItemChanged(index)
+            }
         }
 
         updateData()
     }
+
     override fun onItemRemoved(getCartResponseData: GetCartResponse.Data) {
         if (!isNetworkAccessible()) {
 
@@ -249,9 +250,6 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
 
     override fun onResume() {
         materialButtonCheckout.isClickable = true
-        initializeViews()
-        attemptApiCall()
-        attemptTotalPriceApi()
         super.onResume()
     }
 

@@ -83,7 +83,6 @@ class MyOrderFragment : BaseFragment(), EventListener {
         initializeTheme()
         initializeViews()
         getMyOrders()
-        attemptCartApiCall()
     }
 
     private fun initializeTheme() {
@@ -301,8 +300,7 @@ class MyOrderFragment : BaseFragment(), EventListener {
             cartBadge = CountDrawable(activity!!)
         }
 
-        var cartCountText = SharedPreferences.getInstance(activity!!)
-            .getStringValue(SHARED_PREFERENCES_CART_COUNT)!!
+        var cartCountText = SharedPreferences.getInstance(activity!!).getCartCountString()!!
 
         if (cartCountText == "10") {
             cartCountText = "9+"
@@ -409,7 +407,6 @@ class MyOrderFragment : BaseFragment(), EventListener {
     override fun onResume() {
         super.onResume()
         activity!!.invalidateOptionsMenu()
-        attemptCartApiCall()
     }
 
     override fun onItemClickListener(position: Int) {
