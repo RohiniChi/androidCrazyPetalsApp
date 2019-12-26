@@ -31,8 +31,6 @@ import com.plugable.mcommerceapp.cpmvp1.ui.adapters.FilterAdapter
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ProductListAdapter
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
@@ -110,8 +108,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
             cartBadge = CountDrawable(this)
         }
 
-        var cartCountText = SharedPreferences.getInstance(this)
-            .getStringValue(SHARED_PREFERENCES_CART_COUNT)!!
+        var cartCountText = SharedPreferences.getInstance(this).getCartCountString()!!
 
         if (cartCountText == "10") {
             cartCountText = "9+"

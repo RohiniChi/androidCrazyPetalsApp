@@ -28,7 +28,6 @@ import com.plugable.mcommerceapp.cpmvp1.ui.adapters.HelpSliderAdapter
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.LimitedCategoryListAdapter
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_LAST_NOTIFICATION_TIME
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_NOTIFICATION_COUNT
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList
@@ -205,10 +204,8 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
             })
         } else {
-            SharedPreferences.getInstance(activity!!).setStringValue(
-                SHARED_PREFERENCES_CART_COUNT,
-                "0"
-            )
+            SharedPreferences.getInstance(activity!!)
+                .setCartCountString("0")
         }
     }
 

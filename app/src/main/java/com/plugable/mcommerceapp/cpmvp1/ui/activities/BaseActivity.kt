@@ -35,5 +35,13 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    fun decrementCartCount() {
+        var count = SharedPreferences.getInstance(this)
+            .getCartCountString()!!.toInt()
+
+        SharedPreferences.getInstance(this).setCartCountString((count - 1).toString())
+
+    }
+
 
 }

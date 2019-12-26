@@ -34,7 +34,6 @@ import com.plugable.mcommerceapp.cpmvp1.ui.activities.OrderDetailActivity
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.MyOrderAdapter
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
@@ -320,61 +319,6 @@ class MyOrderFragment : BaseFragment(), EventListener {
         if (::cartListApi.isInitialized && cartListApi != null) cartListApi.cancel()
     }
 
-    private fun attemptCartApiCall() {
-        if (activity!!.isNetworkAccessible()) {
-            if (SharedPreferences.getInstance(activity!!).isUserLoggedIn) {
-
-                val applicationUserId =
-                    SharedPreferences.getInstance(activity!!)
-                        .getStringValue(IntentFlags.APPLICATION_USER_ID)
-                App.HostUrl = SharedPreferences.getInstance(activity!!).hostUrl!!
-                val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-                cartListApi = clientInstance.getCartApi(applicationUserId!!.toInt())
-
-                cartListApi.enqueue(object : Callback<GetCartResponse> {
-                    override fun onFailure(call: Call<GetCartResponse>, t: Throwable) {
-                        if (isVisible) toast(getString(R.string.message_something_went_wrong))
-                    }
-
-                    override fun onResponse(
-                        call: Call<GetCartResponse>,
-                        response: Response<GetCartResponse>
-                    ) {
-                        if (response.body()?.statusCode.equals("10")) {
-
-                            if (!isVisible) {
-                                return
-                            }
-
-                            if (response.body()!!.data.isNotEmpty()) {
-
-                                SharedPreferences.getInstance(activity!!).setStringValue(
-                                    SHARED_PREFERENCES_CART_COUNT,
-                                    response.body()!!.count.toString()
-                                )
-                            } else {
-                                SharedPreferences.getInstance(activity!!).setStringValue(
-                                    SHARED_PREFERENCES_CART_COUNT,
-                                    response.body()!!.count.toString()
-                                )
-                            }
-                        } /*else {
-                        toast(getString(R.string.message_something_went_wrong))
-                    }*/
-
-                    }
-
-                })
-            } else {
-                SharedPreferences.getInstance(activity!!).setStringValue(
-                    SHARED_PREFERENCES_CART_COUNT,
-                    "0"
-                )
-            }
-        } else {
-            toast(getString(R.string.check_internet_connection))
-        }
-    }
 
     object LastClickTimeSingleton {
         var lastClickTime: Long = 0

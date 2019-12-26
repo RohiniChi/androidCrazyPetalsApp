@@ -29,7 +29,10 @@ import com.plugable.mcommerceapp.cpmvp1.callbacks.OnFavoriteListener
 import com.plugable.mcommerceapp.cpmvp1.callbacks.SetOnBottomReachedListener
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.db.AppDatabase
-import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.*
+import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.ProductDetail
+import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.Products
+import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.RequestAddToCart
+import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.ResponseAddToCart
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.webservices.ProjectApi
 import com.plugable.mcommerceapp.cpmvp1.registration.LoginActivity
 import com.plugable.mcommerceapp.cpmvp1.ui.activities.ProductDetailActivity.Companion.productDetailActivity
@@ -39,8 +42,6 @@ import com.plugable.mcommerceapp.cpmvp1.ui.adapters.ProductListAdapter
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.SizeAdapter
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.cartItemList
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
@@ -204,7 +205,6 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutCartIcon.isClickable = true
         buttonPlaceOrder.isClickable = true
     }
-
 
 
     private fun callProductDetailApi(productId: Int) {
@@ -915,8 +915,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         ) {
                             buttonPlaceOrder.isClickable = true
                             buttonAddToCart.isClickable = true
-                            incrementCartCount()
-                            setCartBadge()
+
                             toast(response.body()!!.message)
                         }
                     }

@@ -20,7 +20,6 @@ import com.plugable.mcommerceapp.cpmvp1.ui.adapters.CartAdapter
 import com.plugable.mcommerceapp.cpmvp1.ui.adapters.CartItemActionListener
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.cpmvp1.utils.constants.SharedPreferences.SHARED_PREFERENCES_CART_COUNT
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.WebApi
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
@@ -105,6 +104,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                 productList.remove(getCartResponseData)
                 notifyItemRemoved(index)
             }
+            decrementCartCount()
             toast("Item removed successfully")
         }
         updateData()
@@ -214,17 +214,13 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                             productList.add(it)
                         }
                         cartAdapter.notifyDataSetChanged()
-                        SharedPreferences.getInstance(this@CartActivity).setStringValue(
-                            SHARED_PREFERENCES_CART_COUNT,
-                            productList.size.toString()
-                        )
+                        SharedPreferences.getInstance(this@CartActivity)
+                            .setCartCountString(productList.size.toString())
                         progressBarCartList.hide()
 
                     } else {
-                        SharedPreferences.getInstance(this@CartActivity).setStringValue(
-                            SHARED_PREFERENCES_CART_COUNT,
-                            "0"
-                        )
+                        SharedPreferences.getInstance(this@CartActivity)
+                            .setCartCountString("0")
                     }
                     updateData()
                 } else {
@@ -250,6 +246,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
 
     override fun onResume() {
         materialButtonCheckout.isClickable = true
+
         super.onResume()
     }
 
@@ -359,21 +356,6 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         txtToolbarTitle.text = "Cart"
         imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
-    }
-
-    override fun onBackPressed() {
-        if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.WISHLIST) {
-            startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_wishList)
-            finish()
-        } else if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.ORDER_DETAIL) {
-            startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_my_order)
-            finish()
-        } else if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.HOME_FRAGMENT) {
-            startActivity<DashboardActivity>(IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_home)
-            finish()
-        } else {
-            finish()
-        }
     }
 
     override fun onClick(view: View?) {
