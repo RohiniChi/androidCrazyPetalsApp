@@ -372,7 +372,8 @@
 
     <string name="pay_u_merchant_key">P74gM77w</string>
     <string name="pay_u_merchant_id">6849785</string>
-    <string name="pay_u_success_url">https://www.plug-able.com</string>
+    <!--<string name="pay_u_success_url">https://www.plug-able.com</string>-->
+    <string name="pay_u_success_url">http://crazypetals.com/</string>
     <string name="pay_u_failed_url">https://www.omnibridge.com</string>
     <string name="pay_u_merchant_salt">yTJSyR18B0</string>
 
