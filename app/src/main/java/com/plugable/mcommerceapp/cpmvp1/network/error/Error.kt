@@ -47,7 +47,7 @@ class Error(private val error: Throwable?) : Throwable(error) {
 
     companion object {
         private const val DEFAULT_ERROR_MESSAGE = "Something went wrong! Please try again."
-        private const val NETWORK_ERROR_MESSAGE = "No Internet Connection!"
+        private const val NETWORK_ERROR_MESSAGE ="Oops! No Internet Connection"
         private const val ERROR_MESSAGE_HEADER = "Error-Message"
     }
 }

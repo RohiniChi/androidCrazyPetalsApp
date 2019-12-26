@@ -49,6 +49,8 @@ import retrofit2.Response
 class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventListener {
 
 
+    private lateinit var placeOrderResponse: PlaceOrderResponse
+    private var orderId = 0
     private val productList = ArrayList<GetCartResponse.Data>()
     var ordersList = ArrayList<OrderItems.Data.Items>()
     var address: AddressListResponse.Data? = null
@@ -59,7 +61,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     private var mPaymentParams: PayUmoneySdkInitializer.PaymentParam? = null
     private var isTestMode: Boolean = true
     private var totalPrice = "0"
-    var transctionId = ""
+    var transactionId = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_summary)
@@ -86,7 +88,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         textViewTermsAndConditions.isClickable = true
         checkboxInstructions.isClickable = true
-        materialButtonOrderSummaryPlaceOrder.isClickable = false
+        materialButtonOrderSummaryPlaceOrder.isClickable = true
 
         checkBoxCheckListener()
         loadData()
@@ -106,8 +108,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
                     Color.GRAY
                 )
-//                materialButtonOrderSummaryPlaceOrder.isClickable = false
-
+                materialButtonOrderSummaryPlaceOrder.isClickable = true
             }
         }
 
@@ -276,12 +277,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                             ApplicationThemeUtils.SECONDARY_COLOR
                         )
                     )
-
-
-                        placeOrder()
-
-
-
+                    placeOrder()
                 } else {
                     materialButtonOrderSummaryPlaceOrder.isClickable = true
                     toast("Please agree to terms and conditions")
@@ -306,7 +302,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
     private fun placeOrder() {
         checkboxInstructions.isClickable = false
-        materialButtonOrderSummaryPlaceOrder.isClickable = false
+        materialButtonOrderSummaryPlaceOrder.isClickable = true
         if (!isNetworkAccessible()) {
             toast(R.string.oops_no_internet_connection)
             return
@@ -343,6 +339,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         callback.enqueue(object : Callback<PlaceOrderResponse> {
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
                 materialButtonOrderSummaryPlaceOrder.isEnabled = true
+                materialButtonOrderSummaryPlaceOrder.isClickable = false
                 progressBar.hide()
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -351,26 +348,34 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 call: Call<PlaceOrderResponse>,
                 response: Response<PlaceOrderResponse>
             ) {
-                if (response.body()?.statusCode.equals("10")) {
-                    progressBar.hide()
-                    materialButtonOrderSummaryPlaceOrder.isClickable = false
+                when {
+                    response.body()?.statusCode.equals("10") -> {
+                        progressBar.hide()
+                        materialButtonOrderSummaryPlaceOrder.isClickable = false
 
-                    //transctionId=order id
-                    initiatePayment(
-                        address!!.name, "cupatil@mailinator.com",
-                        address!!.mobileNumber, totalPrice
-                    )
-
-                    //startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
-                } else if (response.body()?.statusCode.equals("30")) {
-                    progressBar.hide()
-//                    toast(response.body()!!.message)
-                    showAlert()
-                    materialButtonOrderSummaryPlaceOrder.isClickable = true
-                } else {
-                    materialButtonOrderSummaryPlaceOrder.isClickable = true
-                    progressBar.hide()
-                    toast(getString(R.string.message_something_went_wrong))
+                        orderId = response.body()!!.orderId
+                        val emailId =
+                            SharedPreferences.getInstance(this@OrderSummaryActivity).getProfile()
+                                ?.emailId
+                        initiatePayment(
+                            address!!.name, emailId!!,
+                            address!!.mobileNumber, totalPrice,
+                            response.body()!!.orderNumber
+                        )
+                        //startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
+                        placeOrderResponse = response.body()!!
+                    }
+                    response.body()?.statusCode.equals("30") -> {
+                        progressBar.hide()
+                        //                    toast(response.body()!!.message)
+                        showAlert()
+                        materialButtonOrderSummaryPlaceOrder.isClickable = true
+                    }
+                    else -> {
+                        materialButtonOrderSummaryPlaceOrder.isClickable = true
+                        progressBar.hide()
+                        toast(getString(R.string.message_something_went_wrong))
+                    }
                 }
             }
         })
@@ -452,12 +457,13 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         nameData: String,
         emailData: String,
         phoneData: String,
-        amountData: String
+        amountData: String,
+        orderNumber: String
     ) {
-        transctionId = System.currentTimeMillis().toString()
+        transactionId = orderNumber
         val builder = PayUmoneySdkInitializer.PaymentParam.Builder()
         builder.setAmount(amountData)                          // Payment amount
-            .setTxnId(transctionId)                                             // Transaction ID
+            .setTxnId(transactionId)                                             // Transaction ID
             .setPhone(phoneData)                                           // User Phone number
             .setProductName("Android test")                   // Product Name or description
             .setFirstName(nameData)                              // User First name
@@ -495,23 +501,65 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         // Result Code is -1 send from Payumoney activity
         Log.d("MainActivity", "request code $requestCode resultcode $resultCode")
+        materialButtonOrderSummaryPlaceOrder.isClickable = true
+        hideProgress()
+        if (isNetworkAccessible()){
+            updateTransactionStatus(requestCode, resultCode, data)
+        }
+        else{
+           showNetworkAlert(requestCode, resultCode, data)
+        }
+    }
+
+    private fun showNetworkAlert(requestCode: Int, resultCode: Int, data: Intent?) {
+        alert(getString(R.string.oops_no_internet_connection)){
+            isCancelable=false
+            positiveButton(getString(R.string.try_again)){
+                if (isNetworkAccessible()) {
+                    updateTransactionStatus(requestCode, resultCode, data)
+                }
+                else{
+                    showNetworkAlert(requestCode, resultCode, data)
+                }
+            }
+        }.show().apply {
+            getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.let {
+                it.allCaps=false
+                it.textColor = Color.BLUE
+                it.background =
+                    ContextCompat.getDrawable(
+                        this@OrderSummaryActivity,
+                        android.R.color.transparent
+                    )
+            }
+        }
+    }
+
+
+    private fun updateTransactionStatus(requestCode: Int, resultCode: Int, data: Intent?) {
+
         if (requestCode == PayUmoneyFlowManager.REQUEST_CODE_PAYMENT && resultCode == RESULT_OK && data != null) {
             val transactionResponse = data.getParcelableExtra<TransactionResponse>(
                 PayUmoneyFlowManager
                     .INTENT_EXTRA_TRANSACTION_RESPONSE
             )
 
-            val resultModel = data.getParcelableExtra<ResultModel>(PayUmoneyFlowManager.ARG_RESULT)
+            val resultModel =
+                data.getParcelableExtra<ResultModel>(PayUmoneyFlowManager.ARG_RESULT)
 
             // Check which object is non-null
-            if (transactionResponse?.getPayuResponse() != null) {
+            if (transactionResponse.getPayuResponse() != null) {
                 transactionResponse.transactionDetails
                 if (transactionResponse.transactionStatus == TransactionResponse.TransactionStatus.SUCCESSFUL) {
                     //Success Transaction
-                  // call update order api
-                    toast("Transaction successful").show()
+                    // call update order api
+                    toast("Transaction successful")
+                    showProgress()
+                    updatePaymentStatus(orderId, "2")
                 } else {
-                    toast("Transaction unsuccessful").show()
+                    toast("Transaction unsuccessful")
+                    showProgress()
+                    updatePaymentStatus(orderId, "5")
 
                     //Failure Transaction
                 }
@@ -521,6 +569,46 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             } else {
                 Log.d(tag, "Both objects are null!")
             }
+        }
+
+    }
+
+    private fun updatePaymentStatus(orderId: Int, paymentStatusId: String) {
+        if (isNetworkAccessible()) {
+            val updateStatusRequest = UpdatePaymentRequest(
+                orderId.toString(),
+                paymentStatusId
+            )
+            App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
+            val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
+            val call = clientInstance.updatePaymentStatus(updateStatusRequest)
+            call.enqueue(object : Callback<UpdatePaymentResponse> {
+                override fun onFailure(call: Call<UpdatePaymentResponse>, t: Throwable) {
+                    materialButtonOrderSummaryPlaceOrder.isClickable = true
+                    hideProgress()
+                    toast(getString(R.string.message_something_went_wrong))
+                }
+
+                override fun onResponse(
+                    call: Call<UpdatePaymentResponse>,
+                    response: Response<UpdatePaymentResponse>
+                ) {
+                    if (response.body()!!.statusCode.equals("10")) {
+                        hideProgress()
+                        materialButtonOrderSummaryPlaceOrder.isClickable = true
+                        startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to placeOrderResponse)
+                    } else {
+                        hideProgress()
+                        materialButtonOrderSummaryPlaceOrder.isClickable = true
+                        toast(response.body()!!.message)
+                    }
+                }
+
+            })
+        } else {
+            hideProgress()
+            materialButtonOrderSummaryPlaceOrder.isClickable = true
+            toast(getString(R.string.oops_no_internet_connection))
         }
     }
 

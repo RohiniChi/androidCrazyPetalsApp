@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
     tools:context=".ui.activities.BookAppointmentActivity">
 
     <include
@@ -37,8 +38,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_3sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,15 +48,15 @@
         <ImageView
             android:id="@+id/imageViewAppointmentType"
             android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_appointment"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_appointment_type_icon"
             app:layout_constraintBottom_toBottomOf="@id/layoutSpinnerAppointmentType"
             app:layout_constraintEnd_toStartOf="@id/layoutSpinnerAppointmentType"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/layoutSpinnerAppointmentType" />
 
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutSpinnerAppointmentType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -67,14 +68,58 @@
             app:layout_constraintStart_toEndOf="@id/imageViewAppointmentType"
             app:layout_constraintTop_toTopOf="parent">
 
-            <Spinner
-                android:id="@+id/spinnerAppointmentType"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/textViewAppointmentType"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/_30sdp"
-                android:spinnerMode="dialog"/>
+                android:ellipsize="end"
+                android:gravity="start"
+                android:padding="@dimen/_8sdp"
+                android:focusable="false"
+                android:singleLine="true"
+                android:text="@string/text_select_appt_type"
+                app:layout_constraintEnd_toStartOf="@id/imgViewArrow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/imgViewArrow"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="@dimen/_8sdp"
+               android:src="@drawable/ic_appointment_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/textViewAppointmentType"
+                app:layout_constraintTop_toTopOf="@id/textViewAppointmentType" />
 
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!--    <TextView
+                android:id="@+id/textViewAppointmentType"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_30sdp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:padding="@dimen/_8sdp"
+                android:singleLine="true"
+                android:background="@drawable/rounded_background_unselected"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/text_select_appt_type"
+                app:layout_constraintStart_toEndOf="@id/imageViewAppointmentType"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@color/colorWhite"
+                android:src="@drawable/ic_appointment_type"
+                android:layout_marginEnd="@dimen/_8sdp"
+                app:layout_constraintBottom_toBottomOf="@id/textViewAppointmentType"
+                app:layout_constraintEnd_toEndOf="@id/textViewAppointmentType"
+                app:layout_constraintTop_toTopOf="@id/textViewAppointmentType" />
+    -->
         <TextView
             android:id="@+id/textViewSpinnerTypeError"
             android:layout_width="0dp"
@@ -89,7 +134,7 @@
             android:id="@+id/imageViewDate"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/ic_calendar"
+            android:src="@drawable/ic_calender_appt"
             app:layout_constraintBottom_toBottomOf="@id/editTextDate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/editTextDate" />
@@ -104,6 +149,7 @@
             android:editable="false"
             android:hint=" Select date for appointment"
             android:padding="@dimen/_8sdp"
+            android:focusable="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textCursorDrawable="@null"
             app:layout_constraintEnd_toEndOf="parent"
@@ -137,6 +183,7 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/rounded_background_unselected"
             android:editable="false"
+            android:focusable="false"
             android:hint=" Select time for appointment"
             android:padding="@dimen/_8sdp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -159,7 +206,7 @@
             android:id="@+id/imageViewAppointmentContact"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/ic_appointment_call"
+            android:src="@drawable/ic_telephone"
             app:layout_constraintBottom_toBottomOf="@id/editTextphoneNumber"
             app:layout_constraintEnd_toStartOf="@id/editTextphoneNumber"
             app:layout_constraintStart_toStartOf="parent"
@@ -175,6 +222,7 @@
             android:background="@drawable/rounded_background_unselected"
             android:inputType="phone"
             android:maxLength="10"
+            android:focusable="false"
             android:padding="@dimen/_8sdp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textCursorDrawable="@null"
@@ -196,7 +244,7 @@
             android:id="@+id/imageViewNotepad"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/ic_notepad"
+            android:src="@drawable/ic_edit"
             app:layout_constraintBottom_toBottomOf="@id/textViewAppointmentDescription"
             app:layout_constraintEnd_toStartOf="@id/textViewAppointmentDescription"
             app:layout_constraintStart_toStartOf="parent"
@@ -222,9 +270,11 @@
             android:background="@drawable/rounded_background_unselected"
             android:ellipsize="end"
             android:gravity="top"
+            android:maxLength="150"
             android:hint="@string/hint_appoinment_agenda"
             android:inputType="text"
             android:maxLines="4"
+            android:focusable="false"
             android:padding="@dimen/_8sdp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textCursorDrawable="@null"

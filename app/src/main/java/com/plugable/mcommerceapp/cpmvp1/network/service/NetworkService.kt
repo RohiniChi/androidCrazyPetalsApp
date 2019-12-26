@@ -1,11 +1,9 @@
 package com.plugable.mcommerceapp.cpmvp1.network.service
 
 
-import com.plugable.mcommerceapp.cpmvp1.network.presenter.AppointmentPresenter
-import com.plugable.mcommerceapp.cpmvp1.network.view.AppointmentView
 import com.plugable.mcommerceapp.cpmvp1.BuildConfig
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
-import okhttp3.*
+import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory

@@ -6,48 +6,53 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import androidx.recyclerview.widget.RecyclerView
 import com.plugable.mcommerceapp.cpmvp1.R
+import com.plugable.mcommerceapp.cpmvp1.callbacks.OnButtonClickListener
 import com.plugable.mcommerceapp.cpmvp1.callbacks.OnItemCheckListener
+import com.plugable.mcommerceapp.cpmvp1.callbacks.OnListChekedListner
 import com.plugable.mcommerceapp.cpmvp1.network.model.GetAppointmentTypeResponse
-import kotlinx.android.synthetic.main.spinner_item.view.*
 
 class SpinnerAdapter(
-    context: Context,
-    private val onItemCheckListener: OnItemCheckListener,
+    private val context: Context,
+    private val onItemCheckListener: OnListChekedListner,
     private var checkedId: HashSet<Int>,
-    appointmentTypeList: List<GetAppointmentTypeResponse.AppointmentTypeData>
-) : ArrayAdapter<GetAppointmentTypeResponse.AppointmentTypeData>(context ,0,appointmentTypeList) {
+    private val appointmentTypeList: ArrayList<GetAppointmentTypeResponse.AppointmentTypeData>
+) : RecyclerView.Adapter<SpinnerAdapter.MyViewHolder>() {
 
-    override fun getView(position: Int, recycledView: View?, parent: ViewGroup): View {
-        return this.createView(position, recycledView, parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpinnerAdapter.MyViewHolder {
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.spinner_item, parent, false)
+        return MyViewHolder(view)
     }
-    override fun getDropDownView(position: Int, recycledView: View?, parent: ViewGroup): View {
-        return this.createView(position, recycledView, parent)
+
+    override fun getItemCount(): Int {
+        return appointmentTypeList.size
     }
-    private fun createView(position: Int, recycledView: View?, parent: ViewGroup): View {
-        val typeList = getItem(position)
-        val view = recycledView ?: LayoutInflater.from(context).inflate(
-            R.layout.spinner_item,
-            parent,
-            false
-        )
-        view.checkBoxSpinner.text= typeList?.name
 
-        view.checkBoxSpinner.isChecked=typeList!!.isSelected
-        view.checkBoxSpinner.buttonTintList= ColorStateList.valueOf(Color.BLACK)
-        view.checkBoxSpinner.isChecked=checkedId.contains(typeList.appointmentTypeId)
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        holder.itemView.tag = appointmentTypeList[position]
+        holder.checklistSpinner.text = appointmentTypeList[position].name
+        holder.checklistSpinner.isChecked=appointmentTypeList[position].isSelected
+        holder.checklistSpinner.buttonTintList= ColorStateList.valueOf(Color.BLACK)
+        holder.checklistSpinner.isChecked=checkedId.contains(appointmentTypeList[position].appointmentTypeId)
 
-        view.checkBoxSpinner.setOnClickListener {
-            if (view.checkBoxSpinner.isChecked){
-                onItemCheckListener.onItemCheck(typeList.appointmentTypeId,true)
+        holder.checklistSpinner.setOnClickListener {
+            if (holder.checklistSpinner.isChecked){
+                onItemCheckListener.onListCheck(appointmentTypeList[position].appointmentTypeId,appointmentTypeList[position].name,true)
             }
             else{
-                onItemCheckListener.onItemCheck(typeList.appointmentTypeId,false)
+                onItemCheckListener.onListCheck(appointmentTypeList[position].appointmentTypeId,appointmentTypeList[position].name,false)
             }
         }
 
-        return view
+    }
+
+    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        var checklistSpinner = itemView.findViewById(R.id.checkBoxSpinner) as CheckBox
+
     }
 
 }

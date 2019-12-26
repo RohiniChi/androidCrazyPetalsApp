@@ -130,6 +130,7 @@ object IntentFlags {
     const val PRODUCT_DETAIL = "ProductDetail"
     const val WISHLIST = "Wishlist"
     const val ORDER_DETAIL = "OrderDetail"
+    const val APPOINTMENT_LIST = "AppointmentList"
     const val PRODUCT_ID = "ProductId"
     const val SHOULD_GO_TO_DASHBOARD = "should.go.to.dashboard"
     const val FRAGMENT_TO_BE_LOADED = "fragment.to.be.loaded"

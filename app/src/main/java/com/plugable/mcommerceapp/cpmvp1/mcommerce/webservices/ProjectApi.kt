@@ -235,6 +235,9 @@ interface ProjectApi {
     @POST("/api/checkout/placeorder")
     fun placeOrder(@Body placeOrderRequest: PlaceOrderRequest): Call<PlaceOrderResponse>
 
+    @POST(" api/checkout/updatePaymentStatus")
+    fun updatePaymentStatus(@Body updatePaymentRequest: UpdatePaymentRequest): Call<UpdatePaymentResponse>
+
     @POST("api/Checkout/RemoveFromCart")
     fun removeFromCart(@Body removeFromCartRequest: RemoveFromCartRequest): Call<ResponseAddToCart>
 
