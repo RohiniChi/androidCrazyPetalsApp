@@ -311,10 +311,11 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         productList.forEach {
             productDetails.add(
                 PlaceOrderRequest.OrderDetail(
-                    "1",
+//                    if (it.colorId==null) it.colorId else it.colorId,
+                    if (it.colorId == null) 0.toString() else it.colorId,
                     it.productId.toString(),
                     it.quantity.toString(),
-                    "1",
+                    if (it.size == null) 0.toString() else it.sizeId,
                     if (it.originalPrice == null) it.discountedPrice.toString() else it.originalPrice.toString()
                 )
             )
@@ -362,8 +363,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                             SharedPreferences.getInstance(this@OrderSummaryActivity).getProfile()
                                 ?.emailId
                         initiatePayment(
-                            address!!.name, emailId!!,
-                            address!!.mobileNumber, totalPrice,
+                            address!!.name,
+                            emailId!!,
+                            address!!.mobileNumber,
+                            totalPrice,
                             response.body()!!.orderNumber
                         )
                         //startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
@@ -372,7 +375,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     response.body()?.statusCode.equals("30") -> {
                         progressBar.hide()
                         //                    toast(response.body()!!.message)
-                        showAlert()
+                        showAlert(response.body()!!.message)
                         materialButtonOrderSummaryPlaceOrder.isClickable = true
                     }
                     else -> {
@@ -385,8 +388,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         })
     }
 
-    private fun showAlert() {
-        alert(getString(R.string.alert_message_place_order)) {
+    private fun showAlert(message: String) {
+        alert(message) {
             yesButton { }
             isCancelable = false
         }.show().apply {
