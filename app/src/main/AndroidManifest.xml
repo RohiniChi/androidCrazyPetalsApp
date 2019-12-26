@@ -28,8 +28,10 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup,android:usesCleartextTraffic"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activities.AppointmentDetailActivity"></activity>
-        <activity android:name=".ui.activities.BookAppointmentActivity" />
+        <activity android:name=".ui.activities.AppointmentDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.BookAppointmentActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activities.InstructionActivity"
             android:screenOrientation="portrait" />
