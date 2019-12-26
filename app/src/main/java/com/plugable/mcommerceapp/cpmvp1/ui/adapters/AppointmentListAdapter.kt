@@ -50,7 +50,7 @@ class AppointmentListAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.itemView.tvAppointmentNo.text="#"+appointmentList[position].appointmentNumber
         holder.itemView.tvAppointmentDate.text=appointmentList[position].appointmentDate
-        holder.itemView.tvAppointmentTime.text=appointmentList[position].fromTime
+        holder.itemView.tvAppointmentTime.text=appointmentList[position].appointmentTime
         holder.itemView.tvAppointmentStatus.text="Status : "+appointmentList[position].status
     }
 }
