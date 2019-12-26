@@ -19,6 +19,8 @@ data class GetCartResponse(
         var quantity: Int,
         val shortDescription: String,
         val size: String,
+        var colorId: String,
+        var sizeId: String,
         val availableQuantity: Int,
         val isAvailable: Boolean
     ) {
