@@ -116,6 +116,10 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
             } else {
                 toast("Item not found")
             }
+
+            if(addressList.isEmpty()){
+                deliveryDateLayout.hide()
+            }
         }
     }
 
