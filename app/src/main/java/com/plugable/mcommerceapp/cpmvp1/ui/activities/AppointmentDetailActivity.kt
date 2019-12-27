@@ -40,7 +40,9 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
 
     private fun initializeViews() {
         imgToolbarHomeLayout.setOnClickListener(this)
-
+        btnServerError.setOnClickListener(this)
+        btnTryAgain.setOnClickListener(this)
+        btnNoData.setOnClickListener(this)
 
         val appointmentId = intent.getIntExtra(IntentFlags.APPOINTMENT_ID, 0)
         if (isNetworkAccessible()) {
@@ -100,6 +102,18 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
             R.id.imgToolbarHomeLayout -> {
                 onBackPressed()
             }
+            R.id.btnTryAgain -> {
+                initializeViews()
+            }
+
+            R.id.btnNoData -> {
+                initializeViews()
+            }
+
+            R.id.btnServerError -> {
+                initializeViews()
+            }
+
         }
     }
 
