@@ -30,6 +30,9 @@ import com.plugable.mcommerceapp.cpmvp1.utils.validation.isValidMobileNumber
 import com.plugable.mcommerceapp.cpmvp1.utils.validation.onTextChanged
 import kotlinx.android.synthetic.main.activity_book_appointment.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
+import kotlinx.android.synthetic.main.layout_network_condition.*
+import kotlinx.android.synthetic.main.layout_no_data_condition.*
+import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
@@ -60,9 +63,13 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
     }
 
     private fun initializeViews() {
+
         imgToolbarHomeLayout.setOnClickListener(this)
         buttonAddAppointment.setOnClickListener(this)
         layoutSpinnerAppointmentType.setOnClickListener(this)
+        btnServerError.setOnClickListener(this)
+        btnTryAgain.setOnClickListener(this)
+        btnNoData.setOnClickListener(this)
 
         editTextDate.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
@@ -82,7 +89,7 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
                         val myFormat = "dd/MM/yyyy"
                         val sdf = SimpleDateFormat(myFormat, Locale.ENGLISH)
                         /*editTextDate.text = Editable.Factory.getInstance()
-                            .newEditable("$dayOfMonth ${DateFormatSymbols.getInstance().months[month]} $year")*/
+                        .newEditable("$dayOfMonth ${DateFormatSymbols.getInstance().months[month]} $year")*/
                         editTextDate.setText(sdf.format(calendar.time))
                     },
                     year,
@@ -138,17 +145,16 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
 
         val contactNumber = SharedPreferences.getInstance(this).getProfile()?.mobileNumber
         editTextphoneNumber.setText(contactNumber)
+
         if (isNetworkAccessible()) {
             if (isFinishing) {
                 return
             }
             appointmentPresenter.getAppointmentType()
-        } else {
-            showNetworkCondition()
         }
-
         spinnerAdapter = SpinnerAdapter(this, this, checkedId, appointmentType)
         customDialog = CustomDialogApptType(this, this, spinnerAdapter)
+
     }
 
 
@@ -187,6 +193,7 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
             PorterDuff.Mode.MULTIPLY
         )
         setStatusBarColor()
+
     }
 
     override fun onResume() {
@@ -214,11 +221,14 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
             }
 
             R.id.layoutSpinnerAppointmentType -> {
-                customDialog?.show()
-                customDialog?.setCanceledOnTouchOutside(true)
+                if (isNetworkAccessible()) {
+                    customDialog?.show()
+                    customDialog?.setCanceledOnTouchOutside(true)
 
+                } else {
+                    toast(getString(R.string.oops_no_internet_connection))
+                }
             }
-
         }
     }
 
@@ -259,36 +269,53 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
     }
 
     override fun onGetAppointmentTypeSuccess(response: GetAppointmentTypeResponse) {
-
-        response.data.forEach {
-            appointmentType.add(it)
+        if (response.statusCode.equals("10")) {
+            response.data.forEach {
+                appointmentType.add(it)
+            }
+            spinnerAdapter.notifyDataSetChanged()
+        } else {
+            toast(getString(R.string.message_something_went_wrong))
         }
-        spinnerAdapter.notifyDataSetChanged()
     }
 
     override fun onBookAppointmentSuccess(response: BookAppointmentResponse) {
-        toast(response.message)
-        bookAppointmentResponse = response
-        if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.APPOINTMENT_LIST) {
-            if (intent.getStringExtra("ButtonClick").equals("ActionBookAppointment",true)) {
-                val returnIntent = Intent()
-                returnIntent.putExtra(IntentFlags.FRAGMENT_TO_BE_LOADED, R.id.nav_appointmentList)
-                returnIntent.putExtra("response", bookAppointmentResponse.data)
-                setResult(1, returnIntent)
+        if (response.statusCode.equals("10")) {
+            toast(response.message)
+            bookAppointmentResponse = response
+            if (intent.hasExtra(IntentFlags.REDIRECT_FROM) && intent.getStringExtra(IntentFlags.REDIRECT_FROM) == IntentFlags.APPOINTMENT_LIST) {
+                if (intent.getStringExtra("ButtonClick").equals("ActionBookAppointment", true)) {
+                    val returnIntent = Intent()
+                    returnIntent.putExtra(
+                        IntentFlags.FRAGMENT_TO_BE_LOADED,
+                        R.id.nav_appointmentList
+                    )
+                    returnIntent.putExtra("response", bookAppointmentResponse.data)
+                    setResult(1, returnIntent)
+                    finish()
+                } else if (intent.getStringExtra("ButtonClick").equals(
+                        "ButtonBookAppointment",
+                        true
+                    )
+                ) {
+                    val returnIntent = Intent()
+                    returnIntent.putExtra(
+                        IntentFlags.FRAGMENT_TO_BE_LOADED,
+                        R.id.nav_appointmentList
+                    )
+                    returnIntent.putExtra("response", bookAppointmentResponse.data)
+                    setResult(2, returnIntent)
+                    finish()
+                }
+            } else {
                 finish()
             }
-            else if (intent.getStringExtra("ButtonClick").equals("ButtonBookAppointment",true)){
-                val returnIntent = Intent()
-                returnIntent.putExtra(IntentFlags.FRAGMENT_TO_BE_LOADED, R.id.nav_appointmentList)
-                returnIntent.putExtra("response", bookAppointmentResponse.data)
-                setResult(2, returnIntent)
-                finish()
-            }
-        } else {
             finish()
+        } else {
+            toast(getString(R.string.message_something_went_wrong))
         }
-        finish()
     }
+
 
     override fun showProgress() {
         progressBarBookAppointment.show()
@@ -402,11 +429,6 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
         return true
     }
 
-    override fun onDestroy() {
-        appointmentPresenter.onStop()
-        super.onDestroy()
-    }
-
 
     override fun onListCheck(clickedId: Int, clickedName: String, isChecked: Boolean) {
         if (isChecked) {
@@ -437,6 +459,11 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
                 textViewSpinnerTypeError.invisible()
             }
         }
+    }
+
+    override fun onDestroy() {
+        appointmentPresenter.onStop()
+        super.onDestroy()
     }
 
 

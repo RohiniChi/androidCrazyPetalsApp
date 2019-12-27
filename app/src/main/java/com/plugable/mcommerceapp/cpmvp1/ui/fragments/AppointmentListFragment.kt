@@ -125,16 +125,21 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_add_appointment -> {
-                if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return true
-                else {
-                    val intent = Intent(activity, BookAppointmentActivity::class.java)
-                    intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.APPOINTMENT_LIST)
-                    intent.putExtra("ButtonClick", "ActionBookAppointment")
-                    startActivityForResult(intent, 1)
-                }
-                LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+                if (activity!!.isNetworkAccessible()) {
+                    if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return true
+                    else {
+                        val intent = Intent(activity, BookAppointmentActivity::class.java)
+                        intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.APPOINTMENT_LIST)
+                        intent.putExtra("ButtonClick", "ActionBookAppointment")
+                        startActivityForResult(intent, 1)
+                    }
+                    LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
 
+                } else {
+                    toast(getString(R.string.oops_no_internet_connection))
+                }
             }
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -142,18 +147,30 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.buttonBookAppointment -> {
-                if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
-                else {
-                    val intent = Intent(activity, BookAppointmentActivity::class.java)
-                    intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.APPOINTMENT_LIST)
-                    intent.putExtra("ButtonClick", "ButtonBookAppointment")
-                    startActivityForResult(intent, 2)
+                if (activity!!.isNetworkAccessible()) {
+                    if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
+                    else {
+                        val intent = Intent(activity, BookAppointmentActivity::class.java)
+                        intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.APPOINTMENT_LIST)
+                        intent.putExtra("ButtonClick", "ButtonBookAppointment")
+                        startActivityForResult(intent, 2)
+                    }
+                    LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+                } else {
+                    toast(getString(R.string.oops_no_internet_connection))
                 }
-                LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
 
             }
 
             R.id.btnTryAgain -> {
+                initializeViews()
+            }
+
+            R.id.btnNoData -> {
+                initializeViews()
+            }
+
+            R.id.btnServerError -> {
                 initializeViews()
             }
         }
