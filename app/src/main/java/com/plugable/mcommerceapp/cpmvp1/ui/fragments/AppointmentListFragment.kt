@@ -1,6 +1,5 @@
 package com.plugable.mcommerceapp.cpmvp1.ui.fragments
 
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -130,7 +129,7 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
                 else {
                     val intent = Intent(activity, BookAppointmentActivity::class.java)
                     intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.APPOINTMENT_LIST)
-                    intent.putExtra("ButtonClick","ActionBookAppointment")
+                    intent.putExtra("ButtonClick", "ActionBookAppointment")
                     startActivityForResult(intent, 1)
                 }
                 LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
@@ -147,7 +146,7 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
                 else {
                     val intent = Intent(activity, BookAppointmentActivity::class.java)
                     intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.APPOINTMENT_LIST)
-                    intent.putExtra("ButtonClick","ButtonBookAppointment")
+                    intent.putExtra("ButtonClick", "ButtonBookAppointment")
                     startActivityForResult(intent, 2)
                 }
                 LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
@@ -168,8 +167,7 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
                 appointmentArrayList.add(0, appointmentData)
                 appointmentListAdapter.notifyDataSetChanged()
             }
-        }
-        else{
+        } else {
             if (resultCode == 2 && data != null) {
                 val appointmentData: AppointmentData = data.getParcelableExtra("response")!!
                 appointmentArrayList.add(0, appointmentData)

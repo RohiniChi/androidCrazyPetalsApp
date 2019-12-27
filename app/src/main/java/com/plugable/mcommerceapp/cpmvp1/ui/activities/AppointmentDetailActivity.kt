@@ -18,15 +18,17 @@ import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreference
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.activity_appointment_detail.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
+import kotlinx.android.synthetic.main.layout_network_condition.*
+import kotlinx.android.synthetic.main.layout_no_data_condition.*
+import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.allCaps
-import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.toast
 
 class AppointmentDetailActivity : BaseActivity(), AppointmentView {
 
     private val appointmentPresenter = AppointmentPresenter(this)
     private lateinit var appointmentDetailAdapter: AppointmentDetailAdapter
-    private lateinit var appointTypeList:ArrayList<String>
+    private lateinit var appointTypeList: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,7 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
         val appointmentId = intent.getIntExtra(IntentFlags.APPOINTMENT_ID, 0)
         if (isNetworkAccessible()) {
             if (appointmentId != 0) {
-                if (isFinishing){
+                if (isFinishing) {
                     return
                 }
                 appointmentPresenter.getAppointmentDetail(appointmentId)
@@ -72,6 +74,9 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
             PorterDuff.Mode.MULTIPLY
         )
         setStatusBarColor()
+        btnTryAgain.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        btnNoData.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        btnServerError.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
     }
 
     override fun setToolBar(name: String) {
@@ -100,6 +105,7 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
 
     override fun onGetAppointmentDetailSuccess(response: AppointmentDetailResponse) {
         if (response.statusCode.equals("10")) {
+            showAppointmentListDetail()
             textViewAppointmentNo.text = "#".plus(response.data.appointmentNumber)
             textViewAppointmentDate.text = response.data.appointmentDate
             textViewAppointmentTime.text = response.data.appointmentTime
@@ -116,10 +122,44 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
                 LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             appointmentDetailAdapter = AppointmentDetailAdapter(this, appointTypeList)
             listViewAppointmentType.adapter = appointmentDetailAdapter
+        } else {
+            showServerErrorMessage()
         }
-        else{
-            toast(getString(R.string.message_something_went_wrong))
-        }
+    }
+
+    override fun showNetworkCondition() {
+        layoutNetworkCondition.show()
+        layoutServerError.hide()
+        layoutNoDataScreen.hide()
+        layoutDescription.hide()
+    }
+
+    override fun hideNetworkCondition() {
+        layoutNetworkCondition.hide()
+        layoutNoDataScreen.hide()
+        layoutDescription.hide()
+    }
+
+    override fun showServerErrorMessage() {
+        layoutNetworkCondition.hide()
+        layoutServerError.show()
+        layoutDescription.hide()
+        layoutNoDataScreen.hide()
+    }
+
+    override fun hideServerErrorMessage() {
+        layoutNetworkCondition.hide()
+        layoutServerError.hide()
+        layoutDescription.hide()
+        layoutNoDataScreen.hide()
+
+    }
+
+    fun showAppointmentListDetail() {
+        layoutNetworkCondition.hide()
+        layoutServerError.hide()
+        layoutDescription.show()
+        layoutNoDataScreen.hide()
     }
 
     override fun showProgress() {
@@ -131,10 +171,12 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
         toast(error.getErrorMessage())
 
     }
+
     override fun hideProgress() {
         progressBarAppointmentDetail.hide()
         this.enableWindowClicks()
     }
+
     override fun onDestroy() {
         appointmentPresenter.onStop()
         super.onDestroy()
