@@ -123,7 +123,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginStart="8dp"
-                        android:src="@drawable/ic_cart_icon_black"
+                        android:src="@drawable/custom_cart_menu"
                         app:layout_constraintBottom_toBottomOf="@id/layoutCartIcon"
                         app:layout_constraintEnd_toEndOf="@id/layoutCartIcon"
                         app:layout_constraintStart_toStartOf="@id/layoutCartIcon"

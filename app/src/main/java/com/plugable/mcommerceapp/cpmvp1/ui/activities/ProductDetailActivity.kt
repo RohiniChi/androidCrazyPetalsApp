@@ -193,7 +193,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 .setBadgeBackground(resources.getDrawable(R.drawable.badge_background_circle))
                 .setBadgeTextStyle(Typeface.NORMAL)
                 .setBadgePosition(BadgePosition.TOP_RIGHT)
-                .setFixedBadgeRadius(20.toFloat()).badgeTextSize = 8.toFloat()
+                .setFixedBadgeRadius(25.toFloat()).badgeTextSize = 8.toFloat()
         }
 //        cartIcon.visibleBadge(cartCount!!.toInt()>0)
 
