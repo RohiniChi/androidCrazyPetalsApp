@@ -59,7 +59,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/layoutSpinnerAppointmentType"
                 app:layout_constraintEnd_toStartOf="@id/layoutSpinnerAppointmentType"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/layoutSpinnerAppointmentType" />
+                app:layout_constraintTop_toTopOf="@id/layoutSpinnerAppointmentType"
+                tools:ignore="ContentDescription" />
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -95,7 +96,8 @@
                     android:src="@drawable/ic_appointment_type"
                     app:layout_constraintBottom_toBottomOf="@id/textViewAppointmentType"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/textViewAppointmentType" />
+                    app:layout_constraintTop_toTopOf="@id/textViewAppointmentType"
+                    tools:ignore="ContentDescription" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -117,7 +119,8 @@
                 android:src="@drawable/ic_calender_appt"
                 app:layout_constraintBottom_toBottomOf="@id/editTextDate"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/editTextDate" />
+                app:layout_constraintTop_toTopOf="@id/editTextDate"
+                tools:ignore="ContentDescription" />
 
             <EditText
                 android:id="@+id/editTextDate"
@@ -127,13 +130,14 @@
                 android:layout_marginTop="24dp"
                 android:background="@drawable/rounded_background_unselected"
                 android:editable="false"
-                android:hint=" Select date for appointment"
+                android:hint="@string/book_appt_hint_date"
                 android:padding="@dimen/_8sdp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textCursorDrawable="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imageViewDate"
-                app:layout_constraintTop_toBottomOf="@id/layoutSpinnerAppointmentType" />
+                app:layout_constraintTop_toBottomOf="@id/layoutSpinnerAppointmentType"
+                tools:ignore="Autofill,TextFields" />
 
             <TextView
                 android:id="@+id/textViewDateError"
@@ -152,7 +156,8 @@
                 android:src="@drawable/ic_clock"
                 app:layout_constraintBottom_toBottomOf="@id/editTextTime"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/editTextTime" />
+                app:layout_constraintTop_toTopOf="@id/editTextTime"
+                tools:ignore="ContentDescription" />
 
             <EditText
                 android:id="@+id/editTextTime"
@@ -162,13 +167,14 @@
                 android:layout_marginTop="24dp"
                 android:background="@drawable/rounded_background_unselected"
                 android:editable="false"
-                android:hint=" Select time for appointment"
+                android:hint="@string/book_appt_hint_time"
                 android:padding="@dimen/_8sdp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textCursorDrawable="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imageViewTime"
-                app:layout_constraintTop_toBottomOf="@id/editTextDate" />
+                app:layout_constraintTop_toBottomOf="@id/editTextDate"
+                tools:ignore="Autofill,TextFields" />
 
             <TextView
                 android:id="@+id/textViewTimeError"
@@ -188,7 +194,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/editTextphoneNumber"
                 app:layout_constraintEnd_toStartOf="@id/editTextphoneNumber"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/editTextphoneNumber" />
+                app:layout_constraintTop_toTopOf="@id/editTextphoneNumber"
+                tools:ignore="ContentDescription" />
 
 
             <EditText
@@ -205,7 +212,8 @@
                 android:textCursorDrawable="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imageViewAppointmentContact"
-                app:layout_constraintTop_toBottomOf="@id/editTextTime" />
+                app:layout_constraintTop_toBottomOf="@id/editTextTime"
+                tools:ignore="Autofill,LabelFor" />
 
             <TextView
                 android:id="@+id/textViewContactNoError"
@@ -225,7 +233,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/textViewAppointmentDescription"
                 app:layout_constraintEnd_toStartOf="@id/textViewAppointmentDescription"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewAppointmentDescription" />
+                app:layout_constraintTop_toTopOf="@id/textViewAppointmentDescription"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/textViewAppointmentDescription"
@@ -233,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_8sdp"
                 android:layout_marginTop="24dp"
-                android:text="@string/title_description"
+                android:text="@string/book_appt_title_description"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imageViewNotepad"
