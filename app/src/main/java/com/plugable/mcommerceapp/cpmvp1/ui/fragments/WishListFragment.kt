@@ -47,6 +47,7 @@ import org.jetbrains.anko.support.v4.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.IndexOutOfBoundsException
 import java.util.*
 
 
@@ -347,6 +348,9 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
 
             toast(getString(R.string.message_item_removed))
         } catch (a: ArrayIndexOutOfBoundsException) {
+
+        }
+        catch (e:IndexOutOfBoundsException){
 
         }
     }
