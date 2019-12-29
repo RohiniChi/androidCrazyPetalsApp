@@ -3,6 +3,7 @@ package com.plugable.mcommerceapp.cpmvp1.ui.activities
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -50,7 +51,21 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun readIntent() {
         placeOrderResponse = intent.getParcelableExtra(PLACE_ORDER_RESPONSE)
-        setPlaceOrderResponseData()
+        val transactionStatus=intent.getStringExtra("TransactionStatus")
+        if (transactionStatus.equals("Successful",true)){
+            setPlaceOrderResponseData()
+            ImageViewCompat.setImageTintList(
+                imageView,
+                ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+            )
+        }
+        else  if (transactionStatus.equals("Unsuccessful",true)){
+            imageView.setImageResource(R.drawable.ic_connection_failure)
+            tvLabelThankYou.setText("Transaction Failed")
+            tVOrderConfirmed.setText("Oops! Looks like your transaction is failed,please visit orders to complete your transaction,Thank you !")
+           tVOrderConfirmed.gravity=Gravity.CENTER_HORIZONTAL
+            setPlaceOrderResponseData()
+        }
     }
 
     private fun initializeTheme() {
@@ -69,10 +84,7 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     private fun setThemeToComponent() {
         browseMoreButton.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         browseMoreButton.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-        ImageViewCompat.setImageTintList(
-            imageView,
-            ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-        )
+
     }
 
 

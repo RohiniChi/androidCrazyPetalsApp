@@ -80,11 +80,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         imageViewDeliveryAddressDelete.hide()
         imageViewSubTotalCollapse.hide()
-        progressBar.indeterminateDrawable.setColorFilter(
+        progressBarOrderSummary.indeterminateDrawable.setColorFilter(
             Color.BLACK,
             PorterDuff.Mode.MULTIPLY
         )
-        progressBar.hide()
 
         textViewTermsAndConditions.isClickable = true
         checkboxInstructions.isClickable = true
@@ -277,6 +276,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                             ApplicationThemeUtils.SECONDARY_COLOR
                         )
                     )
+                    showProgress()
                     placeOrder()
                 } else {
                     materialButtonOrderSummaryPlaceOrder.isClickable = true
@@ -302,20 +302,21 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
     private fun placeOrder() {
         checkboxInstructions.isClickable = false
-        materialButtonOrderSummaryPlaceOrder.isClickable = true
+
         if (!isNetworkAccessible()) {
+            materialButtonOrderSummaryPlaceOrder.isClickable = true
             toast(R.string.oops_no_internet_connection)
+            hideProgress()
             return
         }
         val productDetails = ArrayList<PlaceOrderRequest.OrderDetail>()
         productList.forEach {
             productDetails.add(
                 PlaceOrderRequest.OrderDetail(
-//                    if (it.colorId==null) it.colorId else it.colorId,
-                    if (it.colorId == null) 0.toString() else it.colorId,
+                    if (it.colorId == null) "0" else it.colorId,
                     it.productId.toString(),
                     it.quantity.toString(),
-                    if (it.size == null) 0.toString() else it.sizeId,
+                    if (it.sizeId == null) "0" else it.sizeId,
                     if (it.originalPrice == null) it.discountedPrice.toString() else it.originalPrice.toString()
                 )
             )
@@ -336,12 +337,11 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
         val callback = clientInstance.placeOrder(placeOrderRequest)
-        progressBar.show()
         callback.enqueue(object : Callback<PlaceOrderResponse> {
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
                 materialButtonOrderSummaryPlaceOrder.isEnabled = true
                 materialButtonOrderSummaryPlaceOrder.isClickable = false
-                progressBar.hide()
+                hideProgress()
                 toast(getString(R.string.message_something_went_wrong))
             }
 
@@ -351,9 +351,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             ) {
                 when {
                     response.body()?.statusCode.equals("10") -> {
-                        progressBar.hide()
                         materialButtonOrderSummaryPlaceOrder.isClickable = false
-
                         orderId = response.body()!!.orderId
 
                         SharedPreferences.getInstance(this@OrderSummaryActivity)
@@ -373,15 +371,15 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                         placeOrderResponse = response.body()!!
                     }
                     response.body()?.statusCode.equals("30") -> {
-                        progressBar.hide()
                         //                    toast(response.body()!!.message)
                         showAlert(response.body()!!.message)
                         materialButtonOrderSummaryPlaceOrder.isClickable = true
+                        hideProgress()
                     }
                     else -> {
                         materialButtonOrderSummaryPlaceOrder.isClickable = true
-                        progressBar.hide()
                         toast(getString(R.string.message_something_went_wrong))
+                        hideProgress()
                     }
                 }
             }
@@ -410,14 +408,16 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     }
 
     private fun showProgress() {
-        progressBar.show()
+        progressBarOrderSummary.show()
         content.hide()
+        include2.hide()
         materialButtonOrderSummaryPlaceOrder.hide()
     }
 
     private fun hideProgress() {
-        progressBar.hide()
+        progressBarOrderSummary.hide()
         content.show()
+        include2.show()
         materialButtonOrderSummaryPlaceOrder.show()
     }
 
@@ -514,6 +514,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             updateTransactionStatus(requestCode, resultCode, data)
         } else {
             showNetworkAlert(requestCode, resultCode, data)
+            layoutOrderSummary.hide()
         }
     }
 
@@ -558,13 +559,13 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 if (transactionResponse.transactionStatus == TransactionResponse.TransactionStatus.SUCCESSFUL) {
                     //Success Transaction
                     // call update order api
-                    toast("Transaction successful")
+//                    toast("Transaction successful")
                     showProgress()
-                    updatePaymentStatus(orderId, "2")
+                    updatePaymentStatus(orderId, "2","Successful")
                 } else {
-                    toast("Transaction unsuccessful")
+//                    toast("Transaction unsuccessful")
                     showProgress()
-                    updatePaymentStatus(orderId, "5")
+                    updatePaymentStatus(orderId, "5","Unsuccessful")
 
                     //Failure Transaction
                 }
@@ -574,11 +575,15 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             } else {
                 Log.d(tag, "Both objects are null!")
             }
+        } else {
+//            toast("Transaction unsuccessful")
+            showProgress()
+            updatePaymentStatus(orderId, "5","Unsuccessful")
         }
 
     }
 
-    private fun updatePaymentStatus(orderId: Int, paymentStatusId: String) {
+    private fun updatePaymentStatus(orderId: Int, paymentStatusId: String,transactionStatus:String) {
         if (isNetworkAccessible()) {
             val updateStatusRequest = UpdatePaymentRequest(
                 orderId.toString(),
@@ -599,11 +604,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     response: Response<UpdatePaymentResponse>
                 ) {
                     if (response.body()!!.statusCode.equals("10")) {
-                        hideProgress()
                         materialButtonOrderSummaryPlaceOrder.isClickable = true
-                        startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to placeOrderResponse)
+                        startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to placeOrderResponse,
+                            "TransactionStatus" to transactionStatus)
                     } else {
-                        hideProgress()
                         materialButtonOrderSummaryPlaceOrder.isClickable = true
                         toast(response.body()!!.message)
                     }
