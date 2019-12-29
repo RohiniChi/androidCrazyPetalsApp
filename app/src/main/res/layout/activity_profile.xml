@@ -30,14 +30,14 @@
 
             <ImageView
                     android:id="@+id/imageButtonBackArrow"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_shape_backarrow"
+                    android:src="@drawable/ic_shape_backarrow_white"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
