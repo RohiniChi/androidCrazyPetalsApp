@@ -60,9 +60,9 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
             )
         }
         else  if (transactionStatus.equals("Unsuccessful",true)){
-            imageView.setImageResource(R.drawable.ic_connection_failure)
-            tvLabelThankYou.setText("Transaction Failed")
-            tVOrderConfirmed.setText("Oops! Looks like your transaction is failed,please visit orders to complete your transaction,Thank you !")
+            imageView.setImageResource(R.drawable.ic_transaction_failed)
+            tvLabelThankYou.setText(getString(R.string.text_transaction_failed))
+            tVOrderConfirmed.setText(getString(R.string.message_transaction_failed))
            tVOrderConfirmed.gravity=Gravity.CENTER_HORIZONTAL
             setPlaceOrderResponseData()
         }

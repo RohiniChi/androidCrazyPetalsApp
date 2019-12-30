@@ -379,5 +379,8 @@
     <string name="book_appt_title_description">Description :</string>
     <string name="book_appt_hint_time">Select time for appointment</string>
     <string name="book_appt_hint_date">Select date for appointment</string>
+    <string name="message_transaction_failed">Oops! Looks like your transaction is failed, please visit order section to complete your payment, Thank you !</string>
+    <string name="text_transaction_failed">Transaction Failed</string>
+    <string name="message_order_confirmed">Your order is confirmed</string>
 
 </resources>
