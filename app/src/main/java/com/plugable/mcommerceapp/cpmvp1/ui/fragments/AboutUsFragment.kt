@@ -21,15 +21,8 @@ class AboutUsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-//        setThemeToComponents()
     }
 
-    /*private fun setThemeToComponents() {
-        progressBarAboutUs.indeterminateDrawable.setColorFilter(
-            Color.BLACK,
-            PorterDuff.Mode.MULTIPLY
-        )
-    }*/
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +52,9 @@ class AboutUsFragment : Fragment() {
         )
 //        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
 //        sendMixPanelEvent()
+        if (activity!!.isFinishing){
+            return
+        }
         webViewAboutUS.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
