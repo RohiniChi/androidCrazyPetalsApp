@@ -59,7 +59,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     var data: GetTotalPrice.Data? = null
     private val tag = "OrderSummaryActivity : "
     private var mPaymentParams: PayUmoneySdkInitializer.PaymentParam? = null
-    private var isTestMode: Boolean = true
+    private var isTestMode: Boolean = false
     private var totalPrice = "0"
     var transactionId = ""
     override fun onCreate(savedInstanceState: Bundle?) {
