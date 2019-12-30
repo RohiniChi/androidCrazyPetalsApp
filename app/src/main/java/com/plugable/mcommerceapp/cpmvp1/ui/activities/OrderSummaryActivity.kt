@@ -360,10 +360,13 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                         val emailId =
                             SharedPreferences.getInstance(this@OrderSummaryActivity).getProfile()
                                 ?.emailId
+                     val phoneNumber =
+                            SharedPreferences.getInstance(this@OrderSummaryActivity).getProfile()
+                                ?.mobileNumber
                         initiatePayment(
                             address!!.name,
                             emailId!!,
-                            address!!.mobileNumber,
+                            phoneNumber!!,
                             totalPrice,
                             response.body()!!.orderNumber
                         )
