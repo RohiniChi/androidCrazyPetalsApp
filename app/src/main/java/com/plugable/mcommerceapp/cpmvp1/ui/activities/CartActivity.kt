@@ -153,11 +153,11 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                     textViewSubTotalDiscountDescription.text =
                         "₹".plus(response.body()!!.data.productDiscounts.toString())
 
-                    if (response.body()!!.data.deliveryCharges.toString().equals("0")) {
+                    if (response.body()!!.data.shippingCharges.toString().equals("0")) {
                         textViewSubTotalDeliveryChargesDescription.text = "Free"
                     } else {
                         textViewSubTotalDeliveryChargesDescription.text =
-                            "₹".plus(response.body()!!.data.deliveryCharges.toString())
+                            "₹".plus(response.body()!!.data.shippingCharges.toString())
                     }
 
                     textViewSubTotalMrpDescription.text =

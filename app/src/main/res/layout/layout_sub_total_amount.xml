@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Delivery Charges"
+            android:text="Shipping Charges"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/_12ssp"
             app:layout_constraintStart_toStartOf="@+id/textViewSubTotalTaxTitle"

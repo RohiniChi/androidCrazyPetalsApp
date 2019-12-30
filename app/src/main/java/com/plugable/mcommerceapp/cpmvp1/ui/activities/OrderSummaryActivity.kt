@@ -158,11 +158,11 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                         "₹".plus(data!!.subTotal.toString())
                     textViewSubTotalDiscountDescription.text =
                         "₹".plus(data!!.productDiscounts.toString())
-                    if (data!!.deliveryCharges.toString().equals("0")) {
+                    if (data!!.shippingCharges.toString().equals("0")) {
                         textViewSubTotalDeliveryChargesDescription.text = "Free"
                     } else {
                         textViewSubTotalDeliveryChargesDescription.text =
-                            "₹".plus(data!!.deliveryCharges.toString())
+                            "₹".plus(data!!.shippingCharges.toString())
                     }
                     textViewSubTotalMrpDescription.text =
                         "₹".plus(data!!.mrp.toString())
@@ -327,7 +327,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             AddressId = address!!.id.toString(),
             ApplicationUserId = SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)!!,
             Comments = if (TextUtils.isEmpty(etComments.text.toString())) "" else etComments.text.toString(),
-            DeliveryCharges = data!!.deliveryCharges.toString(),
+            DeliveryCharges = data!!.shippingCharges.toString(),
             OrderDetails = productDetails,
             ProductsDiscount = data!!.productDiscounts.toString(),
             SubTotal = data!!.mrp.toString()

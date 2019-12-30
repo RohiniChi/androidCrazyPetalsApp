@@ -6,7 +6,7 @@ data class GetTotalPrice(
     val statusCode: String
 ) {
     data class Data(
-        val deliveryCharges: Int,
+        val shippingCharges: Int,
         val mrp: Int,
         val productDiscounts: Int,
         val subTotal: Int
