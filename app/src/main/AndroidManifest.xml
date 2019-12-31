@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.plugable.mcommerceapp.cpmvp1">
+    package="com.plugable.mcommerceapp.crazypetals">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".utils.application.App"
+        android:name="com.plugable.mcommerceapp.crazypetals.utils.application.App"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@drawable/ic_shopping_cart"
@@ -28,83 +28,83 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup,android:usesCleartextTraffic"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activities.AppointmentDetailActivity"
+        <activity android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.AppointmentDetailActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activities.BookAppointmentActivity"
+        <activity android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.BookAppointmentActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.activities.InstructionActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.InstructionActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.AddAddressActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.AddAddressActivity"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.DeliveryAddressActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.DeliveryAddressActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.OrderSummaryActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.OrderSummaryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.SuccessOrderStatusActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.SuccessOrderStatusActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.DeliveryScheduleActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.DeliveryScheduleActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.OrderDetailActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.OrderDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.ProfileActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.CartActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.CartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".registration.OTPActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.registration.OTPActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".registration.NewPasswordActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.registration.NewPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".registration.MobileVerificationActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.registration.MobileVerificationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".registration.LoginActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.registration.LoginActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".registration.RegisterActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.registration.RegisterActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.RequestProductBookingActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.RequestProductBookingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.PrivacyPolicyActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.PrivacyPolicyActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.SuccessProductBookingActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.SuccessProductBookingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.SearchActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.SearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.ProductsListActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.ProductsListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.DashboardActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.activities.SplashScreenActivity"
+            android:parentActivityName="com.plugable.mcommerceapp.crazypetals.ui.activities.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.plugable.mcommerceapp.cpmvp1.ui.activities.SplashScreenActivity" />
+                android:value="com.plugable.mcommerceapp.crazypetals.ui.activities.SplashScreenActivity" />
         </activity>
         <activity
-            android:name=".ui.activities.SplashScreenActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.SplashScreenActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -113,13 +113,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.ImageSlidingActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.ImageSlidingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.ProductDetailActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.ProductDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.NotificationActivity"
+            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.NotificationActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
@@ -128,7 +128,7 @@
             android:value="e751dc6b3440790ca2f74d652ba36e631e2f089a" />
 
         <service
-            android:name=".fcm.MyFirebaseMessagingService"
+            android:name="com.plugable.mcommerceapp.crazypetals.fcm.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

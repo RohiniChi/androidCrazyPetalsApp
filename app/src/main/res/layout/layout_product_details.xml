@@ -220,7 +220,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewDiscountedPrice"/>
 
 
-    <com.plugable.mcommerceapp.cpmvp1.utils.util.WrappingViewPager
+    <com.plugable.mcommerceapp.crazypetals.utils.util.WrappingViewPager
         android:id="@+id/viewPagerProductDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
