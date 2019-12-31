@@ -1,160 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-<!--
+        android:layout_height="wrap_content">
+        <!--
 
-    <ScrollView android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+            <ScrollView android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
 
--->
+        -->
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <ImageView
-                    android:id="@+id/imageViewLogo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="64dp"
-                    android:layout_marginEnd="24dp"
-                    android:padding="4dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/app_logo_cp"
-                    tools:ignore="ContentDescription" />
+                android:id="@+id/imageViewLogo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:padding="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/app_logo_cp"
+                tools:ignore="ContentDescription" />
 
             <TextView
-                    android:id="@+id/textViewContactNo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="64dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="@string/contact_No"
-                    android:textColor="#353535"
-                    android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+                android:id="@+id/textViewContactNo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginEnd="32dp"
+                android:text="@string/contact_No"
+                android:textColor="#353535"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
 
 
             <TextView
-                    android:text="@string/mobile_No"
-                    android:layout_width="0dp"
-                    android:autoLink="phone"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textViewMobileNo"
-                    android:textColor="#828282"
-                    android:textSize="20sp"
-                    android:textColorLink="#2D9CDB"
-                    app:layout_constraintStart_toStartOf="@+id/textViewContactNo"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewContactNo"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewContactNo"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintBottom_toTopOf="@+id/textViewEmail"/>
+                android:id="@+id/textViewMobileNo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:autoLink="phone"
+                android:text="@string/mobile_No"
+                android:textColor="#828282"
+                android:textColorLink="#2D9CDB"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/textViewEmail"
+                app:layout_constraintEnd_toEndOf="@+id/textViewContactNo"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/textViewContactNo"
+                app:layout_constraintTop_toBottomOf="@+id/textViewContactNo" />
 
-            <View android:layout_width="match_parent"
-                  android:layout_height="1dp"
-                  android:background="@android:color/darker_gray"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintHorizontal_bias="0.0"
-                  app:layout_constraintTop_toBottomOf="@+id/textViewMobileNo"
-                  android:id="@+id/viewSeperator1"
-                  android:layout_marginTop="8dp"/>
-
-            <TextView
-                    android:text="@string/title_email"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textViewEmail"
-                    android:textSize="20sp"
-                    android:textColor="#353535"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewMobileNo"
-                    app:layout_constraintStart_toStartOf="@+id/textViewMobileNo"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewMobileNo"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintBottom_toTopOf="@+id/textViewEmailAddress"/>
+            <View
+                android:id="@+id/viewSeperator1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewMobileNo" />
 
             <TextView
-                    android:text="@string/app_email_id"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textViewEmailAddress"
-                    android:autoLink="email"
-                    android:ellipsize="end"
-                    android:textSize="20sp"
-                    android:textColorLink="#2D9CDB"
-                    android:textColor="@android:color/background_dark"
-                    app:layout_constraintStart_toStartOf="@+id/textViewEmail"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewEmail"
-                    app:layout_constraintHorizontal_bias="0.5" app:layout_constraintTop_toBottomOf="@+id/textViewEmail"
-                    android:layout_marginTop="8dp" app:layout_constraintBottom_toTopOf="@+id/viewSeperator2"/>
-
-            <View android:layout_width="match_parent"
-                  android:layout_height="1dp"
-                  android:background="@android:color/darker_gray"
-                  tools:layout_editor_absoluteX="0dp"
-                  app:layout_constraintTop_toBottomOf="@+id/textViewEmailAddress"
-                  android:layout_marginTop="8dp"
-                  android:id="@+id/viewSeperator2"/>
+                android:id="@+id/textViewEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/title_email"
+                android:textColor="#353535"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/textViewEmailAddress"
+                app:layout_constraintEnd_toEndOf="@+id/textViewMobileNo"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/textViewMobileNo"
+                app:layout_constraintTop_toBottomOf="@+id/textViewMobileNo" />
 
             <TextView
-                    android:text="@string/visit_us_at"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textViewVisitUsAt"
-                    android:textColor="#353535"
-                    android:textSize="20sp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/viewSeperator2"
-                    app:layout_constraintStart_toStartOf="@+id/textViewEmailAddress"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewEmailAddress" android:visibility="gone"/>
+                android:id="@+id/textViewEmailAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:autoLink="email"
+                android:ellipsize="end"
+                android:text="@string/app_email_id"
+                android:textColor="@android:color/background_dark"
+                android:textColorLink="#2D9CDB"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/viewSeperator2"
+                app:layout_constraintEnd_toEndOf="@+id/textViewEmail"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/textViewEmail"
+                app:layout_constraintTop_toBottomOf="@+id/textViewEmail" />
+
+            <View
+                android:id="@+id/viewSeperator2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintTop_toBottomOf="@+id/textViewEmailAddress"
+                tools:layout_editor_absoluteX="0dp" />
 
             <TextView
-                    android:text="@string/address"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textViewAddress"
-                    android:textIsSelectable="true"
-                    android:textSize="18sp"
-                    android:autoLink="map"
-                    android:textColor="#828282"
-                    app:layout_constraintStart_toStartOf="@+id/textViewVisitUsAt"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewVisitUsAt"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewVisitUsAt"
-                    android:visibility="gone"/>
+                android:id="@+id/textViewVisitUsAt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/visit_us_at"
+                android:textColor="#353535"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/textViewEmailAddress"
+                app:layout_constraintStart_toStartOf="@+id/textViewEmailAddress"
+                app:layout_constraintTop_toBottomOf="@+id/viewSeperator2" />
+
+            <TextView
+                android:id="@+id/textViewAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:autoLink="map"
+                android:text="@string/address"
+                android:textColor="#828282"
+                android:textIsSelectable="true"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@+id/textViewVisitUsAt"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textViewVisitUsAt"
+                app:layout_constraintTop_toBottomOf="@+id/textViewVisitUsAt" />
 
             <TextView
                 android:id="@+id/textViewVersionNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="24dp"
                 android:gravity="end"
                 android:text="Version"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewAddress" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-<!--    </ScrollView>-->
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!--    </ScrollView>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -92,7 +92,7 @@
     <string name="mobile_No">+919673085787</string>
     <string name="app_email_id">CrazypetalsHelp@gmail.com</string>
     <string name="visit_us_at">Visit us at</string>
-    <string name="address">serial no.18/2, Avinash colony, waluj, gangapur, Aurangabad, maharashtra, India 431123
+    <string name="address">Flat-57, 3rd floor, lift no-2,Tulsidas apartment,Opposite to j j garden, camp 411001,Pune ,MAHARASHTRA
     </string>
     <string name="request_booking_name" tools:ignore="ExtraTranslation">Enter name</string>
     <string name="request_booking_description" tools:ignore="TypographyEllipsis">Lorem lpsum is simply dummy text of the
@@ -392,5 +392,6 @@
     <string name="message_transaction_failed">Oops! Looks like your transaction is failed, please visit order section to complete your payment, Thank you !</string>
     <string name="text_transaction_failed">Transaction Failed</string>
     <string name="message_order_confirmed">Your order is confirmed</string>
+    <string name="button_retry">Retry</string>
 
 </resources>
