@@ -27,7 +27,9 @@ import com.plugable.mcommerceapp.crazypetals.utils.extension.hide
 import com.plugable.mcommerceapp.crazypetals.utils.extension.show
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.crazypetals.utils.util.HashGenerator
+import com.plugable.mcommerceapp.crazypetals.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.fragment_order_detail.*
+import org.jetbrains.anko.support.v4.toast
 
 
 /**
@@ -46,6 +48,8 @@ class OrderDetailFragment : BaseFragment() {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.buttonPayment -> {
+                if (activity!!.isNetworkAccessible()){
+                    buttonPayment.isClickable=false
                 val emailId =
                     SharedPreferences.getInstance(activity!!).getProfile()
                         ?.emailId
@@ -63,6 +67,12 @@ class OrderDetailFragment : BaseFragment() {
                     orderDetail.orderNumber.toString()
                 )
             }
+                else{
+                    toast(getString(R.string.oops_no_internet_connection))
+                    buttonPayment.isClickable=true
+
+                }
+        }
         }
     }
 
@@ -136,6 +146,7 @@ class OrderDetailFragment : BaseFragment() {
         setData()
         buttonPayment.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         buttonPayment.setOnClickListener(this)
+        buttonPayment.isClickable=true
     }
 
     private fun setData() {
@@ -164,27 +175,15 @@ class OrderDetailFragment : BaseFragment() {
             tvPaymentStatus.setTextColor(Color.RED)
             buttonPayment.show()
         }
-        tvPaymentStatus.text = orderDetail.paymentStatus
+        else{
+            tvPaymentStatus.text = orderDetail.paymentStatus
+            buttonPayment.hide()
+        }
 
         tvShippingAddress.text = orderDetail.address
     }
 
-    fun showProgress(){
-      /*  tableLayout.hide()
-        delivery_timing_statement.hide()
-        layoutShippingAddress.hide()*/
-        layoutOrderDetail.hide()
-        progressBarOrderDetail.show()
-    }
-
-    fun hideProgress(){
-      /*  tableLayout.show()
-        delivery_timing_statement.show()
-        layoutShippingAddress.show()*/
-        layoutOrderDetail.show()
-        progressBarOrderDetail.hide()
-    }
-    private fun calculateServerSideHashAndInitiatePayment1(paymentParam: PayUmoneySdkInitializer.PaymentParam): PayUmoneySdkInitializer.PaymentParam {
+       private fun calculateServerSideHashAndInitiatePayment1(paymentParam: PayUmoneySdkInitializer.PaymentParam): PayUmoneySdkInitializer.PaymentParam {
 
         val stringBuilder = StringBuilder()
         val params = paymentParam.params

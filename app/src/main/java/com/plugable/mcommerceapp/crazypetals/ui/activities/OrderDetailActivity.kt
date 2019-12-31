@@ -3,6 +3,7 @@ package com.plugable.mcommerceapp.crazypetals.ui.activities
 import ServiceGenerator
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -31,7 +32,7 @@ import com.plugable.mcommerceapp.crazypetals.utils.extension.show
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.crazypetals.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.activity_order_detail.*
-import kotlinx.android.synthetic.main.fragment_order_detail.*
+import kotlinx.android.synthetic.main.activity_order_summary.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
@@ -81,6 +82,10 @@ class OrderDetailActivity : BaseActivity() {
         btnTryAgain.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         btnNoData.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         btnServerError.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        progressBarDetailOrder.indeterminateDrawable.setColorFilter(
+            Color.BLACK,
+            PorterDuff.Mode.MULTIPLY
+        )
     }
 
     override fun setToolBar(name: String) {
@@ -207,11 +212,11 @@ class OrderDetailActivity : BaseActivity() {
         override fun getItem(position: Int): Fragment {
 
             var fragment: Fragment? = null
-            var bundle = Bundle()
+            val bundle = Bundle()
             if (position == 0) {
                 fragment = OrderDetailFragment()
                 bundle.putParcelable("details", orderDetail)
-                bundle.putString("order_id",orderId)
+                bundle.putString("order_id", orderId)
             } else if (position == 1) {
                 fragment = OrderProductListFragment()
                 bundle.putParcelable("details", orderDetail)
@@ -244,7 +249,7 @@ class OrderDetailActivity : BaseActivity() {
             updateTransactionStatus(requestCode, resultCode, data)
         } else {
             showNetworkAlert(requestCode, resultCode, data)
-            layoutOrderDetail.hide()
+            orderDetailActivity.hide()
         }
     }
 
@@ -266,12 +271,12 @@ class OrderDetailActivity : BaseActivity() {
                     //Success Transaction
                     // call update order api
                     toast("Transaction successful")
-                   // showProgress()
-                    updatePaymentStatus(orderId.toInt(), "2","Successful")
+                    showProgress()
+                    updatePaymentStatus(orderId.toInt(), "2", "Successful")
                 } else {
                     toast("Transaction unsuccessful")
-                  //  showProgress()
-                    updatePaymentStatus(orderId.toInt(), "5","Unsuccessful")
+                    showProgress()
+                    updatePaymentStatus(orderId.toInt(), "5", "Unsuccessful")
 
                     //Failure Transaction
                 }
@@ -283,11 +288,32 @@ class OrderDetailActivity : BaseActivity() {
             }
         } else {
             toast("Transaction unsuccessful")
-            updatePaymentStatus(orderId.toInt(), "5","Unsuccessful")
+            showProgress()
+            updatePaymentStatus(orderId.toInt(), "5", "Unsuccessful")
         }
 
     }
-    private fun updatePaymentStatus(orderId: Int, paymentStatusId: String,transactionStatus:String) {
+    private fun showProgress() {
+        shimmerViewContainerProductList.hide()
+        tabLayout.hide()
+        viewPager.hide()
+        progressBarDetailOrder.show()
+        toolbar.hide()
+    }
+
+    private fun hideProgress() {
+        shimmerViewContainerProductList.show()
+        tabLayout.show()
+        viewPager.show()
+        progressBarDetailOrder.hide()
+        toolbar.show()
+    }
+
+    private fun updatePaymentStatus(
+        orderId: Int,
+        paymentStatusId: String,
+        transactionStatus: String
+    ) {
         if (isNetworkAccessible()) {
             val updateStatusRequest = UpdatePaymentRequest(
                 orderId.toString(),
@@ -298,7 +324,7 @@ class OrderDetailActivity : BaseActivity() {
             val call = clientInstance.updatePaymentStatus(updateStatusRequest)
             call.enqueue(object : Callback<UpdatePaymentResponse> {
                 override fun onFailure(call: Call<UpdatePaymentResponse>, t: Throwable) {
-                    //hideProgress()
+                    hideProgress()
                     toast(getString(R.string.message_something_went_wrong))
                 }
 
@@ -318,9 +344,9 @@ class OrderDetailActivity : BaseActivity() {
                             IntentFlags.REDIRECT_FROM to "OrderDetailFragment",
                             "DeliveryDay" to orderDetail.deliveryDay,
                             "orderNumber" to orderDetail.orderNumber,
-                            "TransactionStatus"  to transactionStatus
+                            "TransactionStatus" to transactionStatus
                         )
-
+                        showProgress()
 
                     } else {
                         toast(response.body()!!.message)
@@ -329,7 +355,7 @@ class OrderDetailActivity : BaseActivity() {
 
             })
         } else {
-            //hideProgress()
+            hideProgress()
             toast(getString(R.string.oops_no_internet_connection))
         }
     }
@@ -340,9 +366,10 @@ class OrderDetailActivity : BaseActivity() {
             positiveButton(getString(R.string.try_again)) {
                 if (isNetworkAccessible()) {
                     updateTransactionStatus(requestCode, resultCode, data)
+                    showProgress()
                 } else {
                     showNetworkAlert(requestCode, resultCode, data)
-
+                    orderDetailActivity.hide()
                 }
             }
         }.show().apply {

@@ -80,10 +80,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         imageViewDeliveryAddressDelete.hide()
         imageViewSubTotalCollapse.hide()
-        progressBarOrderSummary.indeterminateDrawable.setColorFilter(
-            Color.BLACK,
-            PorterDuff.Mode.MULTIPLY
-        )
+
 
         textViewTermsAndConditions.isClickable = true
         checkboxInstructions.isClickable = true
@@ -195,7 +192,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         )
 
         checkboxInstructions.buttonTintList = ColorStateList.valueOf(Color.BLACK)
-
+        progressBarOrderSummary.indeterminateDrawable.setColorFilter(
+            Color.BLACK,
+            PorterDuff.Mode.MULTIPLY
+        )
     }
 
     fun setToolBar(name: String) {

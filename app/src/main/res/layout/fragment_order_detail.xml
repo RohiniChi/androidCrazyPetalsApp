@@ -120,7 +120,8 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_8sdp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -148,7 +149,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_64sdp"
-            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_64sdp"
             android:layout_marginBottom="@dimen/_8sdp"
             android:background="@android:color/holo_orange_dark"
@@ -156,7 +156,7 @@
             android:textAllCaps="false"
             android:textColor="@android:color/background_light"
             android:textSize="18sp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cornerRadius="4dp"
             app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
             app:layout_constraintHorizontal_bias="0.401"
