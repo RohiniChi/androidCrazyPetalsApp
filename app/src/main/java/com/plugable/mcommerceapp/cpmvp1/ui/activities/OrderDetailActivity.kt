@@ -202,6 +202,7 @@ class OrderDetailActivity : BaseActivity() {
             if (position == 0) {
                 fragment = OrderDetailFragment()
                 bundle.putParcelable("details", orderDetail)
+                bundle.putString("order_id",orderId)
             } else if (position == 1) {
                 fragment = OrderProductListFragment()
                 bundle.putParcelable("details", orderDetail)

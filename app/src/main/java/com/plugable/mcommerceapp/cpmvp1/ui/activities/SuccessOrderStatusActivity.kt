@@ -12,6 +12,7 @@ import androidx.core.widget.ImageViewCompat
 import com.plugable.mcommerceapp.cpmvp1.R
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.PlaceOrderResponse
+import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setToolBarColor
@@ -29,6 +30,9 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
         const val PLACE_ORDER_RESPONSE = "place.order.response"
     }
 
+    private var orderNumber: String = ""
+    private var deliveryDay: String = ""
+    private var paymentStatus: String = ""
     var placeOrderResponse: PlaceOrderResponse? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,22 +54,53 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun readIntent() {
-        placeOrderResponse = intent.getParcelableExtra(PLACE_ORDER_RESPONSE)
-        val transactionStatus=intent.getStringExtra("TransactionStatus")
-        if (transactionStatus.equals("Successful",true)){
-            setPlaceOrderResponseData()
-            ImageViewCompat.setImageTintList(
-                imageView,
-                ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-            )
+
+
+        if (intent.hasExtra(IntentFlags.REDIRECT_FROM)) {
+            when (intent.getStringExtra(IntentFlags.REDIRECT_FROM)) {
+                "OrderDetailFragment" -> {
+                    paymentStatus = intent.getStringExtra("TransactionStatus")
+                    deliveryDay = intent.getStringExtra("DeliveryDay")
+                    orderNumber = intent.getStringExtra("orderNumber")
+                    if (paymentStatus.equals("Successful", true)) {
+                        setOrderDetailData()
+                        ImageViewCompat.setImageTintList(
+                            imageView,
+                            ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+                        )
+                    } else if (paymentStatus.equals("Unsuccessful", true)) {
+                        imageView.setImageResource(R.drawable.ic_transaction_failed)
+                        tvLabelThankYou.text = getString(R.string.text_transaction_failed)
+                        tVOrderConfirmed.text = getString(R.string.message_transaction_failed)
+                        tVOrderConfirmed.gravity = Gravity.CENTER_HORIZONTAL
+                        setOrderDetailData()
+                    }
+                }
+            }
+        } else {
+            placeOrderResponse = intent.getParcelableExtra(PLACE_ORDER_RESPONSE)
+            val transactionStatus = intent.getStringExtra("TransactionStatus")
+            if (transactionStatus.equals("Successful", true)) {
+                setPlaceOrderResponseData()
+                ImageViewCompat.setImageTintList(
+                    imageView,
+                    ColorStateList.valueOf(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+                )
+            } else if (transactionStatus.equals("Unsuccessful", true)) {
+                imageView.setImageResource(R.drawable.ic_transaction_failed)
+                tvLabelThankYou.text = getString(R.string.text_transaction_failed)
+                tVOrderConfirmed.text = getString(R.string.message_transaction_failed)
+                tVOrderConfirmed.gravity = Gravity.CENTER_HORIZONTAL
+                setPlaceOrderResponseData()
+            }
         }
-        else  if (transactionStatus.equals("Unsuccessful",true)){
-            imageView.setImageResource(R.drawable.ic_transaction_failed)
-            tvLabelThankYou.setText(getString(R.string.text_transaction_failed))
-            tVOrderConfirmed.setText(getString(R.string.message_transaction_failed))
-           tVOrderConfirmed.gravity=Gravity.CENTER_HORIZONTAL
-            setPlaceOrderResponseData()
-        }
+    }
+
+    private fun setOrderDetailData() {
+        textViewOrderStatusOrderNumberDescription.text = orderNumber
+        textViewOrderStatusOrderAmountDescription.text = deliveryDay
+        textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Online payment")
+
     }
 
     private fun initializeTheme() {

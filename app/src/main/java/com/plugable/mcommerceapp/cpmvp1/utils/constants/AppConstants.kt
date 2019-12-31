@@ -113,6 +113,9 @@ object IntentFlags {
 
     const val APPLICATION_USER_ID = ""
     const val APPOINTMENT_ID = ""
+    const val ORDER_ID = ""
+    const val DeliveryAddressName = ""
+    const val TOTAL_PRICE = ""
 
     const val PRODUCT_MODEL = "productModel"
 

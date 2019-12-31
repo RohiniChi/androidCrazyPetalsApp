@@ -372,7 +372,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                             totalPrice,
                             response.body()!!.orderNumber
                         )
-                        //startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
+                                        //startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
                         placeOrderResponse = response.body()!!
                     }
                     response.body()?.statusCode.equals("30") -> {

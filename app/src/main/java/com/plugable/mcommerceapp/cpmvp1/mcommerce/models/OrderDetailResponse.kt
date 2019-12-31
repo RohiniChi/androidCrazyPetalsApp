@@ -3,6 +3,7 @@ package com.plugable.mcommerceapp.cpmvp1.mcommerce.models
 import android.os.Parcel
 import android.os.Parcelable
 
+/*
 data class OrderDetailResponse(
     val data: Data? = null,
     val message: String? = null,
@@ -96,6 +97,125 @@ data class OrderDetailResponse(
                 parcel.writeValue(id)
                 parcel.writeString(shortDescription)
                 parcel.writeString(productName)
+                parcel.writeValue(categoryId)
+            }
+
+            override fun describeContents(): Int {
+                return 0
+            }
+
+            companion object CREATOR : Parcelable.Creator<ProductListItem> {
+                override fun createFromParcel(parcel: Parcel): ProductListItem {
+                    return ProductListItem(parcel)
+                }
+
+                override fun newArray(size: Int): Array<ProductListItem?> {
+                    return arrayOfNulls(size)
+                }
+            }
+        }
+    }
+}
+*/
+
+data class OrderDetailResponse(
+    val `data`: Data,
+    val message: String,
+    val productCount: Int,
+    val statusCode: String
+) {
+    data class Data(
+        val orderDetails: OrderDetails? = null,
+        val productList: List<ProductListItem?>
+    ) {
+
+        data class OrderDetails(
+            val deliveredDate: String? = null,
+            val orderNumber: String? = null,
+            val address: String? = null,
+            val orderedDate: String? = null,
+            val deliveryDay: String? = null,
+            val orderTotal: Double? = null,
+            val deliveryStatus:Int,
+            val paymentStatus: String? = null
+        ):Parcelable {
+            constructor(parcel: Parcel) : this(
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readValue(Double::class.java.classLoader) as? Double,
+                parcel.readInt(),
+                parcel.readString()
+            ) {
+            }
+
+            override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeString(deliveredDate)
+                parcel.writeString(orderNumber)
+                parcel.writeString(address)
+                parcel.writeString(orderedDate)
+                parcel.writeString(deliveryDay)
+                parcel.writeValue(orderTotal)
+                parcel.writeInt(deliveryStatus)
+                parcel.writeString(paymentStatus)
+            }
+
+            override fun describeContents(): Int {
+                return 0
+            }
+
+            companion object CREATOR : Parcelable.Creator<OrderDetails> {
+                override fun createFromParcel(parcel: Parcel): OrderDetails {
+                    return OrderDetails(parcel)
+                }
+
+                override fun newArray(size: Int): Array<OrderDetails?> {
+                    return arrayOfNulls(size)
+                }
+            }
+        }
+
+        data class ProductListItem(
+            val colorCode: String? = null,
+            val discountedPrice: Double? = null,
+            val id: Int? = null,
+            val originalPrice: Double? = null,
+            val productId: Int? = null,
+            val productImageURL: String? = null,
+            val productName: String? = null,
+            val quantity: Int? = null,
+            val shortDescription: String? = null,
+            val size: String? = null,
+            val categoryId: Int? = null
+        ):Parcelable {
+            constructor(parcel: Parcel) : this(
+                parcel.readString(),
+                parcel.readValue(Double::class.java.classLoader) as? Double,
+                parcel.readValue(Int::class.java.classLoader) as? Int,
+                parcel.readValue(Double::class.java.classLoader) as? Double,
+                parcel.readValue(Int::class.java.classLoader) as? Int,
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readValue(Int::class.java.classLoader) as? Int,
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readValue(Int::class.java.classLoader) as? Int
+            ) {
+            }
+
+            override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeString(colorCode)
+                parcel.writeValue(discountedPrice)
+                parcel.writeValue(id)
+                parcel.writeValue(originalPrice)
+                parcel.writeValue(productId)
+                parcel.writeString(productImageURL)
+                parcel.writeString(productName)
+                parcel.writeValue(quantity)
+                parcel.writeString(shortDescription)
+                parcel.writeString(size)
                 parcel.writeValue(categoryId)
             }
 
