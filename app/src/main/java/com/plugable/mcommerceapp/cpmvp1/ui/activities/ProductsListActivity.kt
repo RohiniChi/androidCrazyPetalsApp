@@ -359,17 +359,14 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         App.HostUrl = SharedPreferences.getInstance(this@ProductsListActivity).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
         val call = clientInstance.exclusiveModel(skipCount, takeCount, categoryId, WebApi.APP_ID)
-//        swipeRefreshLayout.isRefreshing = true
         call.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>?, t: Throwable?) {
-//                swipeRefreshLayout.isRefreshing = false
                 showServerErrorMessage()
             }
 
             override fun onResponse(call: Call<Products>?, response: Response<Products>?) {
                 if (isNetworkAccessible()) {
                     showRecyclerViewData()
-//                    swipeRefreshLayout.isRefreshing = false
                     if (response?.body()?.statusCode.equals("10")) {
                         if (response?.body()?.data?.productList?.isNotEmpty()!!) {
                             if (skipCount == 0) {
@@ -425,17 +422,14 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         App.HostUrl = SharedPreferences.getInstance(this@ProductsListActivity).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
         callback = clientInstance.productModel(skipCount, takeCount, categoryId)
-//        swipeRefreshLayoutProductList.isRefreshing = true
         callback.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>?, t: Throwable?) {
-//                swipeRefreshLayoutProductList.isRefreshing = false
                 showServerErrorMessage()
             }
 
             override fun onResponse(call: Call<Products>?, response: Response<Products>?) {
                 if (isNetworkAccessible()) {
                     showRecyclerViewData()
-//                    swipeRefreshLayoutProductList.isRefreshing = false
                     if (response?.body()?.statusCode.equals("10")) {
                         totalCount = response?.body()?.data!!.totalCount
                         if (response.body()?.data?.productList?.isNotEmpty()!!) {
@@ -499,12 +493,13 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        cp_Logo.hide()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
+        cp_Logo.hide()
         txtToolbarTitle.show()
         txtToolbarTitle.allCaps = true
         txtToolbarTitle.text = categoryName?.plus(" Collection")
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
@@ -624,7 +619,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
             callGetFilterApi()
         } else {
             progressBarProductList.hide()
-            toast(getString(R.string.check_internet_connection))
+//            toast(getString(R.string.check_internet_connection))
         }
     }
 
@@ -756,22 +751,14 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         filter_layout.hide()
 
         stopShimmerView()
-        /*  skipCount=0
-          takeCount=25
-          productList.clear()
-          swipeRefreshLayoutProductList.hide()
-  */
+
     }
 
     override fun hideNetworkCondition() {
         layoutNetworkCondition.hide()
         layoutNoDataScreen.hide()
         layoutServerError.hide()
-
-
         stopShimmerView()
-
-//        swipeRefreshLayoutProductList.hide()
     }
 
     override fun showServerErrorMessage() {
@@ -781,23 +768,14 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         recyclerViewProducts.hide()
         bottom_navigation.hide()
         filter_layout.hide()
-
         stopShimmerView()
-
-        /* skipCount=0
-         takeCount=25
-         productList.clear()
-         swipeRefreshLayoutProductList.hide()
- */
     }
 
     override fun hideServerErrorMessage() {
         layoutNetworkCondition.hide()
         layoutNoDataScreen.hide()
         layoutServerError.hide()
-
         stopShimmerView()
-//swipeRefreshLayoutProductList.hide()
     }
 
     override fun showRecyclerViewData() {
@@ -806,9 +784,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutServerError.hide()
         recyclerViewProducts.show()
         bottom_navigation.show()
-//        filter_layout.show()
-//        swipeRefreshLayoutProductList.show()
-
+        filter_layout.show()
         stopShimmerView()
     }
 

@@ -16,6 +16,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.os.SystemClock
 import android.provider.MediaStore
 import android.view.View
 import androidx.core.app.ActivityCompat
@@ -29,7 +30,10 @@ import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.UpdateProfileData
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.webservices.ProjectApi
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.cpmvp1.utils.extension.*
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.hideKeyboard
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.invisible
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
 import com.plugable.mcommerceapp.cpmvp1.utils.validation.EditTextValidations.MAX_NAME_LENGTH
@@ -51,13 +55,13 @@ import java.io.File
 
 class ProfileActivity : BaseActivity() {
 
-    private var userProfile: String?=null
+    private var userProfile: String? = null
     private lateinit var imageBitmap: Bitmap
-    private var imageData: Uri?=null
-    private var extras: Bundle?=null
-    private var profilePicture: String?=null
-    private var myImagePath: String=""
-    private var isProfilePictureChanged=false
+    private var imageData: Uri? = null
+    private var extras: Bundle? = null
+    private var profilePicture: String? = null
+    private var myImagePath: String = ""
+    private var isProfilePictureChanged = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,13 +93,13 @@ class ProfileActivity : BaseActivity() {
             textInputEditTextPhoneNumber.setText(String.format("%s", profile.mobileNumber))
 
 
-            profilePicture=App.HostUrl.plus(profile.profilePicture)
+            profilePicture = App.HostUrl.plus(profile.profilePicture)
             Glide.with(imageViewLogo).load(profilePicture)
                 .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.kmm_profile))
                 .into(imageViewLogo)
 //            imageViewCamera.hide()
 //            textViewAddPhoto.hide()
-            isProfilePictureChanged=false
+            isProfilePictureChanged = false
         }/* else {
             imageViewCamera.show()
             textViewAddPhoto.show()
@@ -115,10 +119,22 @@ class ProfileActivity : BaseActivity() {
 
     private fun initializeViews() {
         textChangeListeners()
-        imageViewLogo.setOnClickListener { checkPermissions(this) }
+        imageViewLogo.setOnClickListener {
+            if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return@setOnClickListener
+            else {
+
+                checkPermissions(this)
+            }
+            LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+
+        }
         buttonUpdate.setOnClickListener(this)
 
         layoutBackArrowProfile.setOnClickListener(this)
+    }
+
+    object LastClickTimeSingleton {
+        var lastClickTime: Long = 0
     }
 
     private fun checkPermissions(context: Context) {
@@ -201,10 +217,10 @@ class ProfileActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == requestImageCapture && resultCode == Activity.RESULT_OK) {
-             extras = data?.extras
-             imageData = data?.data
+            extras = data?.extras
+            imageData = data?.data
             if (extras != null) {       //From camera
-                 imageBitmap = extras?.get("data") as Bitmap
+                imageBitmap = extras?.get("data") as Bitmap
 //                imageViewProfile.setImageBitmap(imageBitmap)
                 Glide.with(this).load(imageBitmap)
                     .apply(
@@ -212,9 +228,9 @@ class ProfileActivity : BaseActivity() {
                             .placeholder(R.drawable.kmm_profile)
                     )
                     .into(imageViewLogo)
-                isProfilePictureChanged=true
-           /*     imageViewCamera.hide()
-                textViewAddPhoto.hide()*/
+                isProfilePictureChanged = true
+                /*     imageViewCamera.hide()
+                     textViewAddPhoto.hide()*/
 //                progressBarProfile.show()
 //                callRegisterApiWithImage(getImageUri(this, imageBitmap))
             } else if (imageData != null) { // From Gallery
@@ -222,10 +238,10 @@ class ProfileActivity : BaseActivity() {
                 Glide.with(this).load(imageData)
                     .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.kmm_profile))
                     .into(imageViewLogo)
-              /*  imageViewCamera.hide()
-                textViewAddPhoto.hide()*/
+                /*  imageViewCamera.hide()
+                  textViewAddPhoto.hide()*/
                 progressBarProfile.show()
-                isProfilePictureChanged=true
+                isProfilePictureChanged = true
 //                callRegisterApiWithImage(imageData)
             }
         }
@@ -261,8 +277,7 @@ class ProfileActivity : BaseActivity() {
 
                         attemptApiCall()
 
-                    }
-                    else{
+                    } else {
                         buttonUpdate.isClickable = true
                         progressBarProfile.hide()
                     }
@@ -345,8 +360,7 @@ class ProfileActivity : BaseActivity() {
                             progressBarProfile.show()
 
                         }
-                    }
-                    else{
+                    } else {
                         attemptApiCall()
                         buttonUpdate.isClickable = false
                         progressBarProfile.show()
@@ -377,11 +391,11 @@ class ProfileActivity : BaseActivity() {
             SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         val profile = SharedPreferences.getInstance(this).getProfile()
 
-         userProfile=profile?.profilePicture
+        userProfile = profile?.profilePicture
         val userInfo = UpdateProfileData(
             ApplicationUserId = applicationUserId!!,
             Email = textInputEditTextEmailId.text.toString(),
-            Image = if (myImagePath.isNullOrEmpty())  userProfile else myImagePath,
+            Image = if (myImagePath.isNullOrEmpty()) userProfile else myImagePath,
             Name = textInputEditTextName.text.toString(),
             PhoneNumber = textInputEditTextPhoneNumber.text.toString()
         )

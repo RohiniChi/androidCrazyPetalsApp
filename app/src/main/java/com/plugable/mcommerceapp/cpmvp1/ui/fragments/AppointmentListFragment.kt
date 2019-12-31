@@ -1,7 +1,5 @@
 package com.plugable.mcommerceapp.cpmvp1.ui.fragments
 
-import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -33,7 +31,6 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_appointmentlist.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
-import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 
 
@@ -47,6 +44,7 @@ import org.jetbrains.anko.support.v4.toast
  */
 class AppointmentListFragment : BaseFragment(), View.OnClickListener, AppointmentView,
     EventListener {
+
 
     private lateinit var appointmentListAdapter: AppointmentListAdapter
     private var appointmentArrayList = ArrayList<AppointmentData>()
@@ -86,7 +84,7 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
             .getStringValue(IntentFlags.APPLICATION_USER_ID)
 
         if (activity!!.isNetworkAccessible()) {
-            if (activity!!.isFinishing){
+            if (activity!!.isFinishing) {
                 return
             }
             appointmentPresenter.getAppointment(applicationUserId!!, 0, 1000)
@@ -127,17 +125,21 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_add_appointment -> {
-                if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return true
-                else {
-                   /* val intent = Intent(activity, BookAppointmentActivity::class.java)
-                    intent.putExtra(IntentFlags.REDIRECT_FROM,IntentFlags.APPOINTMENT_LIST)
-                    startActivityForResult(intent, 1)*/
-                    startActivity<BookAppointmentActivity>()
+                if (activity!!.isNetworkAccessible()) {
+                    if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return true
+                    else {
+                        val intent = Intent(activity, BookAppointmentActivity::class.java)
+                        intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.APPOINTMENT_LIST)
+                        intent.putExtra("ButtonClick", "ActionBookAppointment")
+                        startActivityForResult(intent, 1)
+                    }
+                    LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+
+                } else {
+                    toast(getString(R.string.oops_no_internet_connection))
                 }
-
-                LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
-
             }
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -145,37 +147,57 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.buttonBookAppointment -> {
-                if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
-                else {
-
-                  /*  val intent = Intent(activity, BookAppointmentActivity::class.java)
-                    intent.putExtra(IntentFlags.REDIRECT_FROM,IntentFlags.APPOINTMENT_LIST)
-                    startActivityForResult(intent, 1)*/
-                    startActivity<BookAppointmentActivity>(
-                        IntentFlags.REDIRECT_FROM to IntentFlags.APPOINTMENT_LIST,
-                                IntentFlags.FRAGMENT_TO_BE_LOADED to R.id.nav_appointmentList
-                    )
+                if (activity!!.isNetworkAccessible()) {
+                    if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
+                    else {
+                        val intent = Intent(activity, BookAppointmentActivity::class.java)
+                        intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.APPOINTMENT_LIST)
+                        intent.putExtra("ButtonClick", "ButtonBookAppointment")
+                        startActivityForResult(intent, 2)
+                    }
+                    LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+                } else {
+                    toast(getString(R.string.oops_no_internet_connection))
                 }
-                LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
 
             }
 
             R.id.btnTryAgain -> {
                 initializeViews()
             }
+
+            R.id.btnNoData -> {
+                initializeViews()
+            }
+
+            R.id.btnServerError -> {
+                initializeViews()
+            }
         }
     }
 
 
-
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1) {
-            if (resultCode == RESULT_OK && data!=null) {
-
+            if (resultCode == 1 && data != null) {
+                val appointmentData: AppointmentData = data.getParcelableExtra("response")!!
+                appointmentArrayList.add(0, appointmentData)
+                appointmentListAdapter.notifyDataSetChanged()
+            }
+        } else {
+            if (resultCode == 2 && data != null) {
+                val appointmentData: AppointmentData = data.getParcelableExtra("response")!!
+                appointmentArrayList.add(0, appointmentData)
+                appointmentListAdapter.notifyDataSetChanged()
+                if (appointmentArrayList.isEmpty()) {
+                    showEmptyScreen()
+                } else {
+                    showRecyclerViewData()
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
-    }*/
+    }
 
     override fun showNetworkCondition() {
         layoutNetworkCondition.show()
@@ -210,6 +232,7 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
         layoutServerError.hide()
         recyclerViewAppointments.show()
         layoutNoDataScreen.hide()
+        layout_no_appointment_list.hide()
     }
 
     fun showEmptyScreen() {
@@ -218,8 +241,6 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
         recyclerViewAppointments.hide()
         layoutNoDataScreen.hide()
         layout_no_appointment_list.show()
-
-
     }
 
     override fun onItemClickListener(position: Int) {
@@ -236,11 +257,12 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     }
 
     override fun onAppointmentListSuccess(response: AppointmentListResponse) {
-        if (activity!!.isFinishing){
+        if (activity!!.isFinishing) {
             return
         }
         appointmentArrayList.addAll(response.data)
         appointmentListAdapter.notifyDataSetChanged()
+
         if (appointmentArrayList.isEmpty()) {
             showEmptyScreen()
         } else {

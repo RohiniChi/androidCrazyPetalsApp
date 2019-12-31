@@ -123,6 +123,10 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
                 deliveryDateLayout.hide()
             }
         }
+
+        if(addressList.isEmpty()){
+            deliveryDateLayout.hide()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

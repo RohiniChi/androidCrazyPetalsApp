@@ -122,10 +122,14 @@ class NotificationActivity : BaseActivity() {
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.title = name
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
+        txtToolbarTitle.show()
         txtToolbarTitle.allCaps = false
         txtToolbarTitle.text = getString(R.string.notification)
-        imgToolbarHome.setImageResource(R.drawable.ic_shape_backarrow)
+        imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 

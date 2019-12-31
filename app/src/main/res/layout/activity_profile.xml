@@ -1,242 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layoutBackArrowProfile"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                android:id="@+id/layoutBackArrowProfile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/_24sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+                <ImageView
                     android:id="@+id/imageButtonBackArrow"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_shape_backarrow"
+                    android:src="@drawable/ic_shape_backarrow_white"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
-                    android:id="@+id/imageViewLogo"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_150sdp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:paddingStart="32dp"
-                    android:paddingEnd="32dp"
-                    android:paddingBottom="8dp"
-                    android:src="@drawable/kmm_profile"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/layoutBackArrowProfile"
-                    tools:ignore="ContentDescription" />
-<!--
+                android:id="@+id/imageViewLogo"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_150sdp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:paddingBottom="8dp"
+                android:src="@drawable/kmm_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layoutBackArrowProfile"
+                tools:ignore="ContentDescription" />
+            <!--
 
-            <ImageView
-                    android:id="@+id/imageViewCamera"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_50sdp"
-                    android:layout_marginTop="24dp"
-                    android:src="@drawable/ic_camera"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/imageViewLogo"
-                    tools:ignore="ContentDescription" />
+                        <ImageView
+                                android:id="@+id/imageViewCamera"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_50sdp"
+                                android:layout_marginTop="24dp"
+                                android:src="@drawable/ic_camera"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/imageViewLogo"
+                                tools:ignore="ContentDescription" />
+
+                        <TextView
+                                android:id="@+id/textViewAddPhoto"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="128dp"
+                                android:layout_marginTop="24dp"
+                                android:layout_marginEnd="128dp"
+                                android:layout_marginBottom="56dp"
+                                android:gravity="center"
+                                android:text="@string/text_add_profile_photo"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@id/imageViewLogo"
+                                app:layout_constraintEnd_toEndOf="@+id/imageViewCamera"
+                                app:layout_constraintStart_toStartOf="@+id/imageViewCamera"
+                                app:layout_constraintTop_toBottomOf="@id/imageViewCamera" />
+
+            -->
 
             <TextView
-                    android:id="@+id/textViewAddPhoto"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="128dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="128dp"
-                    android:layout_marginBottom="56dp"
-                    android:gravity="center"
-                    android:text="@string/text_add_profile_photo"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@id/imageViewLogo"
-                    app:layout_constraintEnd_toEndOf="@+id/imageViewCamera"
-                    app:layout_constraintStart_toStartOf="@+id/imageViewCamera"
-                    app:layout_constraintTop_toBottomOf="@id/imageViewCamera" />
-
--->
-
-            <TextView
-                    android:id="@+id/textViewCreateAccount"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/create_account"
-                    android:textColor="#3c3c3c"
-                    android:textSize="@dimen/_16ssp"
-                    android:textStyle="normal"
-                    app:layout_constraintEnd_toEndOf="@+id/imageViewLogo"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/imageViewLogo"
-                    app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+                android:id="@+id/textViewCreateAccount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/create_account"
+                android:textColor="#3c3c3c"
+                android:textSize="@dimen/_16ssp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="@+id/imageViewLogo"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/imageViewLogo"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayoutName"
-                    style="@style/customTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    app:boxStrokeColor="@color/colorLightGray"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewCreateAccount"
-                    app:layout_constraintStart_toStartOf="@+id/textViewCreateAccount"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewCreateAccount">
+                android:id="@+id/textInputLayoutName"
+                style="@style/customTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                app:boxStrokeColor="@color/colorLightGray"
+                app:layout_constraintEnd_toEndOf="@+id/textViewCreateAccount"
+                app:layout_constraintStart_toStartOf="@+id/textViewCreateAccount"
+                app:layout_constraintTop_toBottomOf="@+id/textViewCreateAccount">
 
                 <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/textInputEditTextName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/register_name"
-                        android:maxLength="30"
-                        android:singleLine="true"
-                        android:textCursorDrawable="@null" />
+                    android:id="@+id/textInputEditTextName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/register_name"
+                    android:maxLength="30"
+                    android:singleLine="true"
+                    android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                    android:id="@+id/textViewNameError"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@color/edittextErrorColor"
-                    android:textSize="12sp"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutName"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutName"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName" />
+                android:id="@+id/textViewNameError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/edittextErrorColor"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutName"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutName"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName" />
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayoutEmailId"
-                    style="@style/customTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    app:boxStrokeColor="@color/colorLightGray"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutName"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutName"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewNameError">
+                android:id="@+id/textInputLayoutEmailId"
+                style="@style/customTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                app:boxStrokeColor="@color/colorLightGray"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutName"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutName"
+                app:layout_constraintTop_toBottomOf="@+id/textViewNameError">
 
                 <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/textInputEditTextEmailId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/email_address"
-                        android:inputType="textEmailAddress"
-                        android:singleLine="true"
-                        android:textCursorDrawable="@null" />
+                    android:id="@+id/textInputEditTextEmailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email_address"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                    android:id="@+id/textViewEmailIdError"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@color/edittextErrorColor"
-                    android:textSize="12sp"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutEmailId"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutEmailId"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmailId" />
+                android:id="@+id/textViewEmailIdError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/edittextErrorColor"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutEmailId"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutEmailId"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmailId" />
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayoutPhoneNumber"
-                    style="@style/customTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    app:boxStrokeColor="@color/colorLightGray"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutEmailId"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutEmailId"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewEmailIdError">
+                android:id="@+id/textInputLayoutPhoneNumber"
+                style="@style/customTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                app:boxStrokeColor="@color/colorLightGray"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutEmailId"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutEmailId"
+                app:layout_constraintTop_toBottomOf="@+id/textViewEmailIdError">
 
                 <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/textInputEditTextPhoneNumber"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/mobile_number"
-                        android:inputType="phone"
-                        android:enabled="false"
-                        android:maxLength="10"
-                        android:textCursorDrawable="@null" />
+                    android:id="@+id/textInputEditTextPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="@string/mobile_number"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                    android:id="@+id/textViewMobileNoError"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="@color/edittextErrorColor"
-                    android:textSize="12sp"
-                    android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhoneNumber"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhoneNumber"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhoneNumber" />
+                android:id="@+id/textViewMobileNoError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/edittextErrorColor"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhoneNumber"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhoneNumber"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhoneNumber" />
 
 
             <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonUpdate"
-                    android:layout_width="223dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:background="#ff9500"
-                    android:text="@string/button_update"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/background_light"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhoneNumber"
-                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhoneNumber"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhoneNumber" />
+                android:id="@+id/buttonUpdate"
+                android:layout_width="223dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="#ff9500"
+                android:text="@string/button_update"
+                android:textAllCaps="false"
+                android:textColor="@android:color/background_light"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhoneNumber"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhoneNumber"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhoneNumber" />
 
 
             <androidx.core.widget.ContentLoadingProgressBar
-                    android:id="@+id/progressBarProfile"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                android:id="@+id/progressBarProfile"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
