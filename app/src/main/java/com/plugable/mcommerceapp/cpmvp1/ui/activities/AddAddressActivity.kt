@@ -90,6 +90,8 @@ class AddAddressActivity : AppCompatActivity(),
         editTextFlatNo.setText(addressRequest!!.Address)
         editTextArea.setText(addressRequest!!.Locality)
         editTextCity.setText(addressRequest!!.city)
+        editTextState.setText(addressRequest!!.state)
+        editTextCountry.setText(addressRequest!!.country)
         etPinCode.setText(addressRequest!!.PinCode)
 
     }
@@ -207,6 +209,8 @@ class AddAddressActivity : AppCompatActivity(),
                 ApplicationUserId = SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)!!,
                 MobileNumber = editTextPhoneNo.text.toString(),
                 city = editTextCity.text.toString().capitalize(),
+                state = editTextState.text.toString().capitalize(),
+                country = editTextCountry.text.toString().capitalize(),
                 PinCode = etPinCode.text.toString(),
                 PinCodeId = 0
             )
@@ -293,6 +297,26 @@ class AddAddressActivity : AppCompatActivity(),
 
         }
 
+        editTextState.setOnFocusChangeListener { view, isFocused ->
+
+            if (!isFocused) {
+                //this.hideKeyboard(view)
+                stateValidation()
+            }
+
+
+        }
+
+        editTextCountry.setOnFocusChangeListener { view, isFocused ->
+
+            if (!isFocused) {
+                //this.hideKeyboard(view)
+                countryValidation()
+            }
+
+
+        }
+
         etPinCode.setOnFocusChangeListener { view, isFocused ->
 
             if (!isFocused) {
@@ -317,6 +341,14 @@ class AddAddressActivity : AppCompatActivity(),
         }
         editTextCity.onTextChanged {
             textViewCityError.invisible()
+        }
+
+        editTextState.onTextChanged {
+            textViewStateError.invisible()
+        }
+
+        editTextCountry.onTextChanged {
+            textViewCountryError.invisible()
         }
         etPinCode.onTextChanged {
             textViewSpinnerError.invisible()
@@ -404,6 +436,32 @@ class AddAddressActivity : AppCompatActivity(),
                 return false
             }
             else -> textViewCityError.invisible()
+        }
+        return true
+    }
+
+    private fun stateValidation(): Boolean {
+
+        when {
+            editTextState.text.toString().isEmpty() -> {
+                textViewStateError.show()
+                textViewStateError.text = "Please enter state."
+                return false
+            }
+            else -> textViewStateError.invisible()
+        }
+        return true
+    }
+
+    private fun countryValidation(): Boolean {
+
+        when {
+            editTextCountry.text.toString().isEmpty() -> {
+                textViewCountryError.show()
+                textViewCountryError.text = "Please enter country."
+                return false
+            }
+            else -> textViewCountryError.invisible()
         }
         return true
     }

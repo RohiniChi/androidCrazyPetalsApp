@@ -9,6 +9,7 @@
 
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:scrollbars="none"

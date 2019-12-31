@@ -229,7 +229,9 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
             .getStringValue(SHARED_PREFERENCES_NOTIFICATION_COUNT)!!
 
 
-        if (notificationCountText == "10") {
+        if (notificationCountText.isEmpty()) {
+            notificationCountText = "0"
+        } else if (notificationCountText == "10") {
             notificationCountText = "9+"
         }
         badge.setCount(notificationCountText)
@@ -565,6 +567,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
                                 Log.e("priceDetailFields size", categoryList.size.toString())
                                 categoryListAdapter.notifyDataSetChanged()
 //                                sendMixPanelEvent()
+                                nestedScrollView.scrollTo(0,0)
 
                             } else {
                                 showNoDataAvailableScreen()
