@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.plugable.mcommerceapp.cpmvp1", appContext.packageName)
+        assertEquals("com.plugable.mcommerceapp.crazypetals", appContext.packageName)
     }
 }
