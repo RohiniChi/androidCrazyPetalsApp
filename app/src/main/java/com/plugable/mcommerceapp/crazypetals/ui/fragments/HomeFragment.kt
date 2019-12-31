@@ -131,6 +131,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         attemptApiCall()
         attemptBannerApiCall()
         attemptCartApiCall()
+        attemptNotificationApiCall()
 
     }
 
@@ -234,6 +235,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         } else if (notificationCountText == "10") {
             notificationCountText = "9+"
         }
+
         badge.setCount(notificationCountText)
         icon.mutate()
         icon.setDrawableByLayerId(R.id.ic_group_count, badge)
