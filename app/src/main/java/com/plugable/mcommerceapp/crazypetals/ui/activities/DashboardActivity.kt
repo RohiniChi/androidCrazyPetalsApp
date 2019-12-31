@@ -369,12 +369,12 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                     setToolBar(getString(R.string.menu_about_us), true)
                 }
             }
-            R.id.nav_faqs -> {
+         /*   R.id.nav_faqs -> {
                 if (currentFragment !is FAQsFragment) {
                     fragment = FAQsFragment()
                     setToolBar(getString(R.string.title_faqs), true)
                 }
-            }
+            }*/
             R.id.nav_contact_us -> {
                 if (currentFragment !is ContactUsFragment) {
                     fragment = ContactUsFragment()

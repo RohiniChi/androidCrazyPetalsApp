@@ -58,7 +58,7 @@
             android:title="@string/title_contact_us" />
     </group>
 
-    <group
+  <!--  <group
         android:id="@+id/group_faqs"
         android:checkableBehavior="single">
 
@@ -66,7 +66,7 @@
             android:id="@+id/nav_faqs"
             android:title="@string/title_faqs" />
     </group>
-
+-->
     <group android:checkableBehavior="none">
         <item
             android:id="@+id/nav_log_out"
