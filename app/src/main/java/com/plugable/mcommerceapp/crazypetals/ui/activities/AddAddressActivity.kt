@@ -157,8 +157,11 @@ class AddAddressActivity : AppCompatActivity(),
                 pinCodeValidation()
                 areaValidation()
                 cityValidation()
+                stateValidation()
+                countryValidation()
 
-                if (phoneNoValidation() && flatNoValidation() && localityValidation() && pinCodeValidation() && areaValidation() && cityValidation()) {
+                if (phoneNoValidation() && flatNoValidation() && localityValidation() && pinCodeValidation() && areaValidation()
+                    && cityValidation() && stateValidation() && countryValidation()) {
                     buttonAddAddress.isEnabled = false
                     if (addRequest) callAddOrEditAddressApi(makeAddressObject()) else editAddress(
                         makeAddressObject()

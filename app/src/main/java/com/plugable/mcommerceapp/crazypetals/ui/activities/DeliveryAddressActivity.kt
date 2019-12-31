@@ -92,6 +92,8 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
                 Locality = address.locality,
                 Landmark = address.landmark,
                 city = address.city,
+                state = address.state,
+                country= address.country,
                 ID = address.id.toString(),
                 MobileNumber = address.mobileNumber,
                 PinCode = address.pinCode,
