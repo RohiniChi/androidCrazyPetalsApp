@@ -113,6 +113,8 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
                 addressList.remove(address)
                 notifyItemRemoved(index)
                 toast("Address removed")
+
+
             } else {
                 toast("Item not found")
             }

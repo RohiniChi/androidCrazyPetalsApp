@@ -78,14 +78,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/colorLightGray"
+                android:inputType="textPersonName"
                 android:text="@string/flat_no"
                 android:textColor="#4f4f4f"
-                android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewPhoneNoError" />
-
 
 
             <EditText
@@ -204,6 +203,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 android:textColor="@color/edit_text_color_selector"
                 android:textCursorDrawable="@null"
                 app:backgroundTint="@color/colorLightGray"
@@ -224,6 +224,81 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/editTextCity" />
 
+
+            <TextView
+                android:id="@+id/textViewState"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/state"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewCityError" />
+
+            <EditText
+                android:id="@+id/editTextState"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                android:textColor="@color/edit_text_color_selector"
+                android:textCursorDrawable="@null"
+                app:backgroundTint="@color/colorLightGray"
+                app:layout_constraintEnd_toEndOf="@id/textViewCity"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@id/textViewState"
+                app:layout_constraintTop_toBottomOf="@id/textViewState"
+                tools:ignore="Autofill,LabelFor" />
+
+            <TextView
+                android:id="@+id/textViewStateError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/edittextErrorColor"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextState" />
+
+            <TextView
+                android:id="@+id/textViewCountry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/country"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewStateError" />
+
+            <EditText
+                android:id="@+id/editTextCountry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:textColor="@color/edit_text_color_selector"
+                android:textCursorDrawable="@null"
+                app:backgroundTint="@color/colorLightGray"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                app:layout_constraintEnd_toEndOf="@id/textViewCity"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@id/textViewCountry"
+                app:layout_constraintTop_toBottomOf="@id/textViewCountry"
+                tools:ignore="Autofill,LabelFor" />
+
+            <TextView
+                android:id="@+id/textViewCountryError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/edittextErrorColor"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextCountry" />
+
             <TextView
                 android:id="@+id/textViewPinCode"
                 android:layout_width="0dp"
@@ -234,7 +309,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewCityError" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewCountryError" />
 
             <EditText
                 android:id="@+id/etPinCode"

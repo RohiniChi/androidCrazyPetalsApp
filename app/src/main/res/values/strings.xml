@@ -171,6 +171,16 @@
         <font fgcolor="#4f4f4f">City</font>
         <font fgcolor="red">*</font>
     </string>
+
+    <string name="state">
+        <font fgcolor="#4f4f4f">State</font>
+        <font fgcolor="red">*</font>
+    </string>
+
+    <string name="country">
+        <font fgcolor="#4f4f4f">Country</font>
+        <font fgcolor="red">*</font>
+    </string>
     <string name="add_address">Add Address</string>
     <string name="message_delivery_address">Delivery Address</string>
     <string name="title_added_to_cart">Added to cart</string>
