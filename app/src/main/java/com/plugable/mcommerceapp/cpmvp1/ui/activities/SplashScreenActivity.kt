@@ -5,17 +5,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.view.WindowManager
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.plugable.mcommerceapp.cpmvp1.BuildConfig
 import com.plugable.mcommerceapp.cpmvp1.R
-import com.plugable.mcommerceapp.cpmvp1.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.ApplicationTheme
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.Host
 import com.plugable.mcommerceapp.cpmvp1.mcommerce.models.VersionInfo
@@ -23,11 +20,17 @@ import com.plugable.mcommerceapp.cpmvp1.mcommerce.webservices.ProjectApi
 import com.plugable.mcommerceapp.cpmvp1.registration.LoginActivity
 import com.plugable.mcommerceapp.cpmvp1.utils.application.App
 import com.plugable.mcommerceapp.cpmvp1.utils.constants.IntentFlags
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.hide
 import com.plugable.mcommerceapp.cpmvp1.utils.extension.setStatusBarColor
+import com.plugable.mcommerceapp.cpmvp1.utils.extension.show
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.cpmvp1.utils.sharedpreferences.SharedPreferencesForBaseUrl
 import com.plugable.mcommerceapp.cpmvp1.utils.util.isNetworkAccessible
-import org.jetbrains.anko.*
+import kotlinx.android.synthetic.main.activity_splash_screen.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.allCaps
+import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.textColor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,9 +39,10 @@ import retrofit2.Response
  * [SplashScreenActivity] is used to load application image as well as dynamic theme using api
  *
  */
-class SplashScreenActivity : AppCompatActivity() {
+class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
     private val hostUrlIndex = 2
 
+    private lateinit var appVersionApi: Call<VersionInfo>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,15 +52,20 @@ class SplashScreenActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
+        buttonRetry.setOnClickListener(this)
+        updatePreferenceOfHostname()
+        updatePreference()
+
+
         checkInternetConnection()
 
     }
 
     private fun checkInternetConnection() {
         if (isNetworkAccessible()) {
-            callHostName()
+            checkAppVersion()
         } else {
-            try {
+/*            try {
                 getDataFromSharedPreferenceForHostUrl()
             } catch (e: Exception) {
                 alert(getString(R.string.check_internet_connection)) {
@@ -73,10 +82,12 @@ class SplashScreenActivity : AppCompatActivity() {
                     }
                 }
 
-            }
+            }*/
+            showAlert()
         }
     }
 
+/*
     private fun callHostName() {
         val clientInstance = ServiceGenerator.createHostnameService(ProjectApi::class.java)
         val call = clientInstance.getHostname()
@@ -109,7 +120,7 @@ class SplashScreenActivity : AppCompatActivity() {
                             App.HostUrl
                         updatePreferenceOfHostname(response.body()!!.apiConfig[hostUrlIndex])
                         callApplicationThemeApi()
-                        Log.e("Success", response.body()?.apiConfig!![1].devBaseUrl)
+                        Log.e("Success", response.body()?.apiConfig!![2].devBaseUrl)
                     } else {
                         alert(getString(R.string.message_contact_admin)) {
                             yesButton { finish() }
@@ -147,39 +158,64 @@ class SplashScreenActivity : AppCompatActivity() {
         })
     }
 
+*/
 
-    private fun getDataFromSharedPreference() {
-
-        if (SharedPreferences.getInstance(this).themeDataPreference != null) {
-            val sharedPreferences = SharedPreferences.getInstance(this).themeDataPreference
-            ApplicationThemeUtils.PRIMARY_COLOR = sharedPreferences!!.primaryColor
-            ApplicationThemeUtils.STATUS_BAR_COLOR = sharedPreferences.statusBarColor
-            ApplicationThemeUtils.SECONDARY_COLOR = sharedPreferences.secondryColor
-            ApplicationThemeUtils.TEXT_COLOR = sharedPreferences.textColor
-            ApplicationThemeUtils.CURRENCY_SYMBOL = sharedPreferences.currencySymbol
-            ApplicationThemeUtils.APP_NAME = sharedPreferences.appName
-            ApplicationThemeUtils.App_Logo = sharedPreferences.appLogoURL
-            ApplicationThemeUtils.TOOL_BAR_COLOR = sharedPreferences.tertiaryColor
-            setActivityTheme()
-
-        }
+    private fun showAlert() {
+        layoutCheckInternet.show()
+        imageViewCpLogo.hide()
+        imageViewSplashScreenImage.hide()
+        splash_screen_text.hide()
     }
 
-    private fun getDataFromSharedPreferenceForHostUrl() {
-        if (SharedPreferencesForBaseUrl.getInstance(this).tokenDataPreference?.devBaseUrl != null) {
-            val sharedPreferences =
-                SharedPreferencesForBaseUrl.getInstance(this).tokenDataPreference
-            App.HostUrl = sharedPreferences!!.devBaseUrl
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.buttonRetry -> {
+                if (isNetworkAccessible()) {
+                    layoutCheckInternet.hide()
+                    imageViewCpLogo.show()
+                    imageViewSplashScreenImage.show()
+                    splash_screen_text.show()
 
-            try {
-                getDataFromSharedPreference()
-            } catch (e: Exception) {
-                setActivityTheme()
+                    checkAppVersion()
+                } else {
+                    showAlert()
+                }
             }
-            goToDashboardActivity()
         }
     }
 
+    /* private fun getDataFromSharedPreference() {
+
+         if (SharedPreferences.getInstance(this).themeDataPreference != null) {
+             val sharedPreferences = SharedPreferences.getInstance(this).themeDataPreference
+             ApplicationThemeUtils.PRIMARY_COLOR = sharedPreferences!!.primaryColor
+             ApplicationThemeUtils.STATUS_BAR_COLOR = sharedPreferences.statusBarColor
+             ApplicationThemeUtils.SECONDARY_COLOR = sharedPreferences.secondryColor
+             ApplicationThemeUtils.TEXT_COLOR = sharedPreferences.textColor
+             ApplicationThemeUtils.CURRENCY_SYMBOL = sharedPreferences.currencySymbol
+             ApplicationThemeUtils.APP_NAME = sharedPreferences.appName
+             ApplicationThemeUtils.App_Logo = sharedPreferences.appLogoURL
+             ApplicationThemeUtils.TOOL_BAR_COLOR = sharedPreferences.tertiaryColor
+             setActivityTheme()
+
+         }
+     }
+ */
+    /*   private fun getDataFromSharedPreferenceForHostUrl() {
+           if (SharedPreferencesForBaseUrl.getInstance(this).tokenDataPreference?.devBaseUrl != null) {
+               val sharedPreferences =
+                   SharedPreferencesForBaseUrl.getInstance(this).tokenDataPreference
+               App.HostUrl = sharedPreferences!!.devBaseUrl
+
+               try {
+                   getDataFromSharedPreference()
+               } catch (e: Exception) {
+                   setActivityTheme()
+               }
+               goToDashboardActivity()
+           }
+       }
+   */
     /**
      * This API is used for checking latest version of Application
      */
@@ -191,31 +227,40 @@ class SplashScreenActivity : AppCompatActivity() {
         call.enqueue(object : Callback<VersionInfo> {
             override fun onResponse(call: Call<VersionInfo>, response: Response<VersionInfo>) {
 
-                if (response.isSuccessful) {
+                if (isNetworkAccessible()) {
+                    if (response.isSuccessful) {
 
-                    if (response.body()?.statusCode?.equals("10")!!) {
+                        if (response.body()?.statusCode?.equals("10")!!) {
 
-                        SharedPreferences.getInstance(this@SplashScreenActivity).setStringValue(
-                            IntentFlags.VERSION_NUMBER,
-                            BuildConfig.VERSION_NAME
-                        )
-                        if (response.body()!!.data.versionNumber > BuildConfig.VERSION_NAME) {
+                            SharedPreferences.getInstance(this@SplashScreenActivity).setStringValue(
+                                IntentFlags.VERSION_NUMBER,
+                                BuildConfig.VERSION_NAME
+                            )
+                            if (response.body()!!.data.versionNumber > BuildConfig.VERSION_NAME) {
 //                            showPopUpForLatestUpdate()//remove thisline for force update
 //                            ("Uncomment following code while going live. for testing purpose it is keep force update commented")
-                            if (response.body()!!.data.updateType.equals(getString(R.string.forceful_update))) {
-                                showForceUpdatePopUp()
+                                if (response.body()!!.data.updateType.equals(
+                                        getString(R.string.forceful_update),
+                                        true
+                                    )
+                                ) {
+                                    showForceUpdatePopUp()
+                                } else {
+                                    showPopUpForLatestUpdate()
+                                }
                             } else {
-                                showPopUpForLatestUpdate()
+                                goToDashboardActivity()
                             }
-                        } else {
-                            goToDashboardActivity()
                         }
                     }
+                } else {
+                    showAlert()
                 }
             }
 
             override fun onFailure(call: Call<VersionInfo>, throwable: Throwable) {
                 //Not use because of this API is called in background in activity
+                showAlert()
             }
         })
     }
@@ -303,6 +348,7 @@ class SplashScreenActivity : AppCompatActivity() {
              .into(imgSplashLogo);*/
     }
 
+/*
     private fun callApplicationThemeApi() {
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
         val call = clientInstance.myJSON
@@ -344,28 +390,52 @@ class SplashScreenActivity : AppCompatActivity() {
             }
         })
     }
+*/
 
     private fun goToDashboardActivity() {
-        if (SharedPreferences.getInstance(this).isUserSkippedLogin || SharedPreferences.getInstance(
-                this
-            ).isUserLoggedIn
-        ) {
-            startActivity<DashboardActivity>()
-            finish()
+        if (isNetworkAccessible()) {
+            if (SharedPreferences.getInstance(this).isUserSkippedLogin || SharedPreferences.getInstance(
+                    this
+                ).isUserLoggedIn
+            ) {
+                startActivity<DashboardActivity>()
+                finish()
+            } else {
+                startActivity<LoginActivity>()
+            }
         } else {
-            startActivity<LoginActivity>()
+            showAlert()
         }
     }
 
 
-    private fun updatePreferenceOfHostname(apiConfigData: Host.ApiConfig) {
-        val apiConfig: Host.ApiConfig = apiConfigData
-        SharedPreferencesForBaseUrl.getInstance(this).tokenDataPreference = apiConfig
+    private fun updatePreferenceOfHostname() {
+        val apiConfigData = Host.ApiConfig(
+            "http://165.22.60.17:9293/",
+            "http://165.22.60.17:9293/",
+            "http://165.22.60.17:9295/",
+            "PA003",
+            "CrazyPetals"
+        )
+        App.HostUrl = apiConfigData.devBaseUrl
+        SharedPreferences.getInstance(this@SplashScreenActivity).hostUrl =
+            App.HostUrl
+        SharedPreferencesForBaseUrl.getInstance(this).tokenDataPreference = apiConfigData
     }
 
-    private fun updatePreference(themeDataValue: ApplicationTheme.Data) {
-        val themeData: ApplicationTheme.Data = themeDataValue
+    private fun updatePreference() {
+        val themeData = ApplicationTheme.Data(
+            "http://165.22.60.17:9294http://114.143.198.154:9001/AppLogo/f4a5e224-0231-45df-8d53-cb34375cf28a.png",
+            "CrazyPetals",
+            "₹",
+            "#C65589",
+            "#005389",
+            "#123456",
+            "#FFFFFF",
+            "#000000"
+        )
         SharedPreferences.getInstance(this).themeDataPreference = themeData
+        setActivityTheme()
     }
 
     //This is permanent so no change
@@ -378,5 +448,13 @@ class SplashScreenActivity : AppCompatActivity() {
                setActivityTheme()
            }
        }*/
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::appVersionApi.isInitialized && appVersionApi != null) appVersionApi.cancel()
+    }
 }
 

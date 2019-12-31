@@ -44,5 +44,36 @@
         app:srcCompat="@drawable/img_splash"
         tools:ignore="ContentDescription" />
 
+    <LinearLayout
+        android:id="@+id/layoutCheckInternet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/check_internet_connection"
+            android:gravity="center"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/colorBlack"/>
+
+        <Button
+            android:id="@+id/buttonRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:backgroundTint="#005389"
+            android:text="@string/button_retry"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
