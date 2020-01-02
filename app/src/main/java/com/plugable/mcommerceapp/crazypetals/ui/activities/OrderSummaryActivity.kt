@@ -26,10 +26,7 @@ import com.plugable.mcommerceapp.crazypetals.ui.adapters.OrdersAdapter
 import com.plugable.mcommerceapp.crazypetals.utils.application.App
 import com.plugable.mcommerceapp.crazypetals.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.crazypetals.utils.constants.WebApi
-import com.plugable.mcommerceapp.crazypetals.utils.extension.hide
-import com.plugable.mcommerceapp.crazypetals.utils.extension.setStatusBarColor
-import com.plugable.mcommerceapp.crazypetals.utils.extension.setToolBarColor
-import com.plugable.mcommerceapp.crazypetals.utils.extension.show
+import com.plugable.mcommerceapp.crazypetals.utils.extension.*
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.crazypetals.utils.util.HashGenerator.hashCal
 import com.plugable.mcommerceapp.crazypetals.utils.util.capitalizeAll
@@ -270,6 +267,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             android.R.id.home -> onBackPressed()
             R.id.imgToolbarHomeLayout -> onBackPressed()
             R.id.materialButtonOrderSummaryPlaceOrder -> {
+                this.hideKeyboard(view)
+
                 if (checkboxInstructions.isChecked) {
                     materialButtonOrderSummaryPlaceOrder.isClickable = false
 
@@ -417,6 +416,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         content.hide()
         include2.hide()
         materialButtonOrderSummaryPlaceOrder.hide()
+        this.disableWindowClicks()
     }
 
     private fun hideProgress() {
@@ -424,6 +424,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         content.show()
         include2.show()
         materialButtonOrderSummaryPlaceOrder.show()
+        this.enableWindowClicks()
     }
 
     private fun fetchAddressList() {
