@@ -363,6 +363,20 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
+            R.id.nav_privacy_policy -> {
+                if (currentFragment !is PrivacyPolicyFragment) {
+                    fragment = PrivacyPolicyFragment()
+                    setToolBar(getString(R.string.menu_privacy_policy), true)
+                }
+            }
+
+            R.id.nav_return_policy -> {
+                if (currentFragment !is ReturnPolicyFragment) {
+                    fragment = ReturnPolicyFragment()
+                    setToolBar(getString(R.string.menu_return_policy), true)
+                }
+            }
+
             R.id.nav_about_us -> {
                 if (currentFragment !is AboutUsFragment) {
                     fragment = AboutUsFragment()

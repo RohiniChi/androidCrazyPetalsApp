@@ -95,7 +95,7 @@ class ProfileActivity : BaseActivity() {
 
             profilePicture = App.HostUrl.plus(profile.profilePicture)
             Glide.with(imageViewLogo).load(profilePicture)
-                .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.kmm_profile))
+                .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
                 .into(imageViewLogo)
 //            imageViewCamera.hide()
 //            textViewAddPhoto.hide()
@@ -225,7 +225,7 @@ class ProfileActivity : BaseActivity() {
                 Glide.with(this).load(imageBitmap)
                     .apply(
                         RequestOptions.circleCropTransform()
-                            .placeholder(R.drawable.kmm_profile)
+                            .placeholder(R.drawable.cp_profile)
                     )
                     .into(imageViewLogo)
                 isProfilePictureChanged = true
@@ -236,7 +236,7 @@ class ProfileActivity : BaseActivity() {
             } else if (imageData != null) { // From Gallery
 //                imageViewProfile.setImageURI(imageData)
                 Glide.with(this).load(imageData)
-                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.kmm_profile))
+                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
                     .into(imageViewLogo)
                 /*  imageViewCamera.hide()
                   textViewAddPhoto.hide()*/

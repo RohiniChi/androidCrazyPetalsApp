@@ -162,13 +162,13 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
 
     override fun onOTPReceived(sms: String) {
 //        toast("OTP Received: $sms")
-//                    toast("$sms.substring(35,38)")
+//                    toast("$sms.substring(30,33)")
 
         timer.cancel()
         textViewOTPVerificationError.hide()
         buttonVerify.isClickable = true
 
-        val otp = sms.substring(34, 38)
+        val otp = sms.substring(30, 34)
         otp_view.setText(otp)
         if (smsReceiver != null) {
             unregisterReceiver(smsReceiver!!)
