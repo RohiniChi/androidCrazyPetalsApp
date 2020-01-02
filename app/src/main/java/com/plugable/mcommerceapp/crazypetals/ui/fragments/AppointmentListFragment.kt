@@ -183,6 +183,11 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
                 val appointmentData: AppointmentData = data.getParcelableExtra("response")!!
                 appointmentArrayList.add(0, appointmentData)
                 appointmentListAdapter.notifyDataSetChanged()
+                if (appointmentArrayList.isEmpty()) {
+                    showEmptyScreen()
+                } else {
+                    showRecyclerViewData()
+                }
             }
         } else {
             if (resultCode == 2 && data != null) {
