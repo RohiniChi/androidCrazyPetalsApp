@@ -162,6 +162,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     override fun onResume() {
         invalidateOptionsMenu()
+        productListAdapter.notifyDataSetChanged()
         super.onResume()
     }
 

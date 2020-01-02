@@ -13,6 +13,7 @@ import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.callbacks.OnButtonClickListener
 import com.plugable.mcommerceapp.crazypetals.callbacks.OnFavoriteListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
+import com.plugable.mcommerceapp.crazypetals.mcommerce.db.AppDatabase
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.GetCartResponse
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.Products
 import com.plugable.mcommerceapp.crazypetals.utils.extension.hide
@@ -58,6 +59,20 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.MyViewHolder>
     override fun onBindViewHolder(viewHolder: MyViewHolder, position: Int) {
 
         val productItems = productList[position]
+
+        if (AppDatabase.getDatabase(context).productListDao().getSingleWishListProduct(
+                productItems.id
+            ) != null
+        ) {
+            productItems.isFavorite =
+                AppDatabase.getDatabase(context)
+                    .productListDao()
+                    .getSingleWishListProduct(productItems.id).isFavorite
+        }
+        else{
+            productItems.isFavorite=false
+        }
+
         viewHolder.itemView.textViewProductTitle.text = productItems.name
         viewHolder.itemView.textViewDiscountedPrice.text =
             String.format(
@@ -100,6 +115,8 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.MyViewHolder>
                 favoriteItemClickListener.onFavoriteClicked(position, false)
             }
         }
+
+
 
     }
 
