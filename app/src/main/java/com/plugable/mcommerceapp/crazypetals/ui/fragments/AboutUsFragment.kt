@@ -82,9 +82,11 @@ class AboutUsFragment : Fragment() {
 
     }
 
-    /* override fun onDestroy() {
-         mixPanel.flush()
-         super.onDestroy()
-     }
- */
+    override fun onDestroy() {
+        if (webViewAboutUS != null) {
+            webViewAboutUS.removeAllViews()
+            webViewAboutUS.destroy()
+        }
+        super.onDestroy()
+    }
 }

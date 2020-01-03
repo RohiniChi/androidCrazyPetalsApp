@@ -1,21 +1,17 @@
 package com.plugable.mcommerceapp.crazypetals.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
-
+import androidx.fragment.app.Fragment
 import com.plugable.mcommerceapp.crazypetals.R
-import kotlinx.android.synthetic.main.fragment_about_us.*
 import kotlinx.android.synthetic.main.fragment_return_policy.*
 
 
@@ -58,7 +54,7 @@ class ReturnPolicyFragment : Fragment() {
         )
 //        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
 //        sendMixPanelEvent()
-        if (activity!!.isFinishing){
+        if (activity!!.isFinishing) {
             return
         }
         webViewReturnPolicy.webViewClient = object : WebViewClient() {
@@ -72,5 +68,13 @@ class ReturnPolicyFragment : Fragment() {
                 progressBarReturnPolicy.hide()
             }
         }
+    }
+
+    override fun onDestroy() {
+        if (webViewReturnPolicy != null) {
+            webViewReturnPolicy.removeAllViews()
+            webViewReturnPolicy.destroy()
+        }
+        super.onDestroy()
     }
 }

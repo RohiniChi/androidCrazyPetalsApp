@@ -12,9 +12,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import com.plugable.mcommerceapp.crazypetals.R
-import kotlinx.android.synthetic.main.fragment_about_us.*
 import kotlinx.android.synthetic.main.fragment_privacy_policy.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
+
 
 /**
  * A simple [Fragment] subclass.
@@ -55,6 +55,7 @@ class PrivacyPolicyFragment : Fragment() {
         )
 //        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
 //        sendMixPanelEvent()
+
         if (activity!!.isFinishing) {
             return
         }
@@ -77,4 +78,11 @@ class PrivacyPolicyFragment : Fragment() {
 
     }
 
+    override fun onDestroy() {
+        if (webViewPrivacyPolicy != null) {
+            webViewPrivacyPolicy.removeAllViews()
+            webViewPrivacyPolicy.destroy()
+        }
+        super.onDestroy()
+    }
 }
