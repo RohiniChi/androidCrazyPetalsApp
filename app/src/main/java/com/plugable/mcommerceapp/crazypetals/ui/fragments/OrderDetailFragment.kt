@@ -169,6 +169,8 @@ class OrderDetailFragment : BaseFragment() {
             tvPaymentStatus.text = orderDetail.paymentStatus
             tvPaymentStatus.setTextColor(Color.RED)
             buttonPayment.show()
+            tvDeliveryDateLabel.hide()
+            tvDeliveryDate.hide()
         }
         else{
             tvPaymentStatus.text = orderDetail.paymentStatus
