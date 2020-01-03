@@ -30,6 +30,7 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
         const val PLACE_ORDER_RESPONSE = "place.order.response"
     }
 
+    private var transactionStatus: String = ""
     private var orderNumber: String = ""
     private var deliveryDay: String = ""
     private var paymentStatus: String = ""
@@ -45,12 +46,20 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setPlaceOrderResponseData(
     ) {
+        if (transactionStatus.equals("Unsuccessful", true)) {
+            textViewOrderStatusOrderNumberDescription.text =
+                String.format("%s", placeOrderResponse?.orderNumber)
+            textViewOrderStatusOrderAmountDescription.hide()
+            textViewOrderStatusOrderAmountTitle.hide()
+            textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Online payment")
+        } else {
+            textViewOrderStatusOrderNumberDescription.text =
+                String.format("%s", placeOrderResponse?.orderNumber)
+            textViewOrderStatusOrderAmountDescription.text =
+                String.format("%s", placeOrderResponse?.deliveryDay)
+            textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Online payment")
 
-        textViewOrderStatusOrderNumberDescription.text =
-            String.format("%s", placeOrderResponse?.orderNumber)
-        textViewOrderStatusOrderAmountDescription.text =
-            String.format("%s", placeOrderResponse?.deliveryDay)
-        textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Online payment")
+        }
     }
 
     private fun readIntent() {
@@ -79,7 +88,7 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
             }
         } else {
             placeOrderResponse = intent.getParcelableExtra(PLACE_ORDER_RESPONSE)
-            val transactionStatus = intent.getStringExtra("TransactionStatus")
+            transactionStatus = intent.getStringExtra("TransactionStatus")
             if (transactionStatus.equals("Successful", true)) {
                 setPlaceOrderResponseData()
                 ImageViewCompat.setImageTintList(
@@ -97,10 +106,17 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setOrderDetailData() {
-        textViewOrderStatusOrderNumberDescription.text = orderNumber
-        textViewOrderStatusOrderAmountDescription.text = deliveryDay
-        textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Online payment")
-
+        if (paymentStatus.equals("Unsuccessful", true)) {
+            textViewOrderStatusOrderNumberDescription.text = orderNumber
+//        textViewOrderStatusOrderAmountDescription.text = deliveryDay
+            textViewOrderStatusOrderAmountDescription.hide()
+            textViewOrderStatusOrderAmountTitle.hide()
+            textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Online payment")
+        } else {
+            textViewOrderStatusOrderNumberDescription.text = orderNumber
+            textViewOrderStatusOrderAmountDescription.text = deliveryDay
+            textViewOrderStatusOrderPaymentDescription.text = String.format("%s", "Online payment")
+        }
     }
 
     private fun initializeTheme() {
