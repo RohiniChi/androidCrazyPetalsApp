@@ -12,6 +12,7 @@
 package com.plugable.mcommerceapp.crazypetals.ui.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,51 +38,71 @@ class MyOrderAdapter(
     private var context: Context,
     private var orderArrayList: ArrayList<MyOrder.DataItem?>,
     var itemClickListener: EventListener
-    ) : RecyclerView.Adapter<MyOrderAdapter.MyViewHolder>() {
+) : RecyclerView.Adapter<MyOrderAdapter.MyViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: MyViewHolder, position: Int) {
 
-        viewHolder.itemView.tvOrderId.text="#"+orderArrayList[position]!!.orderNumber.toString()
+        viewHolder.itemView.tvOrderId.text = "#" + orderArrayList[position]!!.orderNumber.toString()
 
-        /*if(orderArrayList[position]!!.deliveredDate==null){
+        if (orderArrayList[position]?.isPaymentFailed!!) {
+            viewHolder.itemView.tvOrderedOn.hide()
+            viewHolder.itemView.tvDeliveredDate.hide()
+            viewHolder.itemView.tvArrivingDate.hide()
+            viewHolder.itemView.tvPaymentFailed.show()
+
+            viewHolder.itemView.tvPaymentFailed.text = "Order payment failed"
+
+            viewHolder.itemView.tvPaymentFailed.setTextColor(Color.RED)
+
+            viewHolder.itemView.imgIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.ic_order_arriving
+                )
+            )
+        } else if (orderArrayList[position]!!.deliveryStatus == 1 || orderArrayList[position]!!.deliveryStatus == 2) {
             viewHolder.itemView.tvOrderedOn.hide()
             viewHolder.itemView.tvDeliveredDate.hide()
             viewHolder.itemView.tvArrivingDate.show()
+            viewHolder.itemView.tvPaymentFailed.hide()
 
-            viewHolder.itemView.tvArrivingDate.text="Arriving on ".plus(orderArrayList[position]!!.deliveryDay)
-            viewHolder.itemView.imgIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_cancel_order))
-        }else{
+            viewHolder.itemView.tvArrivingDate.text =
+                "Arriving on ".plus(orderArrayList[position]!!.deliveryDay)
+            viewHolder.itemView.imgIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.ic_order_arriving
+                )
+            )
+        } else if (orderArrayList[position]!!.deliveryStatus == 4 && orderArrayList[position]!!.deliveredDate != null) {
             viewHolder.itemView.tvOrderedOn.show()
             viewHolder.itemView.tvDeliveredDate.show()
             viewHolder.itemView.tvArrivingDate.hide()
+            viewHolder.itemView.tvPaymentFailed.hide()
 
-            viewHolder.itemView.tvOrderedOn.text="Ordered on ".plus(orderArrayList[position]!!.orderedDate)
-            viewHolder.itemView.tvDeliveredDate.text="Delivered on ".plus(orderArrayList[position]!!.deliveredDate)
-            viewHolder.itemView.imgIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_order_delivered))
-        }*/
-
-        if (orderArrayList[position]!!.deliveryStatus==1 || orderArrayList[position]!!.deliveryStatus==2){
+            viewHolder.itemView.tvOrderedOn.text =
+                "Ordered on ".plus(orderArrayList[position]!!.orderedDate)
+            viewHolder.itemView.tvDeliveredDate.text =
+                "Delivered on ".plus(orderArrayList[position]!!.deliveredDate)
+            viewHolder.itemView.imgIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.ic_order_delivered
+                )
+            )
+        } else if (orderArrayList[position]!!.deliveryStatus == 5) {
             viewHolder.itemView.tvOrderedOn.hide()
             viewHolder.itemView.tvDeliveredDate.hide()
             viewHolder.itemView.tvArrivingDate.show()
+            viewHolder.itemView.tvPaymentFailed.hide()
 
-            viewHolder.itemView.tvArrivingDate.text="Arriving on ".plus(orderArrayList[position]!!.deliveryDay)
-            viewHolder.itemView.imgIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_order_arriving))
-        }
-        else if (orderArrayList[position]!!.deliveryStatus== 4 && orderArrayList[position]!!.deliveredDate != null){
-            viewHolder.itemView.tvOrderedOn.show()
-            viewHolder.itemView.tvDeliveredDate.show()
-            viewHolder.itemView.tvArrivingDate.hide()
-            viewHolder.itemView.tvOrderedOn.text="Ordered on ".plus(orderArrayList[position]!!.orderedDate)
-            viewHolder.itemView.tvDeliveredDate.text="Delivered on ".plus(orderArrayList[position]!!.deliveredDate)
-            viewHolder.itemView.imgIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_order_delivered))
-        }
-        else if (orderArrayList[position]!!.deliveryStatus==5){
-            viewHolder.itemView.tvOrderedOn.hide()
-            viewHolder.itemView.tvDeliveredDate.hide()
-            viewHolder.itemView.tvArrivingDate.show()
-            viewHolder.itemView.tvArrivingDate.text= "Your order has been cancelled"
-            viewHolder.itemView.imgIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_cancel_order))
+            viewHolder.itemView.tvArrivingDate.text = "Your order has been cancelled"
+            viewHolder.itemView.imgIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.ic_cancel_order
+                )
+            )
 
         }
 
@@ -93,19 +114,20 @@ class MyOrderAdapter(
             val position = adapterPosition
             itemClickListener.onItemClickListener(position)
         }
+
         init {
             itemView.setOnClickListener(this)
         }
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int):MyViewHolder {
-            return MyViewHolder(
-                LayoutInflater.from(context).inflate(
-                    R.layout.row_order,
-                    viewGroup,
-                    false
-                )
+    override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): MyViewHolder {
+        return MyViewHolder(
+            LayoutInflater.from(context).inflate(
+                R.layout.row_order,
+                viewGroup,
+                false
             )
+        )
     }
 
     override fun getItemCount(): Int {
