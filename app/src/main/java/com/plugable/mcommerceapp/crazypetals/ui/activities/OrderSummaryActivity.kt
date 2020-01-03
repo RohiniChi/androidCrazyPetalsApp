@@ -46,6 +46,11 @@ import retrofit2.Response
 class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventListener {
 
 
+    private lateinit var updatePaymentStatusApi: Call<UpdatePaymentResponse>
+    private lateinit var fetchAddressListApi: Call<AddressListResponse>
+    private lateinit var placeOrderApi: Call<PlaceOrderResponse>
+    private lateinit var cartListApi: Call<GetCartResponse>
+    private lateinit var totalPriceApi: Call<GetTotalPrice>
     private lateinit var placeOrderResponse: PlaceOrderResponse
     private var orderId = 0
     private val productList = ArrayList<GetCartResponse.Data>()
@@ -85,6 +90,23 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         checkBoxCheckListener()
         loadData()
+        if (!SharedPreferences.getInstance(this@OrderSummaryActivity)
+                .isTermsConditionRememberMe
+        ){
+            materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
+                Color.GRAY
+            )
+            materialButtonOrderSummaryPlaceOrder.isClickable = true
+
+        }else{
+            materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
+                Color.parseColor(
+                    ApplicationThemeUtils.SECONDARY_COLOR
+                )
+            )
+            materialButtonOrderSummaryPlaceOrder.isClickable = true
+
+        }
     }
 
     private fun checkBoxCheckListener() {
@@ -92,19 +114,20 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             SharedPreferences.getInstance(this@OrderSummaryActivity).isTermsConditionRememberMe
         checkboxInstructions.setOnClickListener {
             if (checkboxInstructions.isChecked) {
-                materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
-                    Color.parseColor(
-                        ApplicationThemeUtils.SECONDARY_COLOR
-                    )
-                )
-                materialButtonOrderSummaryPlaceOrder.isClickable = true
-
-
                 if (!SharedPreferences.getInstance(this@OrderSummaryActivity)
                         .isTermsConditionRememberMe
                 ) {
                     showRememberMeDialog()
+                } else {
+                    materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
+                        Color.parseColor(
+                            ApplicationThemeUtils.SECONDARY_COLOR
+                        )
+                    )
+                    materialButtonOrderSummaryPlaceOrder.isClickable = true
+
                 }
+
 
             } else {
                 toast("Please agree to terms and conditions")
@@ -123,17 +146,27 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             positiveButton("Yes") {
                 SharedPreferences.getInstance(this@OrderSummaryActivity)
                     .isTermsConditionRememberMe = true
+                materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
+                    Color.parseColor(
+                        ApplicationThemeUtils.SECONDARY_COLOR
+                    )
+                )
             }
             negativeButton("No") {
                 SharedPreferences.getInstance(this@OrderSummaryActivity)
                     .isTermsConditionRememberMe = false
+                materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
+                    Color.parseColor(
+                        ApplicationThemeUtils.SECONDARY_COLOR
+                    )
+                )
             }
             isCancelable = false
         }.show().apply {
 
             getButton(AlertDialog.BUTTON_POSITIVE)?.let {
                 it.textColor = Color.BLUE
-                it.allCaps=false
+                it.allCaps = false
                 it.background =
                     ContextCompat.getDrawable(
                         this@OrderSummaryActivity,
@@ -142,7 +175,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             }
             getButton(AlertDialog.BUTTON_NEGATIVE)?.let {
                 it.textColor = Color.BLUE
-                it.allCaps=false
+                it.allCaps = false
                 it.background =
                     ContextCompat.getDrawable(
                         this@OrderSummaryActivity,
@@ -186,8 +219,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.getTotalPriceApi(applicationUserId!!.toInt(), WebApi.APP_ID)
-        call.enqueue(object : Callback<GetTotalPrice> {
+        totalPriceApi = clientInstance.getTotalPriceApi(applicationUserId!!.toInt(), WebApi.APP_ID)
+        totalPriceApi.enqueue(object : Callback<GetTotalPrice> {
             override fun onFailure(call: Call<GetTotalPrice>, t: Throwable) {
                 hideProgress()
                 toast(getString(R.string.message_something_went_wrong))
@@ -246,11 +279,11 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = name
+        supportActionBar?.title =  "Order Summary"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        txtToolbarTitle.text = "Order Summary"
+        txtToolbarTitle.hide()
         imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
@@ -261,9 +294,9 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.getCartApi(applicationUserId!!.toInt())
+        cartListApi = clientInstance.getCartApi(applicationUserId!!.toInt())
 
-        callback.enqueue(object : Callback<GetCartResponse> {
+        cartListApi.enqueue(object : Callback<GetCartResponse> {
             override fun onFailure(call: Call<GetCartResponse>, t: Throwable) {
                 hideProgress()
                 toast(getString(R.string.message_something_went_wrong))
@@ -384,8 +417,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.placeOrder(placeOrderRequest)
-        callback.enqueue(object : Callback<PlaceOrderResponse> {
+        placeOrderApi = clientInstance.placeOrder(placeOrderRequest)
+        placeOrderApi.enqueue(object : Callback<PlaceOrderResponse> {
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
                 materialButtonOrderSummaryPlaceOrder.isEnabled = true
                 materialButtonOrderSummaryPlaceOrder.isClickable = false
@@ -482,13 +515,13 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         readAddressFromIntent()
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.getAddressList(
+        fetchAddressListApi = clientInstance.getAddressList(
             SharedPreferences.getInstance(this).getStringValue(
                 IntentFlags.APPLICATION_USER_ID
             )!!
         )
 
-        callback.enqueue(object : Callback<AddressListResponse> {
+        fetchAddressListApi.enqueue(object : Callback<AddressListResponse> {
             override fun onFailure(call: Call<AddressListResponse>, t: Throwable) {
                 hideProgress()
                 toast(getString(R.string.message_something_went_wrong))
@@ -652,8 +685,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             )
             App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
             val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-            val call = clientInstance.updatePaymentStatus(updateStatusRequest)
-            call.enqueue(object : Callback<UpdatePaymentResponse> {
+             updatePaymentStatusApi = clientInstance.updatePaymentStatus(updateStatusRequest)
+            updatePaymentStatusApi.enqueue(object : Callback<UpdatePaymentResponse> {
                 override fun onFailure(call: Call<UpdatePaymentResponse>, t: Throwable) {
                     materialButtonOrderSummaryPlaceOrder.isClickable = true
                     hideProgress()
@@ -707,4 +740,17 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         return paymentParam
     }
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::placeOrderApi.isInitialized && placeOrderApi != null) placeOrderApi.cancel()
+        if (::fetchAddressListApi.isInitialized && fetchAddressListApi != null) fetchAddressListApi.cancel()
+        if (::cartListApi.isInitialized && cartListApi != null) cartListApi.cancel()
+        if (::totalPriceApi.isInitialized && totalPriceApi != null) totalPriceApi.cancel()
+        if (::updatePaymentStatusApi.isInitialized && updatePaymentStatusApi != null) updatePaymentStatusApi.cancel()
+    }
+
 }

@@ -44,23 +44,7 @@ class MyOrderAdapter(
 
         viewHolder.itemView.tvOrderId.text = "#" + orderArrayList[position]!!.orderNumber.toString()
 
-        if (orderArrayList[position]?.isPaymentFailed!!) {
-            viewHolder.itemView.tvOrderedOn.hide()
-            viewHolder.itemView.tvDeliveredDate.hide()
-            viewHolder.itemView.tvArrivingDate.hide()
-            viewHolder.itemView.tvPaymentFailed.show()
-
-            viewHolder.itemView.tvPaymentFailed.text = "Order payment failed"
-
-            viewHolder.itemView.tvPaymentFailed.setTextColor(Color.RED)
-
-            viewHolder.itemView.imgIcon.setImageDrawable(
-                ContextCompat.getDrawable(
-                    context,
-                    R.drawable.ic_order_arriving
-                )
-            )
-        } else if (orderArrayList[position]!!.deliveryStatus == 1 || orderArrayList[position]!!.deliveryStatus == 2) {
+     if (orderArrayList[position]!!.deliveryStatus == 1 || orderArrayList[position]!!.deliveryStatus == 2) {
             viewHolder.itemView.tvOrderedOn.hide()
             viewHolder.itemView.tvDeliveredDate.hide()
             viewHolder.itemView.tvArrivingDate.show()
@@ -104,6 +88,23 @@ class MyOrderAdapter(
                 )
             )
 
+        }
+        if (orderArrayList[position]!!.isPaymentFailed!!) {
+            viewHolder.itemView.tvOrderedOn.hide()
+            viewHolder.itemView.tvDeliveredDate.hide()
+            viewHolder.itemView.tvArrivingDate.hide()
+            viewHolder.itemView.tvPaymentFailed.show()
+
+            viewHolder.itemView.tvPaymentFailed.text = "Order payment failed"
+
+            viewHolder.itemView.tvPaymentFailed.setTextColor(Color.RED)
+
+            viewHolder.itemView.imgIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.ic_order_arriving
+                )
+            )
         }
 
     }

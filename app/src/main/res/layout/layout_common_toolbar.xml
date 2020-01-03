@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
+        app:titleTextColor="@color/colorBlack"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/AppTheme.MyTheme"
         app:layout_constraintBottom_toBottomOf="parent"

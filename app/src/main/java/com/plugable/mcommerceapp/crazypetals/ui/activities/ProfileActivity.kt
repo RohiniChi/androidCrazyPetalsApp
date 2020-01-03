@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
@@ -30,10 +31,7 @@ import com.plugable.mcommerceapp.crazypetals.mcommerce.models.UpdateProfileData
 import com.plugable.mcommerceapp.crazypetals.mcommerce.webservices.ProjectApi
 import com.plugable.mcommerceapp.crazypetals.utils.application.App
 import com.plugable.mcommerceapp.crazypetals.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.crazypetals.utils.extension.hideKeyboard
-import com.plugable.mcommerceapp.crazypetals.utils.extension.invisible
-import com.plugable.mcommerceapp.crazypetals.utils.extension.setStatusBarColor
-import com.plugable.mcommerceapp.crazypetals.utils.extension.show
+import com.plugable.mcommerceapp.crazypetals.utils.extension.*
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.crazypetals.utils.util.isNetworkAccessible
 import com.plugable.mcommerceapp.crazypetals.utils.validation.EditTextValidations.MAX_NAME_LENGTH
@@ -52,9 +50,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.InputStream
 
 class ProfileActivity : BaseActivity() {
 
+    private lateinit var registerWithImageApi: Call<RegisterWithImage>
+    private lateinit var updateProfileApi: Call<UpdateProfile>
+    private var bitmapImage: Bitmap?=null
+    private var imageStream: InputStream?=null
     private var userProfile: String? = null
     private lateinit var imageBitmap: Bitmap
     private var imageData: Uri? = null
@@ -218,31 +222,49 @@ class ProfileActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == requestImageCapture && resultCode == Activity.RESULT_OK) {
             extras = data?.extras
-            imageData = data?.data
+//            imageData = data?.data
             if (extras != null) {       //From camera
-                imageBitmap = extras?.get("data") as Bitmap
+                if (extras!!.get("data") != null) {
+                    imageBitmap = extras?.get("data") as Bitmap
 //                imageViewProfile.setImageBitmap(imageBitmap)
-                Glide.with(this).load(imageBitmap)
-                    .apply(
-                        RequestOptions.circleCropTransform()
-                            .placeholder(R.drawable.cp_profile)
-                    )
-                    .into(imageViewLogo)
-                isProfilePictureChanged = true
-                /*     imageViewCamera.hide()
-                     textViewAddPhoto.hide()*/
+                    Glide.with(this).load(imageBitmap)
+                        .apply(
+                            RequestOptions.circleCropTransform()
+                                .placeholder(R.drawable.cp_profile)
+                        )
+                        .into(imageViewLogo)
+                    isProfilePictureChanged = true
+                    /*     imageViewCamera.hide()
+                    textViewAddPhoto.hide()*/
 //                progressBarProfile.show()
 //                callRegisterApiWithImage(getImageUri(this, imageBitmap))
-            } else if (imageData != null) { // From Gallery
+                } else {
+                    toast("Error while loading image")
+                }
+            } else {
+                if (data?.data != null) {// From Gallery
+                    imageData = data.data
+                    if (imageData != null) {
 //                imageViewProfile.setImageURI(imageData)
-                Glide.with(this).load(imageData)
-                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
-                    .into(imageViewLogo)
-                /*  imageViewCamera.hide()
-                  textViewAddPhoto.hide()*/
-                progressBarProfile.show()
-                isProfilePictureChanged = true
+                        try {
+                            imageStream = contentResolver.openInputStream(
+                                imageData!!
+                            )
+                        } catch (e: FileNotFoundException) {
+
+                        }
+                        bitmapImage = BitmapFactory.decodeStream(imageStream)
+
+                        Glide.with(this).load(bitmapImage)
+                            .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
+                            .into(imageViewLogo)
+                        /*  imageViewCamera.hide()
+                textViewAddPhoto.hide()*/
+                        progressBarProfile.show()
+                        isProfilePictureChanged = true
 //                callRegisterApiWithImage(imageData)
+                    }
+                }
             }
         }
     }
@@ -257,8 +279,8 @@ class ProfileActivity : BaseActivity() {
         val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.registerApiWithImage(body)
-        call.enqueue(object : Callback<RegisterWithImage> {
+        registerWithImageApi = clientInstance.registerApiWithImage(body)
+        registerWithImageApi.enqueue(object : Callback<RegisterWithImage> {
             override fun onFailure(call: Call<RegisterWithImage>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -273,13 +295,14 @@ class ProfileActivity : BaseActivity() {
                         val image = response.body()?.data
                         myImagePath = image!!
                         buttonUpdate.isClickable = false
-                        progressBarProfile.show()
+                        showProgress(this@ProfileActivity)
 
                         attemptApiCall()
 
                     } else {
                         buttonUpdate.isClickable = true
-                        progressBarProfile.hide()
+                        hideProgress(this@ProfileActivity)
+                        toast("Failed to update profile,please try again")
                     }
                 }
             }
@@ -352,19 +375,19 @@ class ProfileActivity : BaseActivity() {
 
 //                    attemptApiCall()
                     if (isProfilePictureChanged) {
+                        showProgress(this)
                         if (extras != null) {
                             callRegisterApiWithImage(getImageUri(this, imageBitmap))
                         } else if (imageData != null) {
-                            callRegisterApiWithImage(imageData!!)
+                            callRegisterApiWithImage(getImageUri(this, bitmapImage!!))
                             buttonUpdate.isClickable = false
-                            progressBarProfile.show()
+                            showProgress(this)
 
                         }
                     } else {
                         attemptApiCall()
                         buttonUpdate.isClickable = false
-                        progressBarProfile.show()
-
+                        showProgress(this)
                     }
                 }
             }
@@ -373,15 +396,16 @@ class ProfileActivity : BaseActivity() {
 
     override fun onResume() {
         buttonUpdate.isClickable = true
-        progressBarProfile.hide()
+        hideProgress(this)
         super.onResume()
     }
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
-            progressBarProfile.show()
+            showProgress(this)
             callUpdateProfileApi()
         } else {
+            hideProgress(this)
             toast(getString(R.string.oops_no_internet_connection))
         }
     }
@@ -404,11 +428,11 @@ class ProfileActivity : BaseActivity() {
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
 
-        val call = clientInstance.updateProfileWithData(userInfo)
+        updateProfileApi  = clientInstance.updateProfileWithData(userInfo)
 
-        call.enqueue(object : Callback<UpdateProfile> {
+        updateProfileApi .enqueue(object : Callback<UpdateProfile> {
             override fun onFailure(call: Call<UpdateProfile>, t: Throwable) {
-                progressBarProfile.hide()
+                hideProgress(this@ProfileActivity)
                 toast(getString(R.string.message_something_went_wrong))
             }
 
@@ -419,20 +443,19 @@ class ProfileActivity : BaseActivity() {
                         toast(response.body()!!.message)
                         if (isNetworkAccessible()) {
                             buttonUpdate.isClickable = false
-                            progressBarProfile.show()
+                            showProgress(this@ProfileActivity)
                             startActivity<DashboardActivity>()
-
 
                         }
                     } else {
                         buttonUpdate.isClickable = true
-                        progressBarProfile.hide()
-                        toast("Profile is not updated successfully ,please try again")
+                        hideProgress(this@ProfileActivity)
+                        toast("Failed to update profile,please try again")
                     }
                 } else {
                     buttonUpdate.isClickable = true
-                    progressBarProfile.hide()
-                    toast(response.body()!!.message)
+                    hideProgress(this@ProfileActivity)
+                    toast("Failed to update profile,please try again")
                 }
 
             }
@@ -544,5 +567,24 @@ class ProfileActivity : BaseActivity() {
         return true
     }
 
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
 
+    private fun showProgress(activity: Activity) {
+//        window?.setBackgroundDrawableResource(android.R.color.transparent)
+        activity.disableWindowClicks()
+        progressBarProfile.show()
+    }
+
+    private fun hideProgress(activity: Activity) {
+        activity.enableWindowClicks()
+        progressBarProfile.hide()
+    }
+
+    private fun cancelTasks() {
+        if (::updateProfileApi.isInitialized && updateProfileApi != null) updateProfileApi.cancel()
+        if (::registerWithImageApi.isInitialized && registerWithImageApi != null) registerWithImageApi.cancel()
+    }
 }

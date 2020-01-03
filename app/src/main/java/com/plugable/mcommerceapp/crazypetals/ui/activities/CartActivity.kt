@@ -111,6 +111,10 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         updateData()
     }
 
+    private lateinit var removeItemFromCartApi: Call<ResponseAddToCart>
+    private lateinit var productQuantityApi: Call<ResponseUpdateQuantity>
+    private lateinit var cartListApi: Call<GetCartResponse>
+    private lateinit var totalPriceApi: Call<GetTotalPrice>
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     var productList = ArrayList<GetCartResponse.Data>()
     lateinit var cartAdapter: CartAdapter
@@ -140,8 +144,8 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
             SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.getTotalPriceApi(applicationUserId!!.toInt(), WebApi.APP_ID)
-        call.enqueue(object : Callback<GetTotalPrice> {
+        totalPriceApi = clientInstance.getTotalPriceApi(applicationUserId!!.toInt(), WebApi.APP_ID)
+        totalPriceApi.enqueue(object : Callback<GetTotalPrice> {
             override fun onFailure(call: Call<GetTotalPrice>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -188,9 +192,9 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
             SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.getCartApi(applicationUserId!!.toInt())
+        cartListApi = clientInstance.getCartApi(applicationUserId!!.toInt())
 
-        callback.enqueue(object : Callback<GetCartResponse> {
+        cartListApi.enqueue(object : Callback<GetCartResponse> {
             override fun onFailure(call: Call<GetCartResponse>, t: Throwable) {
                 cartItemsShimmerLayout.hideShimmer()
                 recyclerViewCart.show()
@@ -348,11 +352,11 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = name
+        supportActionBar?.title =  "Cart"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        txtToolbarTitle.text = "Cart"
+        txtToolbarTitle.hide()
         imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
@@ -437,8 +441,8 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         )
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.getUpdatedQuantity(productQuantity)
-        call.enqueue(object : Callback<ResponseUpdateQuantity> {
+        productQuantityApi = clientInstance.getUpdatedQuantity(productQuantity)
+        productQuantityApi.enqueue(object : Callback<ResponseUpdateQuantity> {
             override fun onFailure(call: Call<ResponseUpdateQuantity>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -488,14 +492,14 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
             SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.removeFromCart(
+        removeItemFromCartApi = clientInstance.removeFromCart(
             RemoveFromCartRequest(
                 applicationUserId!!,
                 productId.toString()
             )
         )
 
-        callback.enqueue(object : Callback<ResponseAddToCart> {
+        removeItemFromCartApi.enqueue(object : Callback<ResponseAddToCart> {
             override fun onFailure(call: Call<ResponseAddToCart>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
                 hideProgressBar()
@@ -534,4 +538,16 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         progressBarCartList.hide()
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::productQuantityApi.isInitialized && productQuantityApi != null) productQuantityApi.cancel()
+        if (::totalPriceApi.isInitialized && totalPriceApi != null) totalPriceApi.cancel()
+        if (::cartListApi.isInitialized && cartListApi != null) cartListApi.cancel()
+        if (::removeItemFromCartApi.isInitialized && removeItemFromCartApi != null) removeItemFromCartApi.cancel()
+    }
+
 }

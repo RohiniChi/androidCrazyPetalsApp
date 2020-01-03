@@ -175,11 +175,11 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = name
+        supportActionBar?.title = "Book Appointment"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        txtToolbarTitle.show()
+        txtToolbarTitle.hide()
         txtToolbarTitle.allCaps = false
         txtToolbarTitle.text = "Book Appointment"
         imgToolbarHome.hide()

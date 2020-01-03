@@ -46,6 +46,7 @@ import retrofit2.Response
 
 class NotificationActivity : BaseActivity() {
 
+    private lateinit var notificationListApi: Call<Notifications>
     private lateinit var notificationListAdapter: NotificationListAdapter
     private var notificationList = ArrayList<Notifications.Data.NotificationListItem?>()
     private var pageIndex = 1
@@ -193,9 +194,9 @@ class NotificationActivity : BaseActivity() {
         val applicationUserId=SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         App.HostUrl = SharedPreferences.getInstance(this@NotificationActivity).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.getAllNotificationApi(pageIndex, pageSize,applicationUserId!!)
+        notificationListApi = clientInstance.getAllNotificationApi(pageIndex, pageSize,applicationUserId!!)
 
-        callback.enqueue(object : Callback<Notifications> {
+        notificationListApi.enqueue(object : Callback<Notifications> {
             override fun onFailure(call: Call<Notifications>?, t: Throwable?) {
 
                 showServerErrorMessage()
@@ -249,6 +250,14 @@ class NotificationActivity : BaseActivity() {
 
         })
 
+    }
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::notificationListApi.isInitialized && notificationListApi != null) notificationListApi.cancel()
     }
 
 }

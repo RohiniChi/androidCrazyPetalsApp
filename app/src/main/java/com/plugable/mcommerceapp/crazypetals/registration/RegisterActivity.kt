@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
@@ -51,11 +52,21 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.InputStream
 import java.util.*
 
 class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
 
+    private lateinit var sendOTPApi: Call<SendOTPResponse>
+    private lateinit var registerWithDataApi: Call<RegisterWithData>
+    private lateinit var registerWithImageApi: Call<RegisterWithImage>
+    private var bitmapImage: Bitmap? = null
+    private var imageStream: InputStream? = null
+    private lateinit var imageBitmap: Bitmap
+    private var imageData: Uri? = null
+    private var extras: Bundle? = null
     private var myImagePath: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,69 +192,97 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == requestImageCapture && resultCode == Activity.RESULT_OK) {
-            val extras = data?.extras
-            val imageData = data?.data
+
+            extras = data?.extras
             if (extras != null) {       //From camera
-                val imageBitmap = extras.get("data") as Bitmap
+                if (extras!!.get("data") != null) {
+                    imageBitmap = extras?.get("data") as Bitmap
 //                imageViewProfile.setImageBitmap(imageBitmap)
-                Glide.with(this).load(imageBitmap)
-                    .apply(
-                        RequestOptions.circleCropTransform()
-                            .placeholder(R.drawable.cp_profile)
-                    )
-                    .into(imageViewLogo)
-              /*  imageViewCamera.hide()
-                textViewAddPhoto.hide()*/
-                progressBarRegister.show()
-                callRegisterApiWithImage(getImageUri(this, imageBitmap))
-            } else if (imageData != null) { // From Gallery
+//                    val img = Bitmap.createScaledBitmap(imageBitmap, 160, 160, true)
+                    Glide.with(this).load(imageBitmap)
+                        .apply(
+                            RequestOptions.circleCropTransform()
+                                .placeholder(R.drawable.cp_profile)
+                        )
+                        .into(imageViewLogo)
+                    /*  imageViewCamera.hide()
+                  textViewAddPhoto.hide()*/
+                    progressBarRegister.show()
+//                    callRegisterApiWithImage(getImageUri(this, imageBitmap))
+                } else {
+                    toast("Error while loading image")
+                }
+            } else {
+
+                if (data?.data != null) { // From Gallery
+                    imageData = data.data
+                    if (imageData != null) {
 //                imageViewProfile.setImageURI(imageData)
-                Glide.with(this).load(imageData)
-                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
-                    .into(imageViewLogo)
-            /*    imageViewCamera.hide()
-                textViewAddPhoto.hide()*/
-                progressBarRegister.show()
-                callRegisterApiWithImage(imageData)
+                        try {
+                            imageStream = contentResolver.openInputStream(
+                                imageData!!
+                            )
+                        } catch (e: FileNotFoundException) {
+
+                        }
+                        bitmapImage = BitmapFactory.decodeStream(imageStream)
+
+                        Glide.with(this).load(bitmapImage)
+                            .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
+                            .into(imageViewLogo)
+                        /*    imageViewCamera.hide()
+                    textViewAddPhoto.hide()*/
+                        progressBarRegister.show()
+//                        callRegisterApiWithImage(imageData)
+                    } else {
+                        toast("Error while loading image")
+                    }
+                }
             }
         }
     }
 
     @SuppressLint("CommitPrefEdits")
     private fun callRegisterApiWithImage(imageUri: Uri) {
-        val file = File(getRealPathFromUri(this, imageUri))
-        val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        if (isNetworkAccessible()) {
+            val file = File(getRealPathFromUri(this, imageUri))
+            val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
 
-        // MultipartBody.Part is used to send also the actual file name
-        val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+            // MultipartBody.Part is used to send also the actual file name
+            val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
-        val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.registerApiWithImage(body)
-        call.enqueue(object : Callback<RegisterWithImage> {
-            override fun onFailure(call: Call<RegisterWithImage>, t: Throwable) {
-                toast(getString(R.string.message_something_went_wrong))
-            }
+            val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
+            registerWithImageApi = clientInstance.registerApiWithImage(body)
+            registerWithImageApi.enqueue(object : Callback<RegisterWithImage> {
+                override fun onFailure(call: Call<RegisterWithImage>, t: Throwable) {
+                    toast("Failed to create profile,please try again")
+                }
 
-            override fun onResponse(
-                call: Call<RegisterWithImage>,
-                response: Response<RegisterWithImage>
-            ) {
-                if (response.isSuccessful) {
-                    if (response.body()?.statusCode.equals("10")) {
-                        progressBarRegister.hide()
-                        val image = response.body()?.data
+                override fun onResponse(
+                    call: Call<RegisterWithImage>,
+                    response: Response<RegisterWithImage>
+                ) {
+                    if (response.isSuccessful) {
+                        if (response.body()?.statusCode.equals("10")) {
+                            progressBarRegister.hide()
+                            val image = response.body()?.data
 
-                        myImagePath = image!!
-
+                            myImagePath = image!!
+                            buttonRegister.isClickable = false
+                            showProgress(this@RegisterActivity)
+                            attemptApiCall()
+                        } else {
+                            buttonRegister.isClickable = true
+                            hideProgress(this@RegisterActivity)
+                            toast(" Failed to create profile,please try again")
+                        }
 
                     }
-
                 }
-            }
 
 
-        })
-
+            })
+        }
     }
 
 
@@ -330,8 +369,19 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 nameValidation()
 
                 if (nameValidation() && emailValidation() && contactValidation() && passwordValidation()) {
-                    buttonRegister.isClickable = false
-                    attemptApiCall()
+                    showProgress(this)
+                    if (extras != null) {
+                        callRegisterApiWithImage(getImageUri(this, imageBitmap))
+                    } else if (imageData != null) {
+                        callRegisterApiWithImage(getImageUri(this, bitmapImage!!))
+                        buttonRegister.isClickable = false
+                        showProgress(this)
+
+                    } else {
+                        buttonRegister.isClickable = false
+                        attemptApiCall()
+                    }
+
                 }
             }
         }
@@ -339,17 +389,19 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onResume() {
         buttonRegister.isClickable = true
-        progressBarRegister.hide()
+        hideProgress(this)
         super.onResume()
 
     }
 
     private fun attemptApiCall() {
         if (isNetworkAccessible()) {
-            progressBarRegister.show()
+            showProgress(this)
+
             callRegisterApiWithData()
         } else {
             buttonRegister.isClickable = true
+            hideProgress(this)
             toast(getString(R.string.oops_no_internet_connection))
         }
     }
@@ -367,12 +419,12 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
 
-        val call = clientInstance.registerApiWithData(userInfo)
+        registerWithDataApi = clientInstance.registerApiWithData(userInfo)
 
-        call.enqueue(object : Callback<RegisterWithData> {
+        registerWithDataApi.enqueue(object : Callback<RegisterWithData> {
             override fun onFailure(call: Call<RegisterWithData>, t: Throwable) {
-                progressBarRegister.hide()
-                toast(getString(R.string.message_something_went_wrong))
+                hideProgress(this@RegisterActivity)
+                toast("Failed to create profile,please try again")
             }
 
             override fun onResponse(
@@ -393,13 +445,20 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     } else {
                         buttonRegister.isClickable = true
-                        progressBarRegister.hide()
-                        toast(response.body()!!.message)
+                        hideProgress(this@RegisterActivity)
+                        /*    if (isNetworkAccessible()!!) {
+                                toast(response.body()!!.message)
+                                registrationError = response.body()!!.message
+                            } else {
+                                toast(getString(R.string.check_internet_connection))
+                                registrationError = getString(R.string.check_internet_connection)
+                            }
+                            sendMixPanelEvent("registrationFailure")*/
                     }
                 } else {
                     buttonRegister.isClickable = true
-                    progressBarRegister.hide()
-                    toast(response.body()!!.message)
+                    hideProgress(this@RegisterActivity)
+                    toast(" Failed to create profile,please try again")
                 }
 
             }
@@ -411,12 +470,12 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call =
+        sendOTPApi =
             clientInstance.sendOTPApi(
                 textInputEditTextPhoneNumber.text.toString(),
                 getString(R.string.send_otp_register_subject)
             )
-        call.enqueue(object : Callback<SendOTPResponse> {
+        sendOTPApi.enqueue(object : Callback<SendOTPResponse> {
             override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -447,16 +506,16 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                         Glide.with(this@RegisterActivity).load(R.drawable.cp_profile)
                             .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
                             .into(imageViewLogo)
-                    /*    imageViewCamera.show()
-                        textViewAddPhoto.show()
-*/
+                        /*    imageViewCamera.show()
+                            textViewAddPhoto.show()
+    */
                         textViewNameError.invisible()
                         textViewEmailIdError.invisible()
                         textViewMobileNoError.invisible()
                         textViewPasswordError.invisible()
                     } else {
                         buttonRegister.isClickable = true
-                        progressBarRegister.hide()
+                        hideProgress(this@RegisterActivity)
                         toast(response.body()!!.message)
                     }
                 }
@@ -598,4 +657,27 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         textViewPasswordError.invisible()
         return true
     }
+
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun showProgress(activity: Activity) {
+//        window?.setBackgroundDrawableResource(android.R.color.transparent)
+        activity.disableWindowClicks()
+        progressBarRegister.show()
+    }
+
+    private fun hideProgress(activity: Activity) {
+        activity.enableWindowClicks()
+        progressBarRegister.hide()
+    }
+    private fun cancelTasks() {
+        if (::sendOTPApi.isInitialized && sendOTPApi != null) sendOTPApi.cancel()
+        if (::registerWithDataApi.isInitialized && registerWithDataApi != null) registerWithDataApi.cancel()
+        if (::registerWithImageApi.isInitialized && registerWithImageApi != null) registerWithImageApi.cancel()
+    }
+
+
 }

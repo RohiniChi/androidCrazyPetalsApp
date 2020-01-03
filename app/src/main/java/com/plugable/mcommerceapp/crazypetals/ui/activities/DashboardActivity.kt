@@ -55,6 +55,8 @@ import retrofit2.Response
 class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
 
+    private lateinit var addTokenApi: Call<NotificationToken>
+    private lateinit var getMyProfileApi: Call<GetMyProfile>
     private var backPressed: Long = 0
 
 
@@ -104,9 +106,9 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
         val applicationUserId =
             SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
-        val call = clientInstance.getProfileApi(applicationUserId.toString())
+        getMyProfileApi = clientInstance.getProfileApi(applicationUserId.toString())
 
-        call.enqueue(
+        getMyProfileApi.enqueue(
             object : Callback<GetMyProfile> {
                 override fun onFailure(call: Call<GetMyProfile>, t: Throwable) {
                     showNetworkCondition()
@@ -116,6 +118,9 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                     call: Call<GetMyProfile>,
                     response: Response<GetMyProfile>
                 ) {
+                    if (isDestroyed) {
+                        return
+                    }
                     if (response.isSuccessful) {
                         if (response.body()?.statusCode.equals("10")) {
                             SharedPreferences.getInstance(this@DashboardActivity)
@@ -197,8 +202,8 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
 
-        val call = clientInstance.addToken(notificationTokenRequest)
-        call.enqueue(object : Callback<NotificationToken> {
+        addTokenApi = clientInstance.addToken(notificationTokenRequest)
+        addTokenApi.enqueue(object : Callback<NotificationToken> {
             override fun onFailure(call: Call<NotificationToken>, t: Throwable) {
             }
 
@@ -383,12 +388,12 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                     setToolBar(getString(R.string.menu_about_us), true)
                 }
             }
-         /*   R.id.nav_faqs -> {
-                if (currentFragment !is FAQsFragment) {
-                    fragment = FAQsFragment()
-                    setToolBar(getString(R.string.title_faqs), true)
-                }
-            }*/
+            /*   R.id.nav_faqs -> {
+                   if (currentFragment !is FAQsFragment) {
+                       fragment = FAQsFragment()
+                       setToolBar(getString(R.string.title_faqs), true)
+                   }
+               }*/
             R.id.nav_contact_us -> {
                 if (currentFragment !is ContactUsFragment) {
                     fragment = ContactUsFragment()
@@ -431,14 +436,16 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
 
         }
 
-        if (fragment != null)
-            supportFragmentManager.beginTransaction().apply {
-                replace(
-                    R.id.fragmentContainer,
-                    fragment,
-                    getString(R.string.fragment_tag)
-                ).commit()
-            }
+        if (!isFinishing) {
+            if (fragment != null)
+                supportFragmentManager.beginTransaction().apply {
+                    replace(
+                        R.id.fragmentContainer,
+                        fragment,
+                        getString(R.string.fragment_tag)
+                    ).commit()
+                }
+        }
         return true
     }
 
@@ -452,6 +459,7 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         SharedPreferences.getInstance(this).isUserSkippedLogin = false
         textViewNavigationHeader.text = ""
         SharedPreferences.getInstance(this).setStringValue(IntentFlags.APPLICATION_USER_ID, "0")
+        SharedPreferences.getInstance(this).isTermsConditionRememberMe = false
         initializeViews()
     }
 
@@ -492,4 +500,15 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     override fun onClick(view: View?) {
 
     }
+
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::addTokenApi.isInitialized && addTokenApi != null) addTokenApi.cancel()
+        if (::getMyProfileApi.isInitialized && getMyProfileApi != null) getMyProfileApi.cancel()
+    }
+
 }

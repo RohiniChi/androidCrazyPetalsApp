@@ -87,11 +87,11 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = name
+        supportActionBar?.title = "Appointment Detail"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        txtToolbarTitle.show()
+        txtToolbarTitle.hide()
         txtToolbarTitle.allCaps = false
         txtToolbarTitle.text = "Appointment Detail"
         imgToolbarHome.hide()

@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true">
 
@@ -13,13 +13,13 @@
 
         <ImageView
             android:id="@+id/imageViewProduct"
-            android:layout_width="@dimen/_160sdp"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/_170sdp"
-            app:layout_constraintEnd_toEndOf="parent"
             android:scaleType="centerInside"
+            android:src="@drawable/ic_placeholder_category"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_placeholder_category"
             tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,19 +46,8 @@
                 app:layout_constraintTop_toTopOf="@id/favourite_layout"
                 app:srcCompat="@drawable/selector_favourite_kmm"
                 tools:ignore="ContentDescription,RtlSymmetry" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <!--<androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/productInfoLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageViewProduct">
--->
         <TextView
             android:id="@+id/textViewProductTitle"
             android:layout_width="0dp"
@@ -72,7 +61,6 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageViewProduct" />
-
 
         <TextView
             android:id="@+id/textViewDiscountedPrice"
@@ -105,11 +93,10 @@
             android:text="@string/discount_percentage"
             android:textColor="#005389"
             android:textSize="@dimen/_11ssp"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@id/textViewProductTitle"
             app:layout_constraintStart_toEndOf="@id/textViewActualPrice"
             app:layout_constraintTop_toTopOf="@id/textViewDiscountedPrice" />
-
 
         <TextView
             android:id="@+id/textViewQuantity"
@@ -125,10 +112,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textViewDiscountedPrice"
             app:layout_constraintTop_toBottomOf="@id/textViewDiscountedPrice" />
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 </androidx.cardview.widget.CardView>

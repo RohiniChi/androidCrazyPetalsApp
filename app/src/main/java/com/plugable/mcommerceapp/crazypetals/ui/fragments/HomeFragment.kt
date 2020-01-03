@@ -98,13 +98,22 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
             R.id.searchLayout -> {
                 if (context?.isNetworkAccessible()!!) {
-                    startActivity<SearchActivity>()
+                    if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
+                    else {
+
+                        startActivity<SearchActivity>()
+                    }
+
+                    LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+
+
                 } else {
                     showNetworkCondition()
                 }
             }
         }
     }
+
 
     private var bannerImages = ArrayList<Banners.Data.Banner>()
     //    private lateinit var mixPanel: MixpanelAPI
@@ -124,6 +133,9 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         setHasOptionsMenu(true)
 
     }
+object LastClickTimeSingleton {
+    var lastClickTime: Long = 0
+}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -528,9 +540,6 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
     }
 
-    object LastClickTimeSingleton {
-        var lastClickTime: Long = 0
-    }
 
     override fun onBannerClick(position: Int) {
 

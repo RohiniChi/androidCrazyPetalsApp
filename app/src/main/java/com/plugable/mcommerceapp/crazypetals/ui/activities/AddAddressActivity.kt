@@ -36,6 +36,8 @@ class AddAddressActivity : AppCompatActivity(),
         const val ADDRESS = "address"
     }
 
+    private lateinit var editAddressApi: Call<AddressAddResponse>
+    private lateinit var addAddressApi: Call<AddressAddResponse>
     var pinCode: Array<String?> = arrayOf()
     var addressRequest: AddressRequest? = null
     var addRequest = true
@@ -61,10 +63,12 @@ class AddAddressActivity : AppCompatActivity(),
 
     private fun changeTitleAndSubmitButton() {
         if (addRequest) {
-            txtToolbarTitle.text = "New Address"
+//            txtToolbarTitle.text = "New Address"
+            supportActionBar?.title = "New Address"
             buttonAddAddress.text = "Add Address"
         } else {
-            txtToolbarTitle.text = "Edit Address"
+//            txtToolbarTitle.text = "Edit Address"
+            supportActionBar?.title = "Edit Address"
             buttonAddAddress.text = "Update Address"
         }
     }
@@ -133,11 +137,11 @@ class AddAddressActivity : AppCompatActivity(),
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = name
+        supportActionBar?.title = "New Address"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        txtToolbarTitle.text = "New Address"
+        txtToolbarTitle.hide()
         imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
@@ -175,9 +179,9 @@ class AddAddressActivity : AppCompatActivity(),
     private fun editAddress(addressRequest: AddressRequest) {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.editAddress(addressRequest)
+        editAddressApi = clientInstance.editAddress(addressRequest)
 
-        callback.enqueue(object : Callback<AddressAddResponse> {
+        editAddressApi.enqueue(object : Callback<AddressAddResponse> {
             override fun onFailure(call: Call<AddressAddResponse>, t: Throwable) {
                 buttonAddAddress.isEnabled = true
                 toast(getString(R.string.message_something_went_wrong))
@@ -223,9 +227,9 @@ class AddAddressActivity : AppCompatActivity(),
     private fun callAddOrEditAddressApi(addressRequest: AddressRequest) {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.addAddress(addressRequest)
+        addAddressApi = clientInstance.addAddress(addressRequest)
 
-        callback.enqueue(object : Callback<AddressAddResponse> {
+        addAddressApi.enqueue(object : Callback<AddressAddResponse> {
             override fun onFailure(call: Call<AddressAddResponse>, t: Throwable) {
                 buttonAddAddress.isEnabled = true
                 toast(getString(R.string.message_something_went_wrong))
@@ -492,6 +496,15 @@ class AddAddressActivity : AppCompatActivity(),
             else -> textViewSpinnerError.invisible()
         }
         return true
+    }
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::editAddressApi.isInitialized && editAddressApi != null) editAddressApi.cancel()
+        if (::addAddressApi.isInitialized && addAddressApi != null) addAddressApi.cancel()
     }
 
 

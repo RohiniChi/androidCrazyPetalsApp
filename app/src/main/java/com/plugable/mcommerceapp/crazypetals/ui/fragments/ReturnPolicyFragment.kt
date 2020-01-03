@@ -60,12 +60,16 @@ class ReturnPolicyFragment : Fragment() {
         webViewReturnPolicy.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
-                progressBarReturnPolicy.show()
+                if (progressBarReturnPolicy !=null){
+                    progressBarReturnPolicy.show()
+                }
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                progressBarReturnPolicy.hide()
+                if (progressBarReturnPolicy !=null){
+                    progressBarReturnPolicy.hide()
+                }
             }
         }
     }

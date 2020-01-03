@@ -44,6 +44,7 @@ import retrofit2.Response
 
 class OrderDetailActivity : BaseActivity() {
 
+    private lateinit var orderDetailApi: Call<OrderDetailResponse>
     private lateinit var orderId: String
     lateinit var orderDetail: OrderDetailResponse.Data.OrderDetails
     var productArrayList = ArrayList<OrderDetailResponse.Data.ProductListItem?>()
@@ -92,11 +93,11 @@ class OrderDetailActivity : BaseActivity() {
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = name
+        supportActionBar?.title = getString(R.string.title_order_detail)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        txtToolbarTitle.text = getString(R.string.title_order_detail)
+        txtToolbarTitle.hide()
         imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
@@ -172,9 +173,9 @@ class OrderDetailActivity : BaseActivity() {
         App.HostUrl = SharedPreferences.getInstance(this@OrderDetailActivity).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
 
-        val callback = clientInstance.getOrderDetails(orderId)
+        orderDetailApi = clientInstance.getOrderDetails(orderId)
 
-        callback.enqueue(object : Callback<OrderDetailResponse> {
+        orderDetailApi.enqueue(object : Callback<OrderDetailResponse> {
             override fun onFailure(call: Call<OrderDetailResponse>?, t: Throwable?) {
 
                 showServerErrorMessage()
@@ -383,6 +384,14 @@ class OrderDetailActivity : BaseActivity() {
                     )
             }
         }
+    }
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::orderDetailApi.isInitialized && orderDetailApi != null) orderDetailApi.cancel()
     }
 
 }

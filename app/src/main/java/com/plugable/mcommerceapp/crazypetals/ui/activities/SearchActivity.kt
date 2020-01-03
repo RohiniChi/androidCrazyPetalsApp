@@ -108,6 +108,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
+    private lateinit var searchApi: Call<Products>
     //    private lateinit var mixPanel: MixpanelAPI
     var productList = ArrayList<Products.Data.ProductDetails>()
     private lateinit var productListAdapter: ProductListAdapter
@@ -267,12 +268,12 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     private fun callSearchApi(keyword: String) {
         val apiInterface = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = apiInterface.globalSearchApi(takeCount, keyword, skipCount)
+        searchApi = apiInterface.globalSearchApi(takeCount, keyword, skipCount)
 
         if (productList.isEmpty())
             startShimmerView()
 
-        call.enqueue(object : Callback<Products> {
+        searchApi.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>, throwable: Throwable) {
                 showServerErrorMessage()
                 hideProgress()
@@ -508,5 +509,12 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 */
 
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
 
+    private fun cancelTasks() {
+        if (::searchApi.isInitialized && searchApi != null) searchApi.cancel()
+    }
 }

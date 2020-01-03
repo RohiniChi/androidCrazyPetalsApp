@@ -30,6 +30,8 @@ import retrofit2.Response
 
 class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
 
+    private lateinit var sendOTPAPi: Call<SendOTPResponse>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mobile_verification)
@@ -106,10 +108,10 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call =
+        sendOTPAPi =
             clientInstance.sendOTPApi(textInputEditTextPhoneNo.text.toString(),getString(R.string.send_otp_reset_password_subject))
 
-        call.enqueue(object : Callback<SendOTPResponse> {
+        sendOTPAPi.enqueue(object : Callback<SendOTPResponse> {
             override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
                 buttonGetOtp.isClickable = true
@@ -177,5 +179,14 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
         }
         textViewPhoneNoError.invisible()
         return true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::sendOTPAPi.isInitialized && sendOTPAPi != null) sendOTPAPi.cancel()
     }
 }

@@ -37,6 +37,8 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
+    private lateinit var callLoginApi: Call<Login>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -178,9 +180,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
 
-        val call = clientInstance.loginApi(userLoginInfo)
+        callLoginApi = clientInstance.loginApi(userLoginInfo)
 
-        call.enqueue(object : Callback<Login> {
+        callLoginApi.enqueue(object : Callback<Login> {
             override fun onFailure(call: Call<Login>, throwable: Throwable) {
                 progressBarLogin.hide()
                 toast(getString(R.string.message_something_went_wrong))
@@ -310,4 +312,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         textViewPasswordError.invisible()
         return true
     }
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::callLoginApi.isInitialized && callLoginApi != null) callLoginApi.cancel()
+    }
+
 }

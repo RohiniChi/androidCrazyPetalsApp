@@ -38,6 +38,9 @@ import retrofit2.Response
 class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, EventListener,
     AddressListActionListener {
 
+    private lateinit var deleteAddressApi: Call<AddressAddResponse>
+    private lateinit var fetchAddressListApi: Call<AddressListResponse>
+    private lateinit var getDeliveryDayApi: Call<DeliveryDayResponse>
     private var addressList = ArrayList<AddressListResponse.Data>()
     private lateinit var deliveryAddressAdapter: DeliveryAddressAdapter
     private var isAddressSelected = false
@@ -158,9 +161,9 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
     private fun getDeliveryDay(addressId: String) {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.getDeliveryDay(addressId)
+        getDeliveryDayApi = clientInstance.getDeliveryDay(addressId)
 
-        callback.enqueue(object : Callback<DeliveryDayResponse> {
+        getDeliveryDayApi.enqueue(object : Callback<DeliveryDayResponse> {
             override fun onFailure(call: Call<DeliveryDayResponse>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -204,13 +207,13 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         showProgress()
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.getAddressList(
+        fetchAddressListApi = clientInstance.getAddressList(
             SharedPreferences.getInstance(this).getStringValue(
                 IntentFlags.APPLICATION_USER_ID
             )!!
         )
 
-        callback.enqueue(object : Callback<AddressListResponse> {
+        fetchAddressListApi.enqueue(object : Callback<AddressListResponse> {
             override fun onFailure(call: Call<AddressListResponse>, t: Throwable) {
                 hideProgress()
                 toast(getString(R.string.message_something_went_wrong))
@@ -320,11 +323,11 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title = name
+        supportActionBar?.title = getString(R.string.message_delivery_address)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
-        txtToolbarTitle.text = getString(R.string.message_delivery_address)
+        txtToolbarTitle.hide()
         imgToolbarHome.hide()
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
@@ -377,11 +380,11 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
     private fun deleteAddress(addressId: String) {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.deleteAddress(
+        deleteAddressApi = clientInstance.deleteAddress(
             DeleteAddressRequest((addressId))
         )
 
-        callback.enqueue(object : Callback<AddressAddResponse> {
+        deleteAddressApi.enqueue(object : Callback<AddressAddResponse> {
             override fun onFailure(call: Call<AddressAddResponse>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -402,4 +405,16 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
     override fun onItemClickListener(position: Int) {
 
     }
+
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::deleteAddressApi.isInitialized && deleteAddressApi != null) deleteAddressApi.cancel()
+        if (::fetchAddressListApi.isInitialized && fetchAddressListApi != null) fetchAddressListApi.cancel()
+        if (::getDeliveryDayApi.isInitialized && getDeliveryDayApi != null) getDeliveryDayApi.cancel()
+    }
+
 }

@@ -41,6 +41,8 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
     SMSReceiver.OTPReceiveListener {
 
 
+    private lateinit var sendOTPApi: Call<SendOTPResponse>
+    private lateinit var verifyOTPApi: Call<OTPVerification>
     private lateinit var timer: CountDownTimer
     val TAG: String? = OTPActivity::class.java.simpleName
     private var smsReceiver: SMSReceiver? = null
@@ -226,8 +228,8 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
 
-        val call = clientInstance.otpVerificationApi(phoneNumber)
-        call.enqueue(object : Callback<OTPVerification> {
+        verifyOTPApi = clientInstance.otpVerificationApi(phoneNumber)
+        verifyOTPApi.enqueue(object : Callback<OTPVerification> {
             override fun onFailure(call: Call<OTPVerification>, t: Throwable) {
                 progressBarOTPActivity.hide()
                 buttonVerify.isClickable = true
@@ -336,12 +338,12 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         if (intent.hasExtra(IntentFlags.REDIRECT_FROM)) {
             when (intent.getStringExtra(IntentFlags.REDIRECT_FROM)) {
                 IntentFlags.FROM_REGISTER -> {
-                    val call =
+                    sendOTPApi =
                         clientInstance.sendOTPApi(
                             phoneNumberToVerify!!,
                             getString(R.string.send_otp_register_subject)
                         )
-                    call.enqueue(object : Callback<SendOTPResponse> {
+                    sendOTPApi.enqueue(object : Callback<SendOTPResponse> {
                         override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {
                             buttonVerify.isClickable = true
 
@@ -463,6 +465,16 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
 
         }
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::verifyOTPApi.isInitialized && verifyOTPApi != null) verifyOTPApi.cancel()
+        if (::sendOTPApi.isInitialized && sendOTPApi != null) sendOTPApi.cancel()
     }
 
     override fun onDestroy() {

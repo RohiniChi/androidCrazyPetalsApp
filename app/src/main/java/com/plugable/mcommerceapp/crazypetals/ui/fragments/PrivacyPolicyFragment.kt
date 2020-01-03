@@ -62,12 +62,16 @@ class PrivacyPolicyFragment : Fragment() {
         webViewPrivacyPolicy.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
-                progressBarPrivacyPolicy.show()
+                if (progressBarPrivacyPolicy != null){
+                    progressBarPrivacyPolicy.show()
+                }
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                progressBarPrivacyPolicy.hide()
+                if (progressBarPrivacyPolicy != null){
+                    progressBarPrivacyPolicy.hide()
+                }
             }
         }
     }

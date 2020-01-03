@@ -61,8 +61,11 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     OnItemCheckListener, OnButtonClickListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
 
+    private lateinit var applyFilterApi: Call<Products>
+    private lateinit var getFilterApi: Call<GetFilters>
+    private lateinit var productListApi: Call<Products>
+    private lateinit var exclusiveProductsApi: Call<Products>
     private var totalCount: Int = 0
-    private lateinit var callback: Call<Products>
     lateinit var productListAdapter: ProductListAdapter
     var productList = ArrayList<Products.Data.ProductDetails>()
     internal var filterList = ArrayList<GetFilters.Data.Filter>()
@@ -359,8 +362,9 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private fun callExclusiveProducts() {
         App.HostUrl = SharedPreferences.getInstance(this@ProductsListActivity).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.exclusiveModel(skipCount, takeCount, categoryId, WebApi.APP_ID)
-        call.enqueue(object : Callback<Products> {
+        exclusiveProductsApi =
+            clientInstance.exclusiveModel(skipCount, takeCount, categoryId, WebApi.APP_ID)
+        exclusiveProductsApi.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>?, t: Throwable?) {
                 showServerErrorMessage()
             }
@@ -422,8 +426,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private fun callProductsListAPI() {
         App.HostUrl = SharedPreferences.getInstance(this@ProductsListActivity).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        callback = clientInstance.productModel(skipCount, takeCount, categoryId)
-        callback.enqueue(object : Callback<Products> {
+        productListApi = clientInstance.productModel(skipCount, takeCount, categoryId)
+        productListApi.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>?, t: Throwable?) {
                 showServerErrorMessage()
             }
@@ -491,6 +495,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
  */
     override fun setToolBar(name: String) {
         val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
+
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
@@ -501,6 +506,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         txtToolbarTitle.allCaps = true
         txtToolbarTitle.text = categoryName?.plus(" Collection")
         imgToolbarHome.hide()
+        txtToolbarTitle.hide()
+        supportActionBar?.title = categoryName?.plus(" Collection")
         setToolBarColor(imgToolbarHome, txtToolbarTitle, toolbar = toolBar)
     }
 
@@ -635,10 +642,10 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private fun callGetFilterApi() {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.getFilters(
+        getFilterApi = clientInstance.getFilters(
             categoryId = categoryId
         )
-        call.enqueue(object : Callback<GetFilters> {
+        getFilterApi.enqueue(object : Callback<GetFilters> {
             override fun onFailure(call: Call<GetFilters>, t: Throwable) {
 //                toast(getString(R.string.message_something_went_wrong))
             }
@@ -684,8 +691,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         )
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.applyFilters(filterData)
-        call.enqueue(object : Callback<Products> {
+        applyFilterApi = clientInstance.applyFilters(filterData)
+        applyFilterApi.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>, t: Throwable) {
 //                toast(getString(R.string.message_something_went_wrong))
             }
@@ -785,7 +792,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         layoutServerError.hide()
         recyclerViewProducts.show()
         bottom_navigation.show()
-        filter_layout.show()
+//        filter_layout.show()
         stopShimmerView()
     }
 
@@ -939,13 +946,25 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         }
     }
-/*
 
-    override fun onDestroy() {
-        mixPanel.flush()
-        super.onDestroy()
+    /*
+
+        override fun onDestroy() {
+            mixPanel.flush()
+            super.onDestroy()
+        }
+    */
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
     }
-*/
+
+    private fun cancelTasks() {
+        if (::getFilterApi.isInitialized && getFilterApi != null) getFilterApi.cancel()
+        if (::productListApi.isInitialized && productListApi != null) productListApi.cancel()
+        if (::applyFilterApi.isInitialized && applyFilterApi != null) applyFilterApi.cancel()
+        if (::exclusiveProductsApi.isInitialized && exclusiveProductsApi != null) exclusiveProductsApi.cancel()
+    }
 
 }
 

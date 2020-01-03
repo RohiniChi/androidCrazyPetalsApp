@@ -71,9 +71,11 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
 
+    private lateinit var addToCartApi: Call<ResponseAddToCart>
+    private lateinit var recommendedListApi: Call<Products>
+    private lateinit var productDetailApi: Call<ProductDetail>
     private var productListId: Int = 0
     private var productDetail = ProductDetail.Data()
-    private lateinit var callback: Call<Products>
     //    private lateinit var mixPanel: MixpanelAPI
     private var productImages = ArrayList<ProductDetail.Data.Image>()
     private lateinit var product: Products.Data.ProductDetails
@@ -210,8 +212,8 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private fun callProductDetailApi(productId: Int) {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val call = clientInstance.productDetailModel(productId)
-        call.enqueue(object : Callback<ProductDetail> {
+        productDetailApi = clientInstance.productDetailModel(productId)
+        productDetailApi.enqueue(object : Callback<ProductDetail> {
             override fun onFailure(call: Call<ProductDetail>?, t: Throwable?) {
                 showNetworkCondition()
             }
@@ -415,8 +417,14 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     private fun attemptListApiCall() {
         if (isNetworkAccessible()) {
-            val categoryId =
-                SharedPreferences.getInstance(this).getStringValue(IntentFlags.CATEGORY_ID)?.toInt()
+            val category =
+                SharedPreferences.getInstance(this).getStringValue(IntentFlags.CATEGORY_ID)
+            if (TextUtils.isEmpty(category) || category!!.toInt() == 0) {
+                categoryId= 0
+            }
+            else{
+                categoryId=category!!.toInt()
+            }
             callRecommendedListApi(skipCount, takeCount, categoryId!!, product.id)
         } else {
             toast(getString(R.string.check_internet_connection))
@@ -431,14 +439,14 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     ) {
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        callback = clientInstance.recommendedProducts(
+        recommendedListApi = clientInstance.recommendedProducts(
             skipCount,
             takeCount,
             categoryId,
             productId
         )
 
-        callback.enqueue(object : Callback<Products> {
+        recommendedListApi.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>?, t: Throwable?) {
 //                toast(getString(R.string.message_something_went_wrong))
             }
@@ -875,8 +883,8 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             )
             App.HostUrl = SharedPreferences.getInstance(this@ProductDetailActivity).hostUrl!!
             val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-            val call = clientInstance.addToCartApi(cartListVariables)
-            call.enqueue(object : Callback<ResponseAddToCart> {
+            addToCartApi = clientInstance.addToCartApi(cartListVariables)
+            addToCartApi.enqueue(object : Callback<ResponseAddToCart> {
                 override fun onFailure(call: Call<ResponseAddToCart>, t: Throwable) {
 //                    toast(getString(R.string.message_something_went_wrong))
                 }
@@ -1006,6 +1014,16 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }*/
 
 
+    }
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::addToCartApi.isInitialized && addToCartApi != null) addToCartApi.cancel()
+        if (::recommendedListApi.isInitialized && recommendedListApi != null) recommendedListApi.cancel()
+        if (::productDetailApi.isInitialized && productDetailApi != null) productDetailApi.cancel()
     }
 
 }

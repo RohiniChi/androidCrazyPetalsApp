@@ -57,12 +57,17 @@ class AboutUsFragment : Fragment() {
         webViewAboutUS.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
+                if (progressBarAboutUs != null){
+                    progressBarAboutUs.hide()
+                }
                 progressBarAboutUs.show()
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                progressBarAboutUs.hide()
+                if (progressBarAboutUs != null){
+                    progressBarAboutUs.hide()
+                }
             }
         }
     }

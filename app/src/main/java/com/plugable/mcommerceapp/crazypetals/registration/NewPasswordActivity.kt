@@ -2,6 +2,7 @@ package com.plugable.mcommerceapp.crazypetals.registration
 
 import ServiceGenerator
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ import com.plugable.mcommerceapp.crazypetals.utils.extension.show
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.crazypetals.utils.util.isNetworkAccessible
 import com.plugable.mcommerceapp.crazypetals.utils.validation.isEmpty
+import kotlinx.android.synthetic.main.activity_cart.*
 import kotlinx.android.synthetic.main.activity_new_password.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -28,6 +30,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class NewPasswordActivity : AppCompatActivity(), View.OnClickListener {
+
+    private lateinit var resetPasswordApi: Call<NewPassword>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +62,11 @@ class NewPasswordActivity : AppCompatActivity(), View.OnClickListener {
     private fun setThemeToComponents() {
         setStatusBarColor()
         buttonSavePassword.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        progressBar.indeterminateDrawable.setColorFilter(
+            Color.BLACK,
+            PorterDuff.Mode.MULTIPLY
+        )
+
     }
 
     override fun onClick(v: View?) {
@@ -106,9 +115,9 @@ class NewPasswordActivity : AppCompatActivity(), View.OnClickListener {
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
 
-        val call = clientInstance.newPasswordApi(newPassword)
+        resetPasswordApi = clientInstance.newPasswordApi(newPassword)
 
-        call.enqueue(object : Callback<NewPassword> {
+        resetPasswordApi.enqueue(object : Callback<NewPassword> {
             override fun onFailure(call: Call<NewPassword>, t: Throwable) {
                 toast(getString(R.string.message_something_went_wrong))
 
@@ -207,4 +216,14 @@ class NewPasswordActivity : AppCompatActivity(), View.OnClickListener {
         textViewConfirmPasswordError.invisible()
         return true
     }
+
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::resetPasswordApi.isInitialized && resetPasswordApi != null) resetPasswordApi.cancel()
+    }
+
 }

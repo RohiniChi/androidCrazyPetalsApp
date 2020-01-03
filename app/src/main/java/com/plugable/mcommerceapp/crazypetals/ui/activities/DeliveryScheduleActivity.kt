@@ -34,6 +34,7 @@ import java.util.*
 class DeliveryScheduleActivity : AppCompatActivity(), EventListener, View.OnClickListener {
 
 
+    private lateinit var deliveryScheduleApi: Call<DeliveryChartResponse>
     var deliveryScheduleList = ArrayList<DeliveryChartResponse.Data>()
     lateinit var deliveryScheduleAdapter: DeliveryScheduleAdapter
 
@@ -65,9 +66,9 @@ class DeliveryScheduleActivity : AppCompatActivity(), EventListener, View.OnClic
         progressBar.show()
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        val callback = clientInstance.getDeliveryChart()
+        deliveryScheduleApi = clientInstance.getDeliveryChart()
 
-        callback.enqueue(object : Callback<DeliveryChartResponse> {
+        deliveryScheduleApi.enqueue(object : Callback<DeliveryChartResponse> {
             override fun onFailure(call: Call<DeliveryChartResponse>, t: Throwable) {
                 progressBar.hide()
                 toast(getString(R.string.message_something_went_wrong))
@@ -136,4 +137,14 @@ class DeliveryScheduleActivity : AppCompatActivity(), EventListener, View.OnClic
             R.id.imgToolbarHomeLayout -> onBackPressed()
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        cancelTasks()
+    }
+
+    private fun cancelTasks() {
+        if (::deliveryScheduleApi.isInitialized && deliveryScheduleApi != null) deliveryScheduleApi.cancel()
+    }
+
 }
