@@ -50,9 +50,11 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
                 if (isFinishing) {
                     return
                 }
+                showProgress()
                 appointmentPresenter.getAppointmentDetail(appointmentId)
             }
         } else {
+            hideProgress()
             showNetworkCondition()
         }
     }
@@ -119,7 +121,7 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
 
     override fun onGetAppointmentDetailSuccess(response: AppointmentDetailResponse) {
         if (response.statusCode.equals("10")) {
-            showAppointmentListDetail()
+            hideProgress()
             textViewAppointmentNo.text = "#".plus(response.data.appointmentNumber)
             textViewAppointmentDate.text = response.data.appointmentDate
             textViewAppointmentTime.text = response.data.appointmentTime
@@ -138,6 +140,7 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
             listViewAppointmentType.adapter = appointmentDetailAdapter
         } else {
             showServerErrorMessage()
+            hideProgress()
         }
     }
 
@@ -178,6 +181,7 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
 
     override fun showProgress() {
         progressBarAppointmentDetail.show()
+        layoutDescription.hide()
         this.disableWindowClicks()
     }
 
@@ -188,6 +192,8 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
 
     override fun hideProgress() {
         progressBarAppointmentDetail.hide()
+//        layoutDescription.show()
+        showAppointmentListDetail()
         this.enableWindowClicks()
     }
 

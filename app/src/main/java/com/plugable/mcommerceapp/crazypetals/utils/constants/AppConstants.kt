@@ -187,6 +187,7 @@ object SharedPreferences {
     const val SHARED_PREFERENCES_CART_COUNT = "cart_count"
     const val SHARED_PREFERENCES_CART_DATA = "cart_data"
     const val PROFILE = "user.profile"
+    const val REMEMBER_ME = "remember_me"
 
     var cartItemList=HashSet<String>()
 }

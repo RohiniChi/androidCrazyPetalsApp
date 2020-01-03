@@ -398,4 +398,7 @@
     <string name="menu_privacy_policy">Privacy Policy</string>
     <string name="menu_return_policy">Return Policy</string>
 
+    <string name="label_remember_me">Remember me</string>
+    <string name="message_remember_me">Allow app to remember “Terms and Condition” next time?</string>
+
 </resources>

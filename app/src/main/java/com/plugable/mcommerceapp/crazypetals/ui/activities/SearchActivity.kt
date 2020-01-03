@@ -175,14 +175,11 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         btnTryAgain.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         btnNoData.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         btnServerError.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
-        progressBarSearchActivity.indeterminateDrawable.setColorFilter(
-            Color.BLACK,
-            PorterDuff.Mode.MULTIPLY
-        )
         progressBarSearchLoadMore.indeterminateDrawable.setColorFilter(
             Color.BLACK,
             PorterDuff.Mode.MULTIPLY
         )
+
     }
 
     private fun initializeViews() {
@@ -385,14 +382,14 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     fun showProgress() {
         recyclerViewSearchProduct.hide()
-        progressBarSearchActivity.show()
+        progressBarSearchLoadMore.show()
         this.disableWindowClicks()
     }
 
     fun hideProgress() {
         showRecyclerViewData()
 
-        progressBarSearchActivity.hide()
+        progressBarSearchLoadMore.hide()
         this.enableWindowClicks()
     }
 

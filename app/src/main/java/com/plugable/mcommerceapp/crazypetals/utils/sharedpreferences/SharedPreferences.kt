@@ -12,6 +12,7 @@ import com.plugable.mcommerceapp.crazypetals.utils.constants.SharedPreferences.F
 import com.plugable.mcommerceapp.crazypetals.utils.constants.SharedPreferences.HOST_URL
 import com.plugable.mcommerceapp.crazypetals.utils.constants.SharedPreferences.IS_USER_LOGGED_IN
 import com.plugable.mcommerceapp.crazypetals.utils.constants.SharedPreferences.IS_USER_SKIPPED_LOGIN
+import com.plugable.mcommerceapp.crazypetals.utils.constants.SharedPreferences.REMEMBER_ME
 
 
 /**
@@ -124,6 +125,14 @@ class SharedPreferences private constructor(context: Context) {
         }
         set(isSkip) {
             appSharedPreferences!!.edit().putBoolean(IS_USER_LOGGED_IN, isSkip).apply()
+        }
+
+    var isTermsConditionRememberMe: Boolean
+        get() {
+            return appSharedPreferences!!.getBoolean(REMEMBER_ME , false)
+        }
+        set(isRememberMe) {
+            appSharedPreferences!!.edit().putBoolean(REMEMBER_ME , isRememberMe).apply()
         }
 
 

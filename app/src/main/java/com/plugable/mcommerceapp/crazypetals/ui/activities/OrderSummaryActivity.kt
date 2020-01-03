@@ -88,6 +88,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     }
 
     private fun checkBoxCheckListener() {
+        checkboxInstructions.isChecked =
+            SharedPreferences.getInstance(this@OrderSummaryActivity).isTermsConditionRememberMe
         checkboxInstructions.setOnClickListener {
             if (checkboxInstructions.isChecked) {
                 materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
@@ -96,6 +98,14 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     )
                 )
                 materialButtonOrderSummaryPlaceOrder.isClickable = true
+
+
+                if (!SharedPreferences.getInstance(this@OrderSummaryActivity)
+                        .isTermsConditionRememberMe
+                ) {
+                    showRememberMeDialog()
+                }
+
             } else {
                 toast("Please agree to terms and conditions")
                 materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
@@ -104,6 +114,43 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 materialButtonOrderSummaryPlaceOrder.isClickable = true
             }
         }
+
+    }
+
+    private fun showRememberMeDialog() {
+
+        alert(getString(R.string.message_remember_me), getString(R.string.label_remember_me)) {
+            positiveButton("Yes") {
+                SharedPreferences.getInstance(this@OrderSummaryActivity)
+                    .isTermsConditionRememberMe = true
+            }
+            negativeButton("No") {
+                SharedPreferences.getInstance(this@OrderSummaryActivity)
+                    .isTermsConditionRememberMe = false
+            }
+            isCancelable = false
+        }.show().apply {
+
+            getButton(AlertDialog.BUTTON_POSITIVE)?.let {
+                it.textColor = Color.BLUE
+                it.allCaps=false
+                it.background =
+                    ContextCompat.getDrawable(
+                        this@OrderSummaryActivity,
+                        android.R.color.transparent
+                    )
+            }
+            getButton(AlertDialog.BUTTON_NEGATIVE)?.let {
+                it.textColor = Color.BLUE
+                it.allCaps=false
+                it.background =
+                    ContextCompat.getDrawable(
+                        this@OrderSummaryActivity,
+                        android.R.color.transparent
+                    )
+            }
+        }
+
 
     }
 
@@ -361,7 +408,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                         val emailId =
                             SharedPreferences.getInstance(this@OrderSummaryActivity).getProfile()
                                 ?.emailId
-                     val phoneNumber =
+                        val phoneNumber =
                             SharedPreferences.getInstance(this@OrderSummaryActivity).getProfile()
                                 ?.mobileNumber
                         initiatePayment(
@@ -371,7 +418,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                             totalPrice,
                             response.body()!!.orderNumber
                         )
-                                        //startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
+                        //startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to response.body())
                         placeOrderResponse = response.body()!!
                     }
                     response.body()?.statusCode.equals("30") -> {
@@ -416,6 +463,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         content.hide()
         include2.hide()
         materialButtonOrderSummaryPlaceOrder.hide()
+        checkboxInstructions.hide()
+        textViewTermsAndConditions.hide()
         this.disableWindowClicks()
     }
 
@@ -424,6 +473,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         content.show()
         include2.show()
         materialButtonOrderSummaryPlaceOrder.show()
+        checkboxInstructions.show()
+        textViewTermsAndConditions.show()
         this.enableWindowClicks()
     }
 
@@ -567,11 +618,11 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     // call update order api
 //                    toast("Transaction successful")
                     showProgress()
-                    updatePaymentStatus(orderId, "2","Successful")
+                    updatePaymentStatus(orderId, "2", "Successful")
                 } else {
 //                    toast("Transaction unsuccessful")
                     showProgress()
-                    updatePaymentStatus(orderId, "5","Unsuccessful")
+                    updatePaymentStatus(orderId, "5", "Unsuccessful")
 
                     //Failure Transaction
                 }
@@ -584,12 +635,16 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         } else {
 //            toast("Transaction unsuccessful")
             showProgress()
-            updatePaymentStatus(orderId, "5","Unsuccessful")
+            updatePaymentStatus(orderId, "5", "Unsuccessful")
         }
 
     }
 
-    private fun updatePaymentStatus(orderId: Int, paymentStatusId: String,transactionStatus:String) {
+    private fun updatePaymentStatus(
+        orderId: Int,
+        paymentStatusId: String,
+        transactionStatus: String
+    ) {
         if (isNetworkAccessible()) {
             val updateStatusRequest = UpdatePaymentRequest(
                 orderId.toString(),
@@ -611,8 +666,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 ) {
                     if (response.body()!!.statusCode.equals("10")) {
                         materialButtonOrderSummaryPlaceOrder.isClickable = true
-                        startActivity<SuccessOrderStatusActivity>(SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to placeOrderResponse,
-                            "TransactionStatus" to transactionStatus)
+                        startActivity<SuccessOrderStatusActivity>(
+                            SuccessOrderStatusActivity.PLACE_ORDER_RESPONSE to placeOrderResponse,
+                            "TransactionStatus" to transactionStatus
+                        )
                     } else {
                         materialButtonOrderSummaryPlaceOrder.isClickable = true
                         toast(response.body()!!.message)
