@@ -2,6 +2,7 @@ package com.plugable.mcommerceapp.crazypetals.ui.activities
 
 import ServiceGenerator
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.View
@@ -27,9 +28,7 @@ import com.plugable.mcommerceapp.crazypetals.ui.adapters.ProductListAdapter
 import com.plugable.mcommerceapp.crazypetals.ui.fragments.WishListFragment
 import com.plugable.mcommerceapp.crazypetals.utils.application.App
 import com.plugable.mcommerceapp.crazypetals.utils.constants.IntentFlags
-import com.plugable.mcommerceapp.crazypetals.utils.extension.hide
-import com.plugable.mcommerceapp.crazypetals.utils.extension.setStatusBarColor
-import com.plugable.mcommerceapp.crazypetals.utils.extension.show
+import com.plugable.mcommerceapp.crazypetals.utils.extension.*
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.crazypetals.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.activity_search.*
@@ -140,6 +139,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
             } else
                 if (searchViewProducts.query.isNotEmpty() && searchViewProducts.query.length >= 3) {
                     callSearchApi(keywordGlobal)
+                    showProgress()
                 } else {
                     if (searchViewProducts.query.length < 3) toast(getString(R.string.search_min_characters_to_search))
                 }
@@ -175,6 +175,14 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         btnTryAgain.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         btnNoData.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         btnServerError.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
+        progressBarSearchActivity.indeterminateDrawable.setColorFilter(
+            Color.BLACK,
+            PorterDuff.Mode.MULTIPLY
+        )
+        progressBarSearchLoadMore.indeterminateDrawable.setColorFilter(
+            Color.BLACK,
+            PorterDuff.Mode.MULTIPLY
+        )
     }
 
     private fun initializeViews() {
@@ -205,9 +213,9 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         skipCount = skipCount + takeCount
 
                         isLoading = true
-                        progressBar.show()
+                        progressBarSearchLoadMore.show()
                         callSearchApi(keywordGlobal)
-
+                        showProgress()
                     }
                 }
             }
@@ -244,6 +252,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         productList.clear()
                         skipCount = 0
                         callSearchApi(keywordGlobal)
+                        showProgress()
                     }
                     productList.clear()
                     productListAdapter.notifyDataSetChanged()
@@ -269,12 +278,12 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         call.enqueue(object : Callback<Products> {
             override fun onFailure(call: Call<Products>, throwable: Throwable) {
                 showServerErrorMessage()
-
+                hideProgress()
             }
 
             override fun onResponse(call: Call<Products>, response: Response<Products>) {
 
-                showRecyclerViewData()
+                hideProgress()
                 if (response.body()?.statusCode.equals("10")) {
                     if (response.body()?.data?.productList?.isNotEmpty()!!) {
                         if (skipCount == 0) {
@@ -301,19 +310,22 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
 //                        sendMixPanelEvent()
 
                     } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
+                        hideProgress()
                         if (keywordGlobal.length >= 3)
                             showNoDataAvailableScreen()
                     } else if (isLoading && skipCount != 0) {
+                        hideProgress()
                         skipCount -= takeCount
                     } else {
-
+                        hideProgress()
                     }
                 } else {
+                    hideProgress()
                     if (keywordGlobal.length >= 3)
                         toast(getString(R.string.message_something_went_wrong))
                 }
 
-                progressBar.hide()
+                progressBarSearchLoadMore.hide()
                 isLoading = false
             }
 
@@ -369,6 +381,19 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         val textView =
             searchViewProducts.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
         textView.setTextColor(Color.BLACK)
+    }
+
+    fun showProgress() {
+        recyclerViewSearchProduct.hide()
+        progressBarSearchActivity.show()
+        this.disableWindowClicks()
+    }
+
+    fun hideProgress() {
+        showRecyclerViewData()
+
+        progressBarSearchActivity.hide()
+        this.enableWindowClicks()
     }
 
     override fun showNetworkCondition() {
