@@ -36,10 +36,8 @@ import com.plugable.mcommerceapp.crazypetals.mcommerce.models.ResponseAddToCart
 import com.plugable.mcommerceapp.crazypetals.mcommerce.webservices.ProjectApi
 import com.plugable.mcommerceapp.crazypetals.registration.LoginActivity
 import com.plugable.mcommerceapp.crazypetals.ui.activities.ProductDetailActivity.Companion.productDetailActivity
-import com.plugable.mcommerceapp.crazypetals.ui.adapters.ColorAdapterMVP1
+import com.plugable.mcommerceapp.crazypetals.ui.adapters.*
 import com.plugable.mcommerceapp.crazypetals.ui.adapters.ImageSliderAdapter
-import com.plugable.mcommerceapp.crazypetals.ui.adapters.ProductListAdapter
-import com.plugable.mcommerceapp.crazypetals.ui.adapters.SizeAdapter
 import com.plugable.mcommerceapp.crazypetals.utils.application.App
 import com.plugable.mcommerceapp.crazypetals.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.crazypetals.utils.extension.hide
@@ -88,7 +86,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private var colorAdapter: ColorAdapterMVP1? = null
     private var sizeAdapter: SizeAdapter? = null
     var productList = ArrayList<Products.Data.ProductDetails>()
-    lateinit var productListAdapter: ProductListAdapter
+    lateinit var productListAdapter: RecommendedProductListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,7 +167,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 //        onBottomReachedListener = this
 
         productListAdapter =
-            ProductListAdapter(productList, this, eventClickListener, onButtonClickListener, this)
+            RecommendedProductListAdapter(productList, this, eventClickListener, onButtonClickListener, this)
         val gridLayoutManager = GridLayoutManager(this, 1)
         gridLayoutManager.orientation =
             RecyclerView.HORIZONTAL // set Horizontal Orientation
