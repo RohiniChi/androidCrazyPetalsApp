@@ -33,7 +33,8 @@ data class MyOrder(
         val deliveryDay: String? = null,
         val deliveryStatus: Int? = null,
         val id: Int? = null,
-        val isPaymentFailed: Boolean? = null,
+//        val isPaymentFailed: Boolean? = null,
+        val paymentStatusId:String?=null,
         val orderNumber: String? = null,
         val orderedDate: String? = null
     )

@@ -44,7 +44,7 @@ class MyOrderAdapter(
 
         viewHolder.itemView.tvOrderId.text = "#" + orderArrayList[position]!!.orderNumber.toString()
 
-     if (orderArrayList[position]!!.deliveryStatus == 1 || orderArrayList[position]!!.deliveryStatus == 2) {
+     if (orderArrayList[position]!!.deliveryStatus == 1 || orderArrayList[position]!!.deliveryStatus == 2 && orderArrayList[position]?.paymentStatusId.equals("2")) {
             viewHolder.itemView.tvOrderedOn.hide()
             viewHolder.itemView.tvDeliveredDate.hide()
             viewHolder.itemView.tvArrivingDate.show()
@@ -74,7 +74,7 @@ class MyOrderAdapter(
                     R.drawable.ic_order_delivered
                 )
             )
-        } else if (orderArrayList[position]!!.deliveryStatus == 5) {
+        } else if (orderArrayList[position]!!.deliveryStatus == 5 ) {
             viewHolder.itemView.tvOrderedOn.hide()
             viewHolder.itemView.tvDeliveredDate.hide()
             viewHolder.itemView.tvArrivingDate.show()
@@ -87,9 +87,8 @@ class MyOrderAdapter(
                     R.drawable.ic_cancel_order
                 )
             )
-
         }
-        if (orderArrayList[position]!!.isPaymentFailed!!) {
+        if (orderArrayList[position]!!.paymentStatusId.equals("5") ) {
             viewHolder.itemView.tvOrderedOn.hide()
             viewHolder.itemView.tvDeliveredDate.hide()
             viewHolder.itemView.tvArrivingDate.hide()
@@ -98,6 +97,39 @@ class MyOrderAdapter(
             viewHolder.itemView.tvPaymentFailed.text = "Order payment failed"
 
             viewHolder.itemView.tvPaymentFailed.setTextColor(Color.RED)
+
+            viewHolder.itemView.imgIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.ic_order_arriving
+                )
+            )
+        }
+       else if ( orderArrayList[position]?.paymentStatusId.equals("1")){
+            viewHolder.itemView.tvOrderedOn.hide()
+            viewHolder.itemView.tvDeliveredDate.hide()
+            viewHolder.itemView.tvArrivingDate.hide()
+            viewHolder.itemView.tvPaymentFailed.show()
+
+            viewHolder.itemView.tvPaymentFailed.text = "Awaiting Payment"
+
+//            viewHolder.itemView.tvPaymentFailed.setTextColor(Color.RED)
+
+            viewHolder.itemView.imgIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.ic_order_arriving
+                )
+            )
+        }else if ( orderArrayList[position]?.paymentStatusId.equals("4")){
+            viewHolder.itemView.tvOrderedOn.hide()
+            viewHolder.itemView.tvDeliveredDate.hide()
+            viewHolder.itemView.tvArrivingDate.hide()
+            viewHolder.itemView.tvPaymentFailed.show()
+
+            viewHolder.itemView.tvPaymentFailed.text = "Refunded"
+
+//            viewHolder.itemView.tvPaymentFailed.setTextColor(Color.RED)
 
             viewHolder.itemView.imgIcon.setImageDrawable(
                 ContextCompat.getDrawable(

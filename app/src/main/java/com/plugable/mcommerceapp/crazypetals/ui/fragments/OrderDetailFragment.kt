@@ -40,7 +40,7 @@ import org.jetbrains.anko.support.v4.toast
  */
 class OrderDetailFragment : BaseFragment() {
 
-    private var orderId: String=""
+    private var orderId: String = ""
     private var isTestMode: Boolean = false
     private lateinit var orderDetail: OrderDetailResponse.Data.OrderDetails
     private var mPaymentParams: PayUmoneySdkInitializer.PaymentParam? = null
@@ -48,31 +48,30 @@ class OrderDetailFragment : BaseFragment() {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.buttonPayment -> {
-                if (activity!!.isNetworkAccessible()){
-                    buttonPayment.isClickable=false
-                val emailId =
-                    SharedPreferences.getInstance(activity!!).getProfile()
-                        ?.emailId
-                val phoneNumber =
-                    SharedPreferences.getInstance(activity!!).getProfile()
-                        ?.mobileNumber
-                val name = SharedPreferences.getInstance(activity!!)
-                    .getProfile()?.name
+                if (activity!!.isNetworkAccessible()) {
+                    buttonPayment.isClickable = false
+                    val emailId =
+                        SharedPreferences.getInstance(activity!!).getProfile()
+                            ?.emailId
+                    val phoneNumber =
+                        SharedPreferences.getInstance(activity!!).getProfile()
+                            ?.mobileNumber
+                    val name = SharedPreferences.getInstance(activity!!)
+                        .getProfile()?.name
 
-                initiatePayment(
-                    name,
-                    emailId!!,
-                    phoneNumber!!,
-                    orderDetail.orderTotal.toString(),
-                    orderDetail.orderNumber.toString()
-                )
-            }
-                else{
+                    initiatePayment(
+                        name,
+                        emailId!!,
+                        phoneNumber!!,
+                        orderDetail.orderTotal.toString(),
+                        orderDetail.orderNumber.toString()
+                    )
+                } else {
                     toast(getString(R.string.oops_no_internet_connection))
-                    buttonPayment.isClickable=true
+                    buttonPayment.isClickable = true
 
                 }
-        }
+            }
         }
     }
 
@@ -125,7 +124,7 @@ class OrderDetailFragment : BaseFragment() {
         setHasOptionsMenu(true)
 
         orderDetail = arguments!!.getParcelable("details")!!
-        orderId=arguments!!.getString("order_id")!!
+        orderId = arguments!!.getString("order_id")!!
     }
 
     override fun onCreateView(
@@ -141,7 +140,7 @@ class OrderDetailFragment : BaseFragment() {
         setData()
         buttonPayment.setBackgroundColor(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR))
         buttonPayment.setOnClickListener(this)
-        buttonPayment.isClickable=true
+        buttonPayment.isClickable = true
     }
 
     private fun setData() {
@@ -171,8 +170,26 @@ class OrderDetailFragment : BaseFragment() {
             buttonPayment.show()
             tvDeliveryDateLabel.hide()
             tvDeliveryDate.hide()
-        }
-        else{
+        } else if (orderDetail.paymentStatus.equals("Awaiting Payment", true)) {
+            tvPaymentStatus.text = orderDetail.paymentStatus
+            buttonPayment.hide()
+            tvDeliveryDateLabel.hide()
+            tvDeliveryDate.hide()
+            buttonPayment.show()
+        } /*else if (orderDetail.paymentStatus.equals("Refunded", true)) {
+            tvPaymentStatus.text = orderDetail.paymentStatus
+            tvDeliveryDateLabel.hide()
+            tvDeliveryDate.hide()
+            buttonPayment.hide()
+        }*/
+       /* else if (orderDetail.paymentStatus.equals("Cancelled", true)) {
+            tvPaymentStatus.text = orderDetail.paymentStatus
+            buttonPayment.hide()
+            tvDeliveryDateLabel.hide()
+            tvDeliveryDate.hide()
+            buttonPayment.hide()
+        } */
+        else {
             tvPaymentStatus.text = orderDetail.paymentStatus
             buttonPayment.hide()
         }
@@ -180,7 +197,7 @@ class OrderDetailFragment : BaseFragment() {
         tvShippingAddress.text = orderDetail.address
     }
 
-       private fun calculateServerSideHashAndInitiatePayment1(paymentParam: PayUmoneySdkInitializer.PaymentParam): PayUmoneySdkInitializer.PaymentParam {
+    private fun calculateServerSideHashAndInitiatePayment1(paymentParam: PayUmoneySdkInitializer.PaymentParam): PayUmoneySdkInitializer.PaymentParam {
 
         val stringBuilder = StringBuilder()
         val params = paymentParam.params
