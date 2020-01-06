@@ -130,6 +130,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
 
             } else {
+                SharedPreferences.getInstance(this@OrderSummaryActivity)
+                    .isTermsConditionRememberMe = false
                 toast("Please agree to terms and conditions")
                 materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
                     Color.GRAY
