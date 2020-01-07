@@ -417,7 +417,7 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
             "PA003",
             "CrazyPetals"
         )
-        App.HostUrl = apiConfigData.prodBaseUrl
+        App.HostUrl = apiConfigData.devBaseUrl
         SharedPreferences.getInstance(this@SplashScreenActivity).hostUrl =
             App.HostUrl
         SharedPreferencesForBaseUrl.getInstance(this).tokenDataPreference = apiConfigData
