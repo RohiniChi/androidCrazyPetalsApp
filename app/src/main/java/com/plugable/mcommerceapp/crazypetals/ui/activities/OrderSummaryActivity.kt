@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.payumoney.core.PayUmoneyConstants
 import com.payumoney.core.PayUmoneySdkInitializer
 import com.payumoney.core.entity.TransactionResponse
@@ -35,6 +36,7 @@ import kotlinx.android.synthetic.main.activity_order_summary.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import kotlinx.android.synthetic.main.layout_sub_total_amount.*
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,6 +48,7 @@ import retrofit2.Response
 class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventListener {
 
 
+    private var termsOfUseError: String = ""
     private lateinit var updatePaymentStatusApi: Call<UpdatePaymentResponse>
     private lateinit var fetchAddressListApi: Call<AddressListResponse>
     private lateinit var placeOrderApi: Call<PlaceOrderResponse>
@@ -64,6 +67,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     private var isTestMode: Boolean = false
     private var totalPrice = "0"
     var transactionId = ""
+    private lateinit var mixPanel: MixpanelAPI
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_summary)
@@ -92,13 +97,13 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         loadData()
         if (!SharedPreferences.getInstance(this@OrderSummaryActivity)
                 .isTermsConditionRememberMe
-        ){
+        ) {
             materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
                 Color.GRAY
             )
             materialButtonOrderSummaryPlaceOrder.isClickable = true
 
-        }else{
+        } else {
             materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
                 Color.parseColor(
                     ApplicationThemeUtils.SECONDARY_COLOR
@@ -107,6 +112,8 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             materialButtonOrderSummaryPlaceOrder.isClickable = true
 
         }
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent("visitedScreen")
     }
 
     private fun checkBoxCheckListener() {
@@ -132,7 +139,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             } else {
                 SharedPreferences.getInstance(this@OrderSummaryActivity)
                     .isTermsConditionRememberMe = false
-                toast("Please agree to terms and conditions")
+                toast(getString(R.string.message_agree_terms))
+                termsOfUseError = getString(R.string.message_agree_terms)
+                sendMixPanelEvent("checkBoxUnchecked")
+
                 materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
                     Color.GRAY
                 )
@@ -281,7 +291,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title =  "Order Summary"
+        supportActionBar?.title = "Order Summary"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
@@ -363,7 +373,9 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     placeOrder()
                 } else {
                     materialButtonOrderSummaryPlaceOrder.isClickable = true
-                    toast("Please agree to terms and conditions")
+                    toast(getString(R.string.message_agree_terms))
+                    termsOfUseError = getString(R.string.message_agree_terms)
+                    sendMixPanelEvent("buttonClickError")
 
                     materialButtonOrderSummaryPlaceOrder.setBackgroundColor(
                         Color.GRAY
@@ -687,7 +699,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
             )
             App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
             val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-             updatePaymentStatusApi = clientInstance.updatePaymentStatus(updateStatusRequest)
+            updatePaymentStatusApi = clientInstance.updatePaymentStatus(updateStatusRequest)
             updatePaymentStatusApi.enqueue(object : Callback<UpdatePaymentResponse> {
                 override fun onFailure(call: Call<UpdatePaymentResponse>, t: Throwable) {
                     materialButtonOrderSummaryPlaceOrder.isClickable = true
@@ -742,6 +754,22 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         return paymentParam
     }
+
+
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+        if (mixPanelTitle.equals("visitedScreen", true)) {
+            mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN, productObject)
+        } else if (mixPanelTitle.equals("checkBoxUnchecked", true)) {
+            productObject.put(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, termsOfUseError)
+            mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
+        } else if (mixPanelTitle.equals("buttonClickError", true)) {
+            productObject.put(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, termsOfUseError)
+            mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
+        }
+
+    }
+
     override fun onStop() {
         super.onStop()
         cancelTasks()
@@ -753,6 +781,11 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         if (::cartListApi.isInitialized && cartListApi != null) cartListApi.cancel()
         if (::totalPriceApi.isInitialized && totalPriceApi != null) totalPriceApi.cancel()
         if (::updatePaymentStatusApi.isInitialized && updatePaymentStatusApi != null) updatePaymentStatusApi.cancel()
+    }
+
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
     }
 
 }

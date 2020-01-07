@@ -190,6 +190,8 @@ object IntentFlags {
     const val MIXPANEL_VISITED_DELIVERY_ADDRESS_SCREEN = "Visited Delivery Address screen"
     const val MIXPANEL_DELIVERY_ADDRESS_ERROR = "Delivery Address Error"
     const val MIXPANEL_VISITED_NOTIFICATIONS_SCREEN = "Visited Notifications Screen"
+    const val MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN = "Visited Order Summary screen"
+    const val MIXPANEL_TERMS_OF_USE_SELECTION_ERROR = "Terms Of Use Selection Fail"
 
 //    const val MIXPANEL_LOCATION = "Location"
 //    const val MIXPANEL_AREA_NAME = "Area Name"
