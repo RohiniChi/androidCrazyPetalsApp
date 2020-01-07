@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
@@ -36,6 +37,7 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_sub_total_amount.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -118,6 +120,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     var productList = ArrayList<GetCartResponse.Data>()
     lateinit var cartAdapter: CartAdapter
+    private lateinit var mixPanel: MixpanelAPI
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -280,6 +283,8 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     }
 
     private fun initializeViews() {
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+
         cartAdapter = CartAdapter(productList, this, this, this)
         recyclerViewCart.adapter = cartAdapter
 
@@ -306,9 +311,13 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                 }
             }
         })
-
+        sendMixPanelEvent()
     }
 
+    private fun sendMixPanelEvent() {
+        val productObject = JSONObject()
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_CART_LIST_SCREEN, productObject)
+    }
 
     private fun updateData() {
         if (productList.size == 0) {
@@ -521,9 +530,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                 }
 
             }
-
         })
-
     }
 
 
@@ -548,6 +555,10 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         if (::totalPriceApi.isInitialized && totalPriceApi != null) totalPriceApi.cancel()
         if (::cartListApi.isInitialized && cartListApi != null) cartListApi.cancel()
         if (::removeItemFromCartApi.isInitialized && removeItemFromCartApi != null) removeItemFromCartApi.cancel()
+    }
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
     }
 
 }

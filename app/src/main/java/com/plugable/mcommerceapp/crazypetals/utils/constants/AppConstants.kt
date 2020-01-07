@@ -186,6 +186,7 @@ object IntentFlags {
     const val MIXPANEL_EDIT_ADDRESS_VALIDATION_ERROR = "Edit Address Validation Fail"
     const val MIXPANEL_ADD_ADDRESS_ERROR = "Add Address Fail"
     const val MIXPANEL_EDIT_ADDRESS_ERROR = "Edit Address Fail"
+    const val MIXPANEL_VISITED_CART_LIST_SCREEN = "Visited Cart List screen"
 
 //    const val MIXPANEL_LOCATION = "Location"
 //    const val MIXPANEL_AREA_NAME = "Area Name"
