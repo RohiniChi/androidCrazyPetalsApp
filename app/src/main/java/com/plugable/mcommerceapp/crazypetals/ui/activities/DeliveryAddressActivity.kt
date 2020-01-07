@@ -12,6 +12,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
@@ -31,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_delivery_address.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,6 +40,7 @@ import retrofit2.Response
 class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, EventListener,
     AddressListActionListener {
 
+    private var deliverAddressError: String = ""
     private lateinit var deleteAddressApi: Call<AddressAddResponse>
     private lateinit var fetchAddressListApi: Call<AddressListResponse>
     private lateinit var getDeliveryDayApi: Call<DeliveryDayResponse>
@@ -46,6 +49,7 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
     private var isAddressSelected = false
     //private var paymentMode = "cod"
     private var selectedAddress: AddressListResponse.Data? = null
+    private lateinit var mixPanel: MixpanelAPI
 
     override fun onAddressSelected(address: AddressListResponse.Data) {
 
@@ -59,7 +63,7 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         selectedAddress = address
 
         deliveryDateLayout.show()
-        tvDeliveryAddressDate.text=address.deliveryDay
+        tvDeliveryAddressDate.text = address.deliveryDay
 
         /*  if (isAddressSelected) {
               materialButtonDeliveryAddressReviewOrder.isEnabled = true
@@ -96,7 +100,7 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
                 Landmark = address.landmark,
                 city = address.city,
                 state = address.state,
-                country= address.country,
+                country = address.country,
                 ID = address.id.toString(),
                 MobileNumber = address.mobileNumber,
                 PinCode = address.pinCode,
@@ -124,12 +128,12 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
                 toast("Item not found")
             }
 
-            if(addressList.isEmpty()){
+            if (addressList.isEmpty()) {
                 deliveryDateLayout.hide()
             }
         }
 
-        if(addressList.isEmpty()){
+        if (addressList.isEmpty()) {
             deliveryDateLayout.hide()
         }
     }
@@ -236,7 +240,7 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
                             deliveryAddressAdapter.setlectFirstitem()
 
                             deliveryDateLayout.show()
-                            tvDeliveryAddressDate.text=addressList[0].deliveryDay
+                            tvDeliveryAddressDate.text = addressList[0].deliveryDay
                         }
                         deliveryAddressAdapter.notifyDataSetChanged()
                     } else {
@@ -260,6 +264,8 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         materialButtonDeliveryAddressReviewOrder.isEnabled = true
 
         materialButtonDeliveryAddressReviewOrder.setOnClickListener(this)
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent("visitedScreen")
 
     }
 
@@ -348,10 +354,14 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
                 if (!isAddressSelected || !addressList.contains(selectedAddress)) {
                     materialButtonDeliveryAddressReviewOrder.isClickable = true
                     if (addressList.size > 1) {
-                        toast("Please select preferable address")
+                        toast(getString(R.string.message_select_preferable_address))
+                        deliverAddressError = getString(R.string.message_select_preferable_address)
+                        sendMixPanelEvent("selectPreferableAddress")
 
                     } else {
-                        toast("Please select an address")
+                        toast(getString(R.string.select_address))
+                        deliverAddressError = getString(R.string.select_address)
+                        sendMixPanelEvent("selectAddress")
                     }
                     return
                 }
@@ -406,6 +416,19 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
 
     }
 
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+        if (mixPanelTitle.equals("visitedScreen", true)) {
+            mixPanel.track(IntentFlags.MIXPANEL_VISITED_DELIVERY_ADDRESS_SCREEN, productObject)
+        } else if (mixPanelTitle.equals("selectPreferableAddress", true)) {
+            productObject.put(IntentFlags.MIXPANEL_DELIVERY_ADDRESS_ERROR, deliverAddressError)
+            mixPanel.track(IntentFlags.MIXPANEL_DELIVERY_ADDRESS_ERROR, productObject)
+        } else if (mixPanelTitle.equals("selectAddress", true)) {
+            productObject.put(IntentFlags.MIXPANEL_DELIVERY_ADDRESS_ERROR, deliverAddressError)
+            mixPanel.track(IntentFlags.MIXPANEL_DELIVERY_ADDRESS_ERROR, productObject)
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         cancelTasks()
@@ -415,6 +438,11 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         if (::deleteAddressApi.isInitialized && deleteAddressApi != null) deleteAddressApi.cancel()
         if (::fetchAddressListApi.isInitialized && fetchAddressListApi != null) fetchAddressListApi.cancel()
         if (::getDeliveryDayApi.isInitialized && getDeliveryDayApi != null) getDeliveryDayApi.cancel()
+    }
+
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
     }
 
 }
