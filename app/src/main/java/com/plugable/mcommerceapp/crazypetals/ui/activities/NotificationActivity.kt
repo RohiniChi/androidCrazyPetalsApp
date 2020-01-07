@@ -17,6 +17,7 @@ import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.Notifications
@@ -39,6 +40,7 @@ import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,7 +53,9 @@ class NotificationActivity : BaseActivity() {
     private var notificationList = ArrayList<Notifications.Data.NotificationListItem?>()
     private var pageIndex = 1
     private var pageSize = 15
+    private lateinit var mixPanel: MixpanelAPI
     var isLoading = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
@@ -96,6 +100,9 @@ class NotificationActivity : BaseActivity() {
         btnTryAgain.setOnClickListener(this)
         btnNoData.setOnClickListener(this)
 
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent()
+
         notificationListAdapter = NotificationListAdapter(this, notificationList)
         recyclerViewNotifications.itemAnimator = DefaultItemAnimator()
         recyclerViewNotifications.adapter = notificationListAdapter
@@ -108,7 +115,7 @@ class NotificationActivity : BaseActivity() {
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
 
                 if (!isLoading) {
-                    if (linearLayoutManager != null && notificationList.size>12 && linearLayoutManager.findLastCompletelyVisibleItemPosition() == notificationList.size - 1) {
+                    if (linearLayoutManager != null && notificationList.size > 12 && linearLayoutManager.findLastCompletelyVisibleItemPosition() == notificationList.size - 1) {
                         //bottom of list!
                         loadMore()
                         isLoading = true
@@ -146,6 +153,11 @@ class NotificationActivity : BaseActivity() {
                 getNotifications()
             }
         }
+    }
+
+    private fun sendMixPanelEvent() {
+        val productObject = JSONObject()
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_NOTIFICATIONS_SCREEN, productObject)
     }
 
     override fun showNetworkCondition() {
@@ -191,10 +203,12 @@ class NotificationActivity : BaseActivity() {
     }
 
     private fun callNotificationsListAPI() {
-        val applicationUserId=SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
+        val applicationUserId =
+            SharedPreferences.getInstance(this).getStringValue(IntentFlags.APPLICATION_USER_ID)
         App.HostUrl = SharedPreferences.getInstance(this@NotificationActivity).hostUrl!!
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        notificationListApi = clientInstance.getAllNotificationApi(pageIndex, pageSize,applicationUserId!!)
+        notificationListApi =
+            clientInstance.getAllNotificationApi(pageIndex, pageSize, applicationUserId!!)
 
         notificationListApi.enqueue(object : Callback<Notifications> {
             override fun onFailure(call: Call<Notifications>?, t: Throwable?) {
@@ -251,6 +265,7 @@ class NotificationActivity : BaseActivity() {
         })
 
     }
+
     override fun onStop() {
         super.onStop()
         cancelTasks()
@@ -258,6 +273,11 @@ class NotificationActivity : BaseActivity() {
 
     private fun cancelTasks() {
         if (::notificationListApi.isInitialized && notificationListApi != null) notificationListApi.cancel()
+    }
+
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
     }
 
 }
