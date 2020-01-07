@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.callbacks.OnButtonClickListener
@@ -36,8 +37,10 @@ import com.plugable.mcommerceapp.crazypetals.mcommerce.models.ResponseAddToCart
 import com.plugable.mcommerceapp.crazypetals.mcommerce.webservices.ProjectApi
 import com.plugable.mcommerceapp.crazypetals.registration.LoginActivity
 import com.plugable.mcommerceapp.crazypetals.ui.activities.ProductDetailActivity.Companion.productDetailActivity
-import com.plugable.mcommerceapp.crazypetals.ui.adapters.*
+import com.plugable.mcommerceapp.crazypetals.ui.adapters.ColorAdapterMVP1
 import com.plugable.mcommerceapp.crazypetals.ui.adapters.ImageSliderAdapter
+import com.plugable.mcommerceapp.crazypetals.ui.adapters.RecommendedProductListAdapter
+import com.plugable.mcommerceapp.crazypetals.ui.adapters.SizeAdapter
 import com.plugable.mcommerceapp.crazypetals.utils.application.App
 import com.plugable.mcommerceapp.crazypetals.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.crazypetals.utils.extension.hide
@@ -52,6 +55,7 @@ import kotlinx.android.synthetic.main.activity_product_detail.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_product_details.*
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,12 +73,13 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
 
+    private  var addToCartError: String=""
     private lateinit var addToCartApi: Call<ResponseAddToCart>
     private lateinit var recommendedListApi: Call<Products>
     private lateinit var productDetailApi: Call<ProductDetail>
     private var productListId: Int = 0
     private var productDetail = ProductDetail.Data()
-    //    private lateinit var mixPanel: MixpanelAPI
+    private lateinit var mixPanel: MixpanelAPI
     private var productImages = ArrayList<ProductDetail.Data.Image>()
     private lateinit var product: Products.Data.ProductDetails
     private lateinit var eventClickListener: EventListener
@@ -151,7 +156,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         imageViewFavorite.setOnClickListener(this)
 
-//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
         product = intent.getParcelableExtra(IntentFlags.PRODUCT_MODEL)!!
 
@@ -167,7 +172,13 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 //        onBottomReachedListener = this
 
         productListAdapter =
-            RecommendedProductListAdapter(productList, this, eventClickListener, onButtonClickListener, this)
+            RecommendedProductListAdapter(
+                productList,
+                this,
+                eventClickListener,
+                onButtonClickListener,
+                this
+            )
         val gridLayoutManager = GridLayoutManager(this, 1)
         gridLayoutManager.orientation =
             RecyclerView.HORIZONTAL // set Horizontal Orientation
@@ -410,20 +421,19 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             }
         })
 
-//        sendMixPanelEvent()
+        sendMixPanelEvent("visitedProducts")
     }
 
     private fun attemptListApiCall() {
         if (isNetworkAccessible()) {
             val category =
                 SharedPreferences.getInstance(this).getStringValue(IntentFlags.CATEGORY_ID)
-            if (TextUtils.isEmpty(category) || category!!.toInt() == 0) {
-                categoryId= 0
+            categoryId = if (TextUtils.isEmpty(category) || category!!.toInt() == 0) {
+                0
+            } else {
+                category.toInt()
             }
-            else{
-                categoryId=category!!.toInt()
-            }
-            callRecommendedListApi(skipCount, takeCount, categoryId!!, product.id)
+            callRecommendedListApi(skipCount, takeCount, categoryId, product.id)
         } else {
             toast(getString(R.string.check_internet_connection))
         }
@@ -516,13 +526,25 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }
     }
 
-    /*  private fun sendMixPanelEvent() {
-          val productObject = JSONObject()
-          productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, product.id)
-          productObject.put(IntentFlags.MIXPANEL_PRODUCT_NAME, product.name)
-          mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCTS, productObject)
-      }
-  */
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+        when {
+            mixPanelTitle.equals("visitedProducts", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, product.id)
+                productObject.put(IntentFlags.MIXPANEL_PRODUCT_NAME, product.name)
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCTS, productObject)
+            }
+            mixPanelTitle.equals("addToCartApiFail", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR, addToCartError)
+                mixPanel.track(IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR, productObject)
+            }
+            mixPanelTitle.equals("addToCartError", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR, addToCartError)
+                mixPanel.track(IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR, productObject)
+            }
+        }
+    }
+
 
     private fun hideUiComponents() {
         nestedScrollProductDetail.hide()
@@ -885,6 +907,8 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             addToCartApi.enqueue(object : Callback<ResponseAddToCart> {
                 override fun onFailure(call: Call<ResponseAddToCart>, t: Throwable) {
 //                    toast(getString(R.string.message_something_went_wrong))
+                    addToCartError = getString(R.string.message_something_went_wrong)
+                    sendMixPanelEvent("addToCartApiFail")
                 }
 
                 override fun onResponse(
@@ -923,6 +947,10 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             buttonAddToCart.isClickable = true
 
                             toast(response.body()!!.message)
+                        } else {
+                            toast(response.body()!!.message)
+                            addToCartError = response.body()!!.message
+                            sendMixPanelEvent("addToCartError")
                         }
                     }
                 }
@@ -932,11 +960,10 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             toast(getString(R.string.check_internet_connection))
         }
     }
-/*
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
-    }*/
+    }
 
     inner class ViewPagerAdapterProductDetail(manager: FragmentManager) :
         FragmentStatePagerAdapter(manager) {
@@ -948,25 +975,29 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             var fragment: Fragment? = null
 
 
-            if (getPageTitle(position) == getString(R.string.title_description)) {
-                fragment = DescriptionFragment().newInstance(
-                    productDetail.description,
-                    productDetail.includedAccesories
-                )
+            when {
+                getPageTitle(position) == getString(R.string.title_description) -> {
+                    fragment = DescriptionFragment().newInstance(
+                        productDetail.description,
+                        productDetail.includedAccesories
+                    )
 
-            } else if (getPageTitle(position) == getString(R.string.title_specification)) {
-                fragment = SpecificationFragment().newInstance(
-                    productDetail.length,
-                    productDetail.height,
-                    productDetail.width,
-                    productDetail.weight,
-                    productDetail.materialType
-                )
-            } else if (getPageTitle(position) == getString(R.string.title_instruction)) {
-                fragment = InstructionFragment().newInstance(
-                    productDetail.deliveryTime,
-                    productDetail.precautions
-                )
+                }
+                getPageTitle(position) == getString(R.string.title_specification) -> {
+                    fragment = SpecificationFragment().newInstance(
+                        productDetail.length,
+                        productDetail.height,
+                        productDetail.width,
+                        productDetail.weight,
+                        productDetail.materialType
+                    )
+                }
+                getPageTitle(position) == getString(R.string.title_instruction) -> {
+                    fragment = InstructionFragment().newInstance(
+                        productDetail.deliveryTime,
+                        productDetail.precautions
+                    )
+                }
             }
 
             return fragment!!
@@ -1013,6 +1044,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
 
     }
+
     override fun onStop() {
         super.onStop()
         cancelTasks()

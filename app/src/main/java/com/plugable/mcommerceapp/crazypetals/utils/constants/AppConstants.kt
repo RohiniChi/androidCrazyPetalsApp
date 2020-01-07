@@ -192,6 +192,7 @@ object IntentFlags {
     const val MIXPANEL_VISITED_NOTIFICATIONS_SCREEN = "Visited Notifications Screen"
     const val MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN = "Visited Order Summary screen"
     const val MIXPANEL_TERMS_OF_USE_SELECTION_ERROR = "Terms Of Use Selection Fail"
+    const val MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR = "Product Detail Add To Cart Fail"
 
 //    const val MIXPANEL_LOCATION = "Location"
 //    const val MIXPANEL_AREA_NAME = "Area Name"
