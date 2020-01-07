@@ -400,5 +400,13 @@
 
     <string name="label_remember_me">Remember me</string>
     <string name="message_remember_me">Allow app to remember “Terms and Condition” next time?</string>
+    <string name="validation_flat_no">Please enter flat no/house no/floor/building.</string>
+    <string name="validation_locality_landmark">Please enter colony/street/landmark.</string>
+    <string name="validation_area">Please enter area/locality.</string>
+    <string name="validation_enter_city">Please enter city.</string>
+    <string name="validation_enter_state">Please enter state.</string>
+    <string name="validation_enter_country">Please enter country.</string>
+    <string name="validation_enter_pincode">Please enter a pin code.</string>
+    <string name="validation_correct_pincode">Please enter a vaild pin code.</string>
 
 </resources>
