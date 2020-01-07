@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.RegisterRequest
@@ -47,6 +48,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,6 +61,9 @@ import java.util.*
 class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
 
+    private var validationError: String = ""
+    private var sendOTPError: String = ""
+    private var registrationError: String = ""
     private lateinit var sendOTPApi: Call<SendOTPResponse>
     private lateinit var registerWithDataApi: Call<RegisterWithData>
     private lateinit var registerWithImageApi: Call<RegisterWithImage>
@@ -68,6 +73,8 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     private var imageData: Uri? = null
     private var extras: Bundle? = null
     private var myImagePath: String = ""
+    private lateinit var mixPanel: MixpanelAPI
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -109,6 +116,8 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         buttonRegister.setOnClickListener(this)
         textViewRegisterLogin.setOnClickListener(this)
         textViewSkip.setOnClickListener(this)
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent("visitedScreen")
     }
 
     private fun checkPermissions(context: Context) {
@@ -370,16 +379,20 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
                 if (nameValidation() && emailValidation() && contactValidation() && passwordValidation()) {
                     showProgress(this)
-                    if (extras != null) {
-                        callRegisterApiWithImage(getImageUri(this, imageBitmap))
-                    } else if (imageData != null) {
-                        callRegisterApiWithImage(getImageUri(this, bitmapImage!!))
-                        buttonRegister.isClickable = false
-                        showProgress(this)
+                    when {
+                        extras != null -> {
+                            callRegisterApiWithImage(getImageUri(this, imageBitmap))
+                        }
+                        imageData != null -> {
+                            callRegisterApiWithImage(getImageUri(this, bitmapImage!!))
+                            buttonRegister.isClickable = false
+                            showProgress(this)
 
-                    } else {
-                        buttonRegister.isClickable = false
-                        attemptApiCall()
+                        }
+                        else -> {
+                            buttonRegister.isClickable = false
+                            attemptApiCall()
+                        }
                     }
 
                 }
@@ -446,14 +459,14 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                     } else {
                         buttonRegister.isClickable = true
                         hideProgress(this@RegisterActivity)
-                        /*    if (isNetworkAccessible()!!) {
-                                toast(response.body()!!.message)
-                                registrationError = response.body()!!.message
-                            } else {
-                                toast(getString(R.string.check_internet_connection))
-                                registrationError = getString(R.string.check_internet_connection)
-                            }
-                            sendMixPanelEvent("registrationFailure")*/
+                        registrationError = if (isNetworkAccessible()) {
+                            toast(response.body()!!.message)
+                            response.body()!!.message
+                        } else {
+                            toast(getString(R.string.check_internet_connection))
+                            getString(R.string.check_internet_connection)
+                        }
+                        sendMixPanelEvent("registrationFailure")
                     }
                 } else {
                     buttonRegister.isClickable = true
@@ -517,11 +530,36 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                         buttonRegister.isClickable = true
                         hideProgress(this@RegisterActivity)
                         toast(response.body()!!.message)
+                        sendOTPError = response.body()!!.message
+                        sendMixPanelEvent("sendOTPError")
                     }
                 }
             }
 
         })
+    }
+
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+
+        when {
+            mixPanelTitle.equals("visitedScreen", true) -> {
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_SIGN_UP_SCREEN, productObject)
+            }
+            mixPanelTitle.equals("registrationFailure", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_REGISTRATION_ERROR, registrationError)
+                mixPanel.track(IntentFlags.MIXPANEL_REGISTRATION_ERROR, productObject)
+            }
+            mixPanelTitle.equals("sendOTPError", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_REGISTRATION_SEND_OTP_ERROR, sendOTPError)
+                mixPanel.track(IntentFlags.MIXPANEL_REGISTRATION_SEND_OTP_ERROR, productObject)
+            }
+            mixPanelTitle.equals("validationError", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_REGISTRATION_VALIDATION_ERROR, validationError)
+                mixPanel.track(IntentFlags.MIXPANEL_REGISTRATION_VALIDATION_ERROR, productObject)
+            }
+        }
+
     }
 
     private fun textChangeListeners() {
@@ -573,20 +611,27 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             textInputEditTextName.isEmpty() -> {
                 textViewNameError.show()
                 textViewNameError.text = getString(R.string.validation_enter_name)
+                validationError = getString(R.string.validation_enter_name)
+                sendMixPanelEvent("validationError")
                 return false
             }
             textInputEditTextName.text.toString().startsWith(" ") -> {
                 textViewNameError.show()
                 textViewNameError.text = getString(R.string.validation_empty_space)
+                validationError = getString(R.string.validation_empty_space)
+                sendMixPanelEvent("validationError")
                 return false
             }
             textInputEditTextName.length() > MAX_NAME_LENGTH -> {
                 textViewNameError.show()
                 textViewNameError.text = getString(R.string.validation_name_length)
+                validationError = getString(R.string.validation_name_length)
+                sendMixPanelEvent("validationError")
                 return false
             }
         }
         textViewNameError.invisible()
+        validationError = ""
         return true
     }
 
@@ -596,16 +641,21 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             textInputEditTextEmailId.isEmpty() -> {
                 textViewEmailIdError.show()
                 textViewEmailIdError.text = getString(R.string.validation_enter_email)
+                validationError = getString(R.string.validation_enter_email)
+                sendMixPanelEvent("validationError")
                 return false
             }
             !textInputEditTextEmailId.isValidEmail() -> {
                 textViewEmailIdError.show()
                 textViewEmailIdError.text = getString(R.string.validation_email)
+                validationError = getString(R.string.validation_email)
+                sendMixPanelEvent("validationError")
                 return false
             }
 
         }
         textViewEmailIdError.invisible()
+        validationError = ""
         return true
     }
 
@@ -616,21 +666,22 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
                 textViewMobileNoError.show()
                 textViewMobileNoError.text = getString(R.string.validation_enter_number)
-
+                validationError = getString(R.string.validation_enter_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
             !textInputEditTextPhoneNumber.isValidMobileNumber() -> {
 
                 textViewMobileNoError.show()
                 textViewMobileNoError.text = getString(R.string.validation_number)
-
-
+                validationError = getString(R.string.validation_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
 
         }
         textViewMobileNoError.invisible()
-
+        validationError = ""
         return true
     }
 
@@ -640,21 +691,28 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             textInputEditTextPassword.isEmpty() -> {
                 textViewPasswordError.show()
                 textViewPasswordError.text = getString(R.string.validation_enter_password)
+                validationError = getString(R.string.validation_enter_password)
+                sendMixPanelEvent("validationError")
                 return false
             }
             textInputEditTextPassword.text.toString().startsWith(" ") -> {
                 textViewPasswordError.show()
                 textViewPasswordError.text = getString(R.string.validation_empty_space)
+                validationError = getString(R.string.validation_empty_space)
+                sendMixPanelEvent("validationError")
                 return false
             }
             textInputEditTextPassword.length() < 6 -> {
                 textViewPasswordError.show()
                 textViewPasswordError.text = getString(R.string.validation_password_length)
+                validationError = getString(R.string.validation_password_length)
+                sendMixPanelEvent("validationError")
                 return false
             }
 
         }
         textViewPasswordError.invisible()
+        validationError = ""
         return true
     }
 
@@ -673,11 +731,16 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         activity.enableWindowClicks()
         progressBarRegister.hide()
     }
+
     private fun cancelTasks() {
         if (::sendOTPApi.isInitialized && sendOTPApi != null) sendOTPApi.cancel()
         if (::registerWithDataApi.isInitialized && registerWithDataApi != null) registerWithDataApi.cancel()
         if (::registerWithImageApi.isInitialized && registerWithImageApi != null) registerWithImageApi.cancel()
     }
 
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
+    }
 
 }

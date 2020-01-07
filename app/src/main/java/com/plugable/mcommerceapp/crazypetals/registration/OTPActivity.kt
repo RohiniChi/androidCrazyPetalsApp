@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.mukesh.OnOtpCompletionListener
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
@@ -33,6 +34,7 @@ import com.plugable.mcommerceapp.crazypetals.utils.validation.onTextChanged
 import kotlinx.android.synthetic.main.activity_otp.*
 import org.jetbrains.anko.sdk27.coroutines.onFocusChange
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,11 +43,14 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
     SMSReceiver.OTPReceiveListener {
 
 
+    private var sendOTPError: String = ""
+    private var verifyOTPError: String = ""
     private lateinit var sendOTPApi: Call<SendOTPResponse>
     private lateinit var verifyOTPApi: Call<OTPVerification>
     private lateinit var timer: CountDownTimer
-    val TAG: String? = OTPActivity::class.java.simpleName
+    private val TAG: String? = OTPActivity::class.java.simpleName
     private var smsReceiver: SMSReceiver? = null
+    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +108,8 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         buttonVerify.isClickable = true
 
         otp_view.setOtpCompletionListener(this)
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent("visitedScreen")
     }
 
     private fun initializeTheme() {
@@ -151,12 +158,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
             task.addOnSuccessListener {
                 // API successfully started
             }
-            task.addOnFailureListener(object : OnFailureListener {
-                override fun onFailure(p0: java.lang.Exception) {
-
-                }
-
-            })
+            task.addOnFailureListener { }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -284,6 +286,17 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                         textViewOTPVerificationError.show()
                         textViewOTPVerificationError.text =
                             getString(R.string.otp_validation_message)
+
+                        if (isNetworkAccessible()) {
+                            textViewOTPVerificationError.text =
+                                getString(R.string.otp_validation_message)
+                            verifyOTPError = getString(R.string.otp_validation_message)
+                        } else {
+                            toast(getString(R.string.check_internet_connection))
+                            verifyOTPError = getString(R.string.check_internet_connection)
+                        }
+                        sendMixPanelEvent("verifyOTPError")
+
                     }
                 }
             }
@@ -446,7 +459,16 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
                                     textViewResendOTP.show()
                                     textViewResendOTP.text = getString(R.string.resend_otp)
 
-                                    toast(getString(R.string.message_something_went_wrong))
+                                    sendOTPError = if (isNetworkAccessible()) {
+                                        toast(response.body()!!.message)
+                                        response.body()!!.message
+                                    } else {
+                                        toast(getString(R.string.check_internet_connection))
+                                        getString(R.string.check_internet_connection)
+                                    }
+                                    sendMixPanelEvent("sendOTPError")
+
+
                                 }
                             } else {
                                 progressBarOTPActivity.hide()
@@ -466,6 +488,25 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         }
 
     }
+
+
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+        when {
+            mixPanelTitle.equals("visitedScreen", true) -> {
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_OTP_SCREEN, productObject)
+            }
+            mixPanelTitle.equals("sendOTPError", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_OTP_SCREEN_SEND_OTP_ERROR, sendOTPError)
+                mixPanel.track(IntentFlags.MIXPANEL_OTP_SCREEN_SEND_OTP_ERROR, productObject)
+            }
+            mixPanelTitle.equals("verifyOTPError", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_VERIFY_OTP_ERROR, verifyOTPError)
+                mixPanel.track(IntentFlags.MIXPANEL_VERIFY_OTP_ERROR, productObject)
+            }
+        }
+    }
+
 
     override fun onStop() {
         super.onStop()

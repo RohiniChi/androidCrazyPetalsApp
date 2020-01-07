@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.SendOTPResponse
@@ -24,13 +25,17 @@ import com.plugable.mcommerceapp.crazypetals.utils.validation.isValidMobileNumbe
 import com.plugable.mcommerceapp.crazypetals.utils.validation.onTextChanged
 import kotlinx.android.synthetic.main.activity_mobile_verification.*
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
 
+    private var validationError: String = ""
+    private var sendOTPError: String = ""
     private lateinit var sendOTPAPi: Call<SendOTPResponse>
+    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +72,8 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
         buttonGetOtp.setOnClickListener(this)
         textChangeListeners()
         buttonGetOtp.isClickable = true
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent("visitedScreen")
     }
 
     override fun onClick(v: View?) {
@@ -109,7 +116,10 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
         sendOTPAPi =
-            clientInstance.sendOTPApi(textInputEditTextPhoneNo.text.toString(),getString(R.string.send_otp_reset_password_subject))
+            clientInstance.sendOTPApi(
+                textInputEditTextPhoneNo.text.toString(),
+                getString(R.string.send_otp_reset_password_subject)
+            )
 
         sendOTPAPi.enqueue(object : Callback<SendOTPResponse> {
             override fun onFailure(call: Call<SendOTPResponse>, t: Throwable) {
@@ -124,7 +134,8 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
                 if (response.isSuccessful) {
                     if (response.body()!!.statusCode == "10") {
 
-                        val intent = Intent(this@MobileVerificationActivity, OTPActivity::class.java)
+                        val intent =
+                            Intent(this@MobileVerificationActivity, OTPActivity::class.java)
                         intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.FROM_FORGOT_PASSWORD)
                         intent.putExtra(
                             IntentFlags.VERIFICATION_PHONE_NUMBER,
@@ -141,11 +152,41 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
                         textViewPhoneNoError.show()
                         textViewPhoneNoError.text =
                             getString(R.string.mobileVerification_validation_meassage)
+                        if (isNetworkAccessible()) {
+                            textViewPhoneNoError.text =
+                                getString(R.string.mobileVerification_validation_meassage)
+                            sendOTPError =
+                                getString(R.string.mobileVerification_validation_meassage)
+                        } else {
+                            toast(getString(R.string.check_internet_connection))
+                            sendOTPError = getString(R.string.check_internet_connection)
+                        }
+                        sendMixPanelEvent("sendOTPError")
                     }
                 }
+                buttonGetOtp.isClickable = true
+                progressBarMobileVerification.hide()
             }
 
         })
+    }
+
+
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+        when {
+            mixPanelTitle.equals("visitedScreen", true) -> {
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_MOBILE_VERIFICATION, productObject)
+            }
+            mixPanelTitle.equals("sendOTPError", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_MOBILE_VERIFICATION_SEND_OTP_ERROR, sendOTPError)
+                mixPanel.track(IntentFlags.MIXPANEL_MOBILE_VERIFICATION_SEND_OTP_ERROR, productObject)
+            }
+            mixPanelTitle.equals("validationError", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_SEND_OTP_VALIDATION_ERROR, validationError)
+                mixPanel.track(IntentFlags.MIXPANEL_SEND_OTP_VALIDATION_ERROR, productObject)
+            }
+        }
     }
 
 
@@ -169,15 +210,20 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
             textInputEditTextPhoneNo.isEmpty() -> {
                 textViewPhoneNoError.show()
                 textViewPhoneNoError.text = getString(R.string.validation_enter_number)
+                validationError = getString(R.string.validation_enter_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
             !textInputEditTextPhoneNo.isValidMobileNumber() -> {
                 textViewPhoneNoError.show()
                 textViewPhoneNoError.text = getString(R.string.validation_number)
+                validationError = getString(R.string.validation_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
         }
         textViewPhoneNoError.invisible()
+        validationError = ""
         return true
     }
 
@@ -189,4 +235,10 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
     private fun cancelTasks() {
         if (::sendOTPAPi.isInitialized && sendOTPAPi != null) sendOTPAPi.cancel()
     }
+
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
+    }
+
 }
