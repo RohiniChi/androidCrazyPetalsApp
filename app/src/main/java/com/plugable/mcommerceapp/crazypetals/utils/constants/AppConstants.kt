@@ -180,6 +180,12 @@ object IntentFlags {
     const val MIXPANEL_VISITED_RESET_PASSWORD_SCREEN = "Visited Reset Password screen"
     const val MIXPANEL_RESET_PASSWORD_ERROR = "Reset Password Fail"
     const val MIXPANEL_RESET_PASSWORD_VALIDATION_ERROR = "Send OTP Validation Fail"
+    const val MIXPANEL_VISITED_ADD_ADDRESS_SCREEN = "Visited Add Address Screen"
+    const val MIXPANEL_VISITED_EDIT_ADDRESS_SCREEN = "Visited Edit Address Screen"
+    const val MIXPANEL_ADD_ADDRESS_VALIDATION_ERROR = "Add Address Validation Fail"
+    const val MIXPANEL_EDIT_ADDRESS_VALIDATION_ERROR = "Edit Address Validation Fail"
+    const val MIXPANEL_ADD_ADDRESS_ERROR = "Add Address Fail"
+    const val MIXPANEL_EDIT_ADDRESS_ERROR = "Edit Address Fail"
 
 //    const val MIXPANEL_LOCATION = "Location"
 //    const val MIXPANEL_AREA_NAME = "Area Name"

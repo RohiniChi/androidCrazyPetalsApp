@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.AddressAddResponse
@@ -23,6 +24,7 @@ import com.plugable.mcommerceapp.crazypetals.utils.validation.onTextChanged
 import kotlinx.android.synthetic.main.activity_add_address.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,14 +38,20 @@ class AddAddressActivity : AppCompatActivity(),
         const val ADDRESS = "address"
     }
 
+    private var validationError: String = ""
+    private var addAddressError: String = ""
+    private var editAddresError: String = ""
     private lateinit var editAddressApi: Call<AddressAddResponse>
     private lateinit var addAddressApi: Call<AddressAddResponse>
     var pinCode: Array<String?> = arrayOf()
-    var addressRequest: AddressRequest? = null
-    var addRequest = true
+    private var addressRequest: AddressRequest? = null
+    private var addRequest = true
     var data: ArrayList<DeliveryChartResponse.Data?> = ArrayList()
     private var phPattern: String = "[6-9][0-9]{9}"
     private var pincodePattern: String = "[1-9][0-9]{5}"
+    private lateinit var mixPanel: MixpanelAPI
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_address)
@@ -59,6 +67,7 @@ class AddAddressActivity : AppCompatActivity(),
         addressRequest = intent.getParcelableExtra(ADDRESS)
         changeTitleAndSubmitButton()
         showCurrentData()
+        sendMixPanelEvent("visitedScreen")
     }
 
     private fun changeTitleAndSubmitButton() {
@@ -104,6 +113,7 @@ class AddAddressActivity : AppCompatActivity(),
         imgToolbarHomeLayout.setOnClickListener(this)
         buttonAddAddress.setOnClickListener(this)
         textChangeListeners()
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
     }
 
     private fun setUpSpinner() {
@@ -165,7 +175,8 @@ class AddAddressActivity : AppCompatActivity(),
                 countryValidation()
 
                 if (phoneNoValidation() && flatNoValidation() && localityValidation() && pinCodeValidation() && areaValidation()
-                    && cityValidation() && stateValidation() && countryValidation()) {
+                    && cityValidation() && stateValidation() && countryValidation()
+                ) {
                     buttonAddAddress.isEnabled = false
                     if (addRequest) callAddOrEditAddressApi(makeAddressObject()) else editAddress(
                         makeAddressObject()
@@ -198,6 +209,9 @@ class AddAddressActivity : AppCompatActivity(),
                 } else {
                     buttonAddAddress.isEnabled = true
                     toast(getString(R.string.message_something_went_wrong))
+                    editAddresError = response.body()!!.message
+                    sendMixPanelEvent("editAddressError")
+
                 }
 
             }
@@ -246,6 +260,8 @@ class AddAddressActivity : AppCompatActivity(),
                 } else {
                     buttonAddAddress.isEnabled = true
                     toast(getString(R.string.message_something_went_wrong))
+                    addAddressError = response.body()!!.message
+                    sendMixPanelEvent("addAddressError")
                 }
 
             }
@@ -253,10 +269,43 @@ class AddAddressActivity : AppCompatActivity(),
         })
     }
 
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+        if (mixPanelTitle.equals("visitedScreen", true)) {
+            if (addRequest) {
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_ADD_ADDRESS_SCREEN, productObject)
+            } else {
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_EDIT_ADDRESS_SCREEN, productObject)
+            }
+        } else if (mixPanelTitle.equals("validationError", true)) {
+            if (addRequest) {
+                productObject.put(
+                    IntentFlags.MIXPANEL_ADD_ADDRESS_VALIDATION_ERROR,
+                    validationError
+                )
+                mixPanel.track(IntentFlags.MIXPANEL_ADD_ADDRESS_VALIDATION_ERROR, productObject)
+            } else {
+                productObject.put(
+                    IntentFlags.MIXPANEL_EDIT_ADDRESS_VALIDATION_ERROR,
+                    validationError
+                )
+                mixPanel.track(IntentFlags.MIXPANEL_EDIT_ADDRESS_VALIDATION_ERROR, productObject)
+            }
+        } else if (mixPanelTitle.equals("addAddressError", true)) {
+            productObject.put(IntentFlags.MIXPANEL_ADD_ADDRESS_ERROR, addAddressError)
+            mixPanel.track(IntentFlags.MIXPANEL_ADD_ADDRESS_ERROR, productObject)
+        } else if (mixPanelTitle.equals("editAddressError", true)) {
+            productObject.put(IntentFlags.MIXPANEL_EDIT_ADDRESS_ERROR, editAddresError)
+            mixPanel.track(IntentFlags.MIXPANEL_EDIT_ADDRESS_ERROR, productObject)
+        }
+
+
+    }
+
 
     private fun textChangeListeners() {
 
-        editTextPhoneNo.setOnFocusChangeListener { view, isFocused ->
+        editTextPhoneNo.setOnFocusChangeListener { _, isFocused ->
 
             if (!isFocused) {
                 //this.hideKeyboard(view)
@@ -265,7 +314,7 @@ class AddAddressActivity : AppCompatActivity(),
 
         }
 
-        editTextFlatNo.setOnFocusChangeListener { view, isFocused ->
+        editTextFlatNo.setOnFocusChangeListener { _, isFocused ->
 
             if (!isFocused) {
                 //this.hideKeyboard(view)
@@ -274,7 +323,7 @@ class AddAddressActivity : AppCompatActivity(),
 
         }
 
-        editTextLocality.setOnFocusChangeListener { view, isFocused ->
+        editTextLocality.setOnFocusChangeListener { _, isFocused ->
 
             if (!isFocused) {
                 //this.hideKeyboard(view)
@@ -285,7 +334,7 @@ class AddAddressActivity : AppCompatActivity(),
         }
 
 
-        editTextArea.setOnFocusChangeListener { view, isFocused ->
+        editTextArea.setOnFocusChangeListener { _, isFocused ->
 
             if (!isFocused) {
                 //this.hideKeyboard(view)
@@ -294,7 +343,7 @@ class AddAddressActivity : AppCompatActivity(),
 
 
         }
-        editTextCity.setOnFocusChangeListener { view, isFocused ->
+        editTextCity.setOnFocusChangeListener { _, isFocused ->
 
             if (!isFocused) {
                 //this.hideKeyboard(view)
@@ -304,7 +353,7 @@ class AddAddressActivity : AppCompatActivity(),
 
         }
 
-        editTextState.setOnFocusChangeListener { view, isFocused ->
+        editTextState.setOnFocusChangeListener { _, isFocused ->
 
             if (!isFocused) {
                 //this.hideKeyboard(view)
@@ -314,7 +363,7 @@ class AddAddressActivity : AppCompatActivity(),
 
         }
 
-        editTextCountry.setOnFocusChangeListener { view, isFocused ->
+        editTextCountry.setOnFocusChangeListener { _, isFocused ->
 
             if (!isFocused) {
                 //this.hideKeyboard(view)
@@ -369,21 +418,21 @@ class AddAddressActivity : AppCompatActivity(),
         when {
             editTextPhoneNo.text.toString().isEmpty() -> {
                 textViewPhoneNoError.show()
-                textViewPhoneNoError.text = "Please enter your mobile number"
-
+                textViewPhoneNoError.text = getString(R.string.validation_enter_number)
+                validationError = getString(R.string.validation_enter_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
             !editTextPhoneNo.text.toString().matches(phPattern.toRegex()) -> {
-
                 textViewPhoneNoError.show()
-                textViewPhoneNoError.text = "Enter a 10 digit mobile number"
-
-
+                textViewPhoneNoError.text = getString(R.string.validation_number)
+                validationError = getString(R.string.validation_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
         }
         textViewPhoneNoError.invisible()
-
+        validationError = ""
         return true
     }
 
@@ -392,18 +441,15 @@ class AddAddressActivity : AppCompatActivity(),
 
             editTextFlatNo.text.toString().isEmpty() -> {
                 textViewFlatNoError.show()
-                textViewFlatNoError.text = "Please enter flat no/house no/floor/building."
+                textViewFlatNoError.text = getString(R.string.validation_flat_no)
+                validationError = getString(R.string.validation_flat_no)
+                sendMixPanelEvent("validationError")
 
                 return false
             }
-            /*editTextFlatNo.text.toString().length > 6 -> {
-                textViewFlatNoError.show()
-                textViewFlatNoError.text = "Please enter your address details "
-
-                return false
-            }*/
             else -> textViewFlatNoError.invisible()
         }
+        validationError = ""
         return true
     }
 
@@ -413,11 +459,14 @@ class AddAddressActivity : AppCompatActivity(),
         when {
             editTextLocality.text.toString().isEmpty() -> {
                 textViewLocalityError.show()
-                textViewLocalityError.text = "Please enter colony/street/landmark."
+                textViewLocalityError.text = getString(R.string.validation_locality_landmark)
+                validationError = getString(R.string.validation_locality_landmark)
+                sendMixPanelEvent("validationError")
                 return false
             }
             else -> textViewLocalityError.invisible()
         }
+        validationError = ""
         return true
     }
 
@@ -426,11 +475,14 @@ class AddAddressActivity : AppCompatActivity(),
         when {
             editTextArea.text.toString().isEmpty() -> {
                 textViewAreaError.show()
-                textViewAreaError.text = "Please enter area/locality."
+                textViewAreaError.text = getString(R.string.validation_area)
+                validationError = getString(R.string.validation_area)
+                sendMixPanelEvent("validationError")
                 return false
             }
             else -> textViewAreaError.invisible()
         }
+        validationError = ""
         return true
     }
 
@@ -439,11 +491,14 @@ class AddAddressActivity : AppCompatActivity(),
         when {
             editTextCity.text.toString().isEmpty() -> {
                 textViewCityError.show()
-                textViewCityError.text = "Please enter city."
+                textViewCityError.text = getString(R.string.validation_enter_city)
+                validationError = getString(R.string.validation_enter_city)
+                sendMixPanelEvent("validationError")
                 return false
             }
             else -> textViewCityError.invisible()
         }
+        validationError = ""
         return true
     }
 
@@ -452,11 +507,14 @@ class AddAddressActivity : AppCompatActivity(),
         when {
             editTextState.text.toString().isEmpty() -> {
                 textViewStateError.show()
-                textViewStateError.text = "Please enter state."
+                textViewStateError.text = getString(R.string.validation_enter_state)
+                validationError = getString(R.string.validation_enter_state)
+                sendMixPanelEvent("validationError")
                 return false
             }
             else -> textViewStateError.invisible()
         }
+        validationError = ""
         return true
     }
 
@@ -465,11 +523,14 @@ class AddAddressActivity : AppCompatActivity(),
         when {
             editTextCountry.text.toString().isEmpty() -> {
                 textViewCountryError.show()
-                textViewCountryError.text = "Please enter country."
+                textViewCountryError.text = getString(R.string.validation_enter_country)
+                validationError = getString(R.string.validation_enter_country)
+                sendMixPanelEvent("validationError")
                 return false
             }
             else -> textViewCountryError.invisible()
         }
+        validationError = ""
         return true
     }
 
@@ -477,26 +538,29 @@ class AddAddressActivity : AppCompatActivity(),
     private fun pinCodeValidation(): Boolean {
 
 
-
         when {
             etPinCode.text.toString().isEmpty() -> {
                 textViewSpinnerError.show()
-                textViewSpinnerError.text = "Please enter a pin code."
+                textViewSpinnerError.text = getString(R.string.validation_enter_pincode)
+                validationError = getString(R.string.validation_enter_pincode)
+                sendMixPanelEvent("validationError")
                 return false
             }
             !etPinCode.text.toString().matches(pincodePattern.toRegex()) -> {
 
                 textViewSpinnerError.show()
-                textViewSpinnerError.text = "Please enter a vaild pin code."
-
-
+                textViewSpinnerError.text = getString(R.string.validation_correct_pincode)
+                validationError = getString(R.string.validation_correct_pincode)
+                sendMixPanelEvent("validationError")
                 return false
             }
 
             else -> textViewSpinnerError.invisible()
         }
+        validationError = ""
         return true
     }
+
     override fun onStop() {
         super.onStop()
         cancelTasks()
@@ -507,5 +571,9 @@ class AddAddressActivity : AppCompatActivity(),
         if (::addAddressApi.isInitialized && addAddressApi != null) addAddressApi.cancel()
     }
 
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
+    }
 
 }
