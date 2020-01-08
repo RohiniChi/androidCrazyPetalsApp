@@ -23,6 +23,7 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.RegisterWithImage
@@ -45,6 +46,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,10 +57,12 @@ import java.io.InputStream
 
 class ProfileActivity : BaseActivity() {
 
+    private var validationError: String = ""
+    private var updateProfileError: String = ""
     private lateinit var registerWithImageApi: Call<RegisterWithImage>
     private lateinit var updateProfileApi: Call<UpdateProfile>
-    private var bitmapImage: Bitmap?=null
-    private var imageStream: InputStream?=null
+    private var bitmapImage: Bitmap? = null
+    private var imageStream: InputStream? = null
     private var userProfile: String? = null
     private lateinit var imageBitmap: Bitmap
     private var imageData: Uri? = null
@@ -66,6 +70,7 @@ class ProfileActivity : BaseActivity() {
     private var profilePicture: String? = null
     private var myImagePath: String = ""
     private var isProfilePictureChanged = false
+    private lateinit var mixPanel: MixpanelAPI
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,6 +140,9 @@ class ProfileActivity : BaseActivity() {
         buttonUpdate.setOnClickListener(this)
 
         layoutBackArrowProfile.setOnClickListener(this)
+
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent("visitedScreen")
     }
 
     object LastClickTimeSingleton {
@@ -428,9 +436,9 @@ class ProfileActivity : BaseActivity() {
 
         val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
 
-        updateProfileApi  = clientInstance.updateProfileWithData(userInfo)
+        updateProfileApi = clientInstance.updateProfileWithData(userInfo)
 
-        updateProfileApi .enqueue(object : Callback<UpdateProfile> {
+        updateProfileApi.enqueue(object : Callback<UpdateProfile> {
             override fun onFailure(call: Call<UpdateProfile>, t: Throwable) {
                 hideProgress(this@ProfileActivity)
                 toast(getString(R.string.message_something_went_wrong))
@@ -450,17 +458,40 @@ class ProfileActivity : BaseActivity() {
                     } else {
                         buttonUpdate.isClickable = true
                         hideProgress(this@ProfileActivity)
-                        toast("Failed to update profile,please try again")
+                        if (isNetworkAccessible()) {
+                            toast(getString(R.string.message_update_profile_error))
+                            updateProfileError = getString(R.string.message_update_profile_error)
+                        } else {
+                            toast(getString(R.string.check_internet_connection))
+                            updateProfileError = getString(R.string.check_internet_connection)
+                        }
+                        sendMixPanelEvent("updateProfileFailure")
+
                     }
                 } else {
                     buttonUpdate.isClickable = true
                     hideProgress(this@ProfileActivity)
-                    toast("Failed to update profile,please try again")
+                    toast(getString(R.string.message_update_profile_error))
                 }
 
             }
 
         })
+    }
+
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+
+        if (mixPanelTitle.equals("visitedScreen", true)) {
+            mixPanel.track(IntentFlags.MIXPANEL_VISITED_UPDATE_PROFILE, productObject)
+        } else if (mixPanelTitle.equals("updateProfileFailure", true)) {
+            productObject.put(IntentFlags.MIXPANEL_UPDATE_PROFILE_ERROR,updateProfileError)
+            mixPanel.track(IntentFlags.MIXPANEL_UPDATE_PROFILE_ERROR, productObject)
+        } else if (mixPanelTitle.equals("validationError", true)) {
+            productObject.put(IntentFlags.MIXPANEL_UPDATE_PROFILE_VALIDATION_ERROR, validationError)
+            mixPanel.track(IntentFlags.MIXPANEL_UPDATE_PROFILE_VALIDATION_ERROR, productObject)
+        }
+
     }
 
     private fun textChangeListeners() {
@@ -506,19 +537,26 @@ class ProfileActivity : BaseActivity() {
             textInputEditTextName.isEmpty() -> {
                 textViewNameError.show()
                 textViewNameError.text = getString(R.string.validation_enter_name)
+                validationError = getString(R.string.validation_enter_name)
+                sendMixPanelEvent("validationError")
                 return false
             }
             textInputEditTextName.text.toString().startsWith(" ") -> {
                 textViewNameError.show()
                 textViewNameError.text = getString(R.string.validation_empty_space)
+                validationError = getString(R.string.validation_empty_space)
+                sendMixPanelEvent("validationError")
                 return false
             }
             textInputEditTextName.length() > MAX_NAME_LENGTH -> {
                 textViewNameError.show()
                 textViewNameError.text = getString(R.string.validation_name_length)
+                validationError = getString(R.string.validation_name_length)
+                sendMixPanelEvent("validationError")
                 return false
             }
         }
+        validationError = ""
         textViewNameError.invisible()
         return true
     }
@@ -529,15 +567,20 @@ class ProfileActivity : BaseActivity() {
             textInputEditTextEmailId.isEmpty() -> {
                 textViewEmailIdError.show()
                 textViewEmailIdError.text = getString(R.string.validation_enter_email)
+                validationError = getString(R.string.validation_enter_email)
+                sendMixPanelEvent("validationError")
                 return false
             }
             !textInputEditTextEmailId.isValidEmail() -> {
                 textViewEmailIdError.show()
                 textViewEmailIdError.text = getString(R.string.validation_email)
+                validationError = getString(R.string.validation_email)
+                sendMixPanelEvent("validationError")
                 return false
             }
 
         }
+        validationError = ""
         textViewEmailIdError.invisible()
         return true
     }
@@ -549,21 +592,21 @@ class ProfileActivity : BaseActivity() {
 
                 textViewMobileNoError.show()
                 textViewMobileNoError.text = getString(R.string.validation_enter_number)
-
+                validationError = getString(R.string.validation_enter_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
             !textInputEditTextPhoneNumber.isValidMobileNumber() -> {
 
                 textViewMobileNoError.show()
                 textViewMobileNoError.text = getString(R.string.validation_number)
-
-
+                validationError = getString(R.string.validation_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
-
         }
         textViewMobileNoError.invisible()
-
+        validationError = ""
         return true
     }
 
@@ -587,4 +630,11 @@ class ProfileActivity : BaseActivity() {
         if (::updateProfileApi.isInitialized && updateProfileApi != null) updateProfileApi.cancel()
         if (::registerWithImageApi.isInitialized && registerWithImageApi != null) registerWithImageApi.cancel()
     }
+
+
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
+    }
+
 }

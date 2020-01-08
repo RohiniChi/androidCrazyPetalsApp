@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.callbacks.OnButtonClickListener
@@ -38,6 +39,7 @@ import kotlinx.android.synthetic.main.layout_search_toolbar.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -112,7 +114,8 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
     //    private lateinit var mixPanel: MixpanelAPI
     var productList = ArrayList<Products.Data.ProductDetails>()
     private lateinit var productListAdapter: ProductListAdapter
-//    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
+    //    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
+    private lateinit var mixPanel: MixpanelAPI
 
     private var skipCount = 0
     private var takeCount = 10
@@ -135,7 +138,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         searchViewProducts.setQuery(bannerSearch, true)
                     searchViewProducts.clearFocus()
                     keywordGlobal = bannerSearch
-
+                    sendMixPanelEvent("bannerClick")
                 }
             } else
                 if (searchViewProducts.query.isNotEmpty() && searchViewProducts.query.length >= 3) {
@@ -184,7 +187,7 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
     private fun initializeViews() {
-//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
 //        onBottomReachedListener=this
         productListAdapter = ProductListAdapter(productList, this, this, this, this)
@@ -305,7 +308,8 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                         }
                         productListAdapter.notifyDataSetChanged()
 
-//                        sendMixPanelEvent()
+                        sendMixPanelEvent("searchedKeyword")
+
 
                     } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                         hideProgress()
@@ -330,14 +334,20 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
         })
     }
 
-/*
 
-    private fun sendMixPanelEvent() {
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
         val productObject = JSONObject()
-        productObject.put(IntentFlags.MIXPANEL_KEYWORD, keywordGlobal)
-        mixPanel.track(IntentFlags.MIXPANEL_SEARCHED_KEYWORD, productObject)
+        if (mixPanelTitle.equals("bannerClick", true)) {
+            if (intent.getStringExtra(getString(R.string.intent_banner_search)) != null) {
+                productObject.put(IntentFlags.MIXPANEL_KEYWORD, keywordGlobal)
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_BANNER, productObject)
+            }
+        } else if (mixPanelTitle.equals("searchedKeyword", true)) {
+            productObject.put(IntentFlags.MIXPANEL_KEYWORD, keywordGlobal)
+            mixPanel.track(IntentFlags.MIXPANEL_SEARCHED_KEYWORD, productObject)
+        }
+
     }
-*/
 
     object LastClickTimeSingleton {
         var lastClickTime: Long = 0
@@ -501,13 +511,11 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
             }
         }
     }
-/*
 
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
     }
-*/
 
     override fun onStop() {
         super.onStop()

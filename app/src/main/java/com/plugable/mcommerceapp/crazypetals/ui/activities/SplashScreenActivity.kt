@@ -11,6 +11,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.BuildConfig
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.ApplicationTheme
@@ -31,6 +32,7 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.textColor
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,6 +45,7 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
     private val hostUrlIndex = 2
 
     private lateinit var appVersionApi: Call<VersionInfo>
+    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +54,7 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
         buttonRetry.setOnClickListener(this)
         updatePreferenceOfHostname()
@@ -236,6 +240,8 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
                                 IntentFlags.VERSION_NUMBER,
                                 BuildConfig.VERSION_NAME
                             )
+                            sendMixPanelEvent()
+
                             if (response.body()!!.data.versionNumber > BuildConfig.VERSION_NAME) {
 //                            showPopUpForLatestUpdate()//remove thisline for force update
 //                            ("Uncomment following code while going live. for testing purpose it is keep force update commented")
@@ -438,6 +444,14 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
         setActivityTheme()
     }
 
+    private fun sendMixPanelEvent() {
+        val productObject = JSONObject()
+        val versionNumber =
+            SharedPreferences.getInstance(this).getStringValue(IntentFlags.VERSION_NUMBER)
+        productObject.put(IntentFlags.MIXPANEL_VERSION_NUMBER, versionNumber)
+        mixPanel.track(IntentFlags.MIXPANEL_LAUNCHED_APPLICATION, productObject)
+    }
+
     //This is permanent so no change
     /*   if (isNetworkAccessible()) {
            callApplicationThemeApi()
@@ -456,5 +470,11 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
     private fun cancelTasks() {
         if (::appVersionApi.isInitialized && appVersionApi != null) appVersionApi.cancel()
     }
+
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
+    }
+
 }
 

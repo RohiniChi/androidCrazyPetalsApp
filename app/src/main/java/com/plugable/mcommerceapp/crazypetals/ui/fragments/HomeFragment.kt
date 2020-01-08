@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
@@ -42,6 +43,7 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.support.v4.startActivity
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -116,7 +118,7 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
 
     private var bannerImages = ArrayList<Banners.Data.Banner>()
-    //    private lateinit var mixPanel: MixpanelAPI
+    private lateinit var mixPanel: MixpanelAPI
     //    private var position: Int = 0
     var category: Categories.Data.Category? = null
     private var banner: Banners.Data.Banner? = null
@@ -133,9 +135,10 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
         setHasOptionsMenu(true)
 
     }
-object LastClickTimeSingleton {
-    var lastClickTime: Long = 0
-}
+
+    object LastClickTimeSingleton {
+        var lastClickTime: Long = 0
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -443,7 +446,7 @@ object LastClickTimeSingleton {
 
         searchLayout.setOnClickListener(this)
 
-//        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
 
         categoryList = arrayListOf()
 
@@ -512,14 +515,12 @@ object LastClickTimeSingleton {
 
 
     }
-    /*
 
     private fun sendMixPanelEvent() {
-            val productObject = JSONObject()
-            productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, category?.id)
-            mixPanel.track(IntentFlags.MIXPANEL_VISITED_DASHBOARD, productObject)
+        val productObject = JSONObject()
+        productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, category?.id)
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_DASHBOARD, productObject)
     }
-*/
 
     override fun onPause() {
         super.onPause()
@@ -577,8 +578,8 @@ object LastClickTimeSingleton {
                                 categoryList.addAll(response.body()?.data?.categoryList!!)
                                 Log.e("priceDetailFields size", categoryList.size.toString())
                                 categoryListAdapter.notifyDataSetChanged()
-//                                sendMixPanelEvent()
-                                nestedScrollView.scrollTo(0,0)
+                                sendMixPanelEvent()
+                                nestedScrollView.scrollTo(0, 0)
 
                             } else {
                                 showNoDataAvailableScreen()
@@ -697,9 +698,8 @@ object LastClickTimeSingleton {
 
     }
 
-    /*  override fun onDestroy() {
-          mixPanel.flush()
-          super.onDestroy()
-      }
-  */
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
+    }
 }

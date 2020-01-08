@@ -411,5 +411,6 @@
     <string name="validation_enter_pincode">Please enter a pin code.</string>
     <string name="validation_correct_pincode">Please enter a vaild pin code.</string>
     <string name="message_agree_terms">Please agree to terms and conditions</string>
+    <string name="message_update_profile_error">Failed to update profile,please try again</string>
 
 </resources>

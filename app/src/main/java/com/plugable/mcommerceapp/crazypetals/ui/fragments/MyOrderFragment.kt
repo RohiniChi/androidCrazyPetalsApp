@@ -21,6 +21,7 @@ import android.text.TextWatcher
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
@@ -47,6 +48,7 @@ import kotlinx.android.synthetic.main.layout_no_order_list.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -64,6 +66,7 @@ class MyOrderFragment : BaseFragment(), EventListener {
     private lateinit var myOrderAdapter: MyOrderAdapter
     private var orderArrayList = ArrayList<MyOrder.DataItem?>()
     private var searchOrderArrayList = ArrayList<MyOrder.DataItem?>()
+    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +117,10 @@ class MyOrderFragment : BaseFragment(), EventListener {
         recyclerViewOrders.itemAnimator = DefaultItemAnimator()
         recyclerViewOrders.adapter = myOrderAdapter
 
+        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent()
+
+
         etSearch.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable) {}
@@ -153,6 +160,12 @@ class MyOrderFragment : BaseFragment(), EventListener {
         })
 
     }
+
+    private fun sendMixPanelEvent() {
+        val productObject = JSONObject()
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_MY_ORDER_SCREEN, productObject)
+    }
+
 
     override fun showNetworkCondition() {
         layoutNetworkCondition.show()
@@ -415,8 +428,8 @@ class MyOrderFragment : BaseFragment(), EventListener {
         if (call != null) {
             call!!.cancel()
         }
+        mixPanel.flush()
         super.onDestroyView()
-
     }
 
 }

@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.ImageViewCompat
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.PlaceOrderResponse
@@ -20,6 +21,7 @@ import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPrefe
 import kotlinx.android.synthetic.main.activity_success_order_status.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import org.jetbrains.anko.startActivity
+import org.json.JSONObject
 
 /**
  * [SuccessOrderStatusActivity] is used to show order status to user
@@ -29,6 +31,7 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     companion object {
         const val PLACE_ORDER_RESPONSE = "place.order.response"
     }
+    private lateinit var mixPanel: MixpanelAPI
 
     private var transactionStatus: String = ""
     private var orderNumber: String = ""
@@ -142,6 +145,8 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     private fun initializeViews() {
         imgToolbarHome.setOnClickListener(this)
         browseMoreButton.setOnClickListener(this)
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent()
     }
 
 
@@ -170,6 +175,11 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
+    private fun sendMixPanelEvent() {
+        val productObject = JSONObject()
+        productObject.put(IntentFlags.MIXPANEL_ORDER_NUMBER, placeOrderResponse!!.orderNumber)
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_SUCCESS_ORDER_STATUS_SCREEN, productObject)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -186,4 +196,10 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
         startActivity<DashboardActivity>()
         ActivityCompat.finishAffinity(this)
     }
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
+    }
+
+
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.callbacks.OnButtonClickListener
@@ -44,6 +45,7 @@ import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -63,9 +65,10 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
     override fun onBottomReached(position: Int) {
     }
 
+    private val products = HashSet<String>()
     private lateinit var productListAdapter: ProductListAdapter
     private var productList = ArrayList<Products.Data.ProductDetails>()
-//    private lateinit var mixPanel: MixpanelAPI
+    private lateinit var mixPanel: MixpanelAPI
 
 //    private lateinit var onBottomReachedListener: SetOnBottomReachedListener
 
@@ -128,18 +131,25 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
         recyclerViewProducts.itemAnimator = DefaultItemAnimator()
         recyclerViewProducts.adapter = productListAdapter
 
-        if (productList.isEmpty()) showNoDataAvailableScreen() else showRecyclerViewData()
-//        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
-//        sendMixPanelEvent()
-    }
-/*
+        if (productList.isEmpty()){
+            showNoDataAvailableScreen()
+        } else {
+            showRecyclerViewData()
+            productList.forEach {
+                products.add(it.name)
+            }
 
-    private fun sendMixPanelEvent() {
-        val productObject = JSONObject()
-        productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, getString(R.string.mixpanel_wishlist))
-        mixPanel.track(IntentFlags.MIXPANEL_VISITED_WISH_LIST, productObject)
+        }
+        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent("visitedScreen")
     }
-*/
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+        if (mixPanelTitle.equals("visitedScreen", true)) {
+            productObject.put(IntentFlags.MIXPANEL_WISHLIST_PRODUCTS_LIST, products)
+            mixPanel.track(IntentFlags.MIXPANEL_VISITED_WISH_LIST, productObject)
+        }
+    }
 
 
     override fun setToolBar(name: String) {
@@ -409,9 +419,9 @@ class WishListFragment : BaseFragment(), EventListener, OnFavoriteListener,
         }
     }
 
-    /*override fun onDestroy() {
+    override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
-    }*/
+    }
 
 }
