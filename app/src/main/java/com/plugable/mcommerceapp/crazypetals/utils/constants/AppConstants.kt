@@ -205,6 +205,7 @@ object IntentFlags {
     const val MIXPANEL_VISITED_SUCCESS_ORDER_STATUS_SCREEN = "Visited Success Order screen"
     const val MIXPANEL_WISHLIST_PRODUCTS_LIST = "WishList Products List"
     const val MIXPANEL_VISITED_MY_ORDER_SCREEN = "Visited My Order Screen"
+    const val MIXPANEL_VISITED_ORDER_DETAIL = "Visited Order Detail Screen"
     const val MIXPANEL_VISITED_APPOINTMENT_LIST = "Visited Appointment List Screen"
     const val MIXPANEL_VISITED_APPOINTMENT_DETAIL = "Visited Appointment Detail Screen"
     const val MIXPANEL_VISITED_BOOK_APPOINTMENT_SCREEN = "Visited Book Appointment Screen"

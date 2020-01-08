@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.payumoney.core.entity.TransactionResponse
 import com.payumoney.sdkui.ui.utils.PayUmoneyFlowManager
 import com.payumoney.sdkui.ui.utils.ResultModel
@@ -38,6 +39,7 @@ import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,6 +50,8 @@ class OrderDetailActivity : BaseActivity() {
     private lateinit var orderId: String
     lateinit var orderDetail: OrderDetailResponse.Data.OrderDetails
     var productArrayList = ArrayList<OrderDetailResponse.Data.ProductListItem?>()
+    private lateinit var mixPanel: MixpanelAPI
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_detail)
@@ -64,6 +68,9 @@ class OrderDetailActivity : BaseActivity() {
     private fun initializeViews() {
         btnTryAgain.setOnClickListener(this)
         imgToolbarHomeLayout.setOnClickListener(this)
+
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent()
     }
 
     private fun initializeTheme() {
@@ -129,6 +136,11 @@ class OrderDetailActivity : BaseActivity() {
         } else {
             showNetworkCondition()
         }
+    }
+
+    private fun sendMixPanelEvent() {
+        val productObject = JSONObject()
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_DETAIL, productObject)
     }
 
 
@@ -392,6 +404,10 @@ class OrderDetailActivity : BaseActivity() {
 
     private fun cancelTasks() {
         if (::orderDetailApi.isInitialized && orderDetailApi != null) orderDetailApi.cancel()
+    }
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
     }
 
 }
