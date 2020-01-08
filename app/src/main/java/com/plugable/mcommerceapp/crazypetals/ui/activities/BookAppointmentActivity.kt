@@ -10,6 +10,7 @@ import android.text.Editable
 import android.view.MotionEvent
 import android.view.View
 import android.widget.CalendarView
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.OnButtonCheckedListner
 import com.plugable.mcommerceapp.crazypetals.callbacks.OnListChekedListner
@@ -35,6 +36,7 @@ import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -44,6 +46,9 @@ import kotlin.collections.HashSet
 class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedListner,
     OnButtonCheckedListner {
 
+    private var bookAppointmentInternetError: String = ""
+    private var validationError: String = ""
+    private var bookAppointmentError: String = ""
     private lateinit var bookAppointmentResponse: BookAppointmentResponse
     private var hour = 0
     private val checkedName = HashSet<String>()
@@ -53,7 +58,8 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
     private var timeToTimeStamp: Long = 0
     private var dateToTimeStamp: Long = 0
     private val appointmentPresenter = AppointmentPresenter(this)
-    var checkedId = HashSet<Int>()
+    private var checkedId = HashSet<Int>()
+    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,17 +77,20 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
         btnTryAgain.setOnClickListener(this)
         btnNoData.setOnClickListener(this)
 
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent("visitedScreen")
+
         editTextDate.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 this.hideKeyboard(v)
                 val calendar = Calendar.getInstance()
                 val calendarView = CalendarView(this)
-                val year = calendar.get(Calendar.YEAR)
-                val month = calendar.get(Calendar.MONTH)
-                val date = calendar.get(Calendar.DAY_OF_MONTH)
+                val yr = calendar.get(Calendar.YEAR)
+                val mnth = calendar.get(Calendar.MONTH)
+                val dte = calendar.get(Calendar.DAY_OF_MONTH)
                 val datePickerDialog = DatePickerDialog(
                     this,
-                    DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                    DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                         calendar.set(Calendar.YEAR, year)
                         calendar.set(Calendar.MONTH, month)
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -92,9 +101,9 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
                         .newEditable("$dayOfMonth ${DateFormatSymbols.getInstance().months[month]} $year")*/
                         editTextDate.setText(sdf.format(calendar.time))
                     },
-                    year,
-                    month,
-                    date
+                    yr,
+                    mnth,
+                    dte
                 )
                 datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
 
@@ -265,6 +274,8 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
             buttonAddAppointment.isClickable = true
             hideProgress()
             toast(getString(R.string.oops_no_internet_connection))
+            bookAppointmentInternetError = getString(R.string.oops_no_internet_connection)
+            sendMixPanelEvent("bookAppointmentInternetError")
         }
     }
 
@@ -313,6 +324,31 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
             finish()
         } else {
             toast(getString(R.string.message_something_went_wrong))
+            bookAppointmentError = getString(R.string.message_something_went_wrong)
+            sendMixPanelEvent("bookAppointmentError")
+        }
+    }
+
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+
+        if (mixPanelTitle.equals("visitedScreen", true)) {
+            mixPanel.track(IntentFlags.MIXPANEL_VISITED_BOOK_APPOINTMENT_SCREEN, productObject)
+        } else if (mixPanelTitle.equals("bookAppointmentError", true)) {
+            productObject.put(IntentFlags.MIXPANEL_BOOK_APPOINTMENT_ERROR, bookAppointmentError)
+            mixPanel.track(IntentFlags.MIXPANEL_BOOK_APPOINTMENT_ERROR, productObject)
+        } else if (mixPanelTitle.equals("bookAppointmentInternetError", true)) {
+            productObject.put(
+                IntentFlags.MIXPANEL_BOOK_APPOINTMENT_ERROR,
+                bookAppointmentInternetError
+            )
+            mixPanel.track(IntentFlags.MIXPANEL_BOOK_APPOINTMENT_ERROR, productObject)
+        } else if (mixPanelTitle.equals("validationError", true)) {
+            productObject.put(
+                IntentFlags.MIXPANEL_BOOK_APPOINTMENT_VALIDATION_ERROR,
+                validationError
+            )
+            mixPanel.track(IntentFlags.MIXPANEL_BOOK_APPOINTMENT_VALIDATION_ERROR, productObject)
         }
     }
 
@@ -372,21 +408,22 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
 
                 textViewContactNoError.show()
                 textViewContactNoError.text = getString(R.string.validation_enter_number)
-
+                validationError = getString(R.string.validation_enter_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
             !editTextphoneNumber.isValidMobileNumber() -> {
 
                 textViewContactNoError.show()
                 textViewContactNoError.text = getString(R.string.validation_number)
-
-
+                validationError = getString(R.string.validation_number)
+                sendMixPanelEvent("validationError")
                 return false
             }
 
         }
         textViewContactNoError.invisible()
-
+        validationError = ""
         return true
     }
 
@@ -394,12 +431,14 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
         when {
             editTextDate.isEmpty() -> {
                 textViewDateError.show()
-                textViewDateError.text = "Please select date for appointment"
-
+                textViewDateError.text = getString(R.string.message_validation_date)
+                validationError = getString(R.string.message_validation_date)
+                sendMixPanelEvent("validationError")
                 return false
             }
         }
         textViewDateError.invisible()
+        validationError = ""
         return true
     }
 
@@ -407,12 +446,14 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
         when {
             editTextTime.isEmpty() -> {
                 textViewTimeError.show()
-                textViewTimeError.text = "Please select time for appointment"
-
+                textViewTimeError.text = getString(R.string.message_validation_time)
+                validationError = getString(R.string.message_validation_time)
+                sendMixPanelEvent("validationError")
                 return false
             }
         }
         textViewTimeError.invisible()
+        validationError = ""
         return true
     }
 
@@ -421,11 +462,13 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
             textViewAppointmentType.text.equals(getString(R.string.text_select_appt_type)) -> {
                 textViewSpinnerTypeError.show()
                 textViewSpinnerTypeError.text = getString(R.string.text_select_appt_type)
-
+                validationError = getString(R.string.text_select_appt_type)
+                sendMixPanelEvent("validationError")
                 return false
             }
         }
         textViewSpinnerTypeError.invisible()
+        validationError = ""
         return true
     }
 

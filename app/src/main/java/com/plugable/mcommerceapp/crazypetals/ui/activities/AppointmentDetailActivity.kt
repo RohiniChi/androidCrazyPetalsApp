@@ -5,6 +5,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.network.error.Error
@@ -23,12 +24,14 @@ import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 
 class AppointmentDetailActivity : BaseActivity(), AppointmentView {
 
     private val appointmentPresenter = AppointmentPresenter(this)
     private lateinit var appointmentDetailAdapter: AppointmentDetailAdapter
     private lateinit var appointTypeList: ArrayList<String>
+    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +60,9 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
             hideProgress()
             showNetworkCondition()
         }
+
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent()
     }
 
     private fun initializeTheme() {
@@ -144,6 +150,12 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
         }
     }
 
+    private fun sendMixPanelEvent() {
+        val productObject = JSONObject()
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_APPOINTMENT_DETAIL, productObject)
+    }
+
+
     override fun showNetworkCondition() {
         layoutNetworkCondition.show()
         layoutServerError.hide()
@@ -199,6 +211,7 @@ class AppointmentDetailActivity : BaseActivity(), AppointmentView {
 
     override fun onDestroy() {
         appointmentPresenter.onStop()
+        mixPanel.flush()
         super.onDestroy()
     }
 }

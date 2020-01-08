@@ -8,6 +8,7 @@ import android.os.SystemClock
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
@@ -32,6 +33,7 @@ import kotlinx.android.synthetic.main.layout_no_appointmentlist.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
 import kotlinx.android.synthetic.main.layout_server_error_condition.*
 import org.jetbrains.anko.support.v4.toast
+import org.json.JSONObject
 
 
 /**
@@ -49,6 +51,7 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
     private lateinit var appointmentListAdapter: AppointmentListAdapter
     private var appointmentArrayList = ArrayList<AppointmentData>()
     private val appointmentPresenter = AppointmentPresenter(this)
+    private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +94,8 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
         } else {
             showNetworkCondition()
         }
+        mixPanel = MixpanelAPI.getInstance(context, resources.getString(R.string.mix_panel_token))
+        sendMixPanelEvent()
     }
 
     private fun initializeTheme() {
@@ -204,6 +209,11 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun sendMixPanelEvent() {
+        val productObject = JSONObject()
+        mixPanel.track(IntentFlags.MIXPANEL_VISITED_APPOINTMENT_LIST, productObject)
+    }
+
     override fun showNetworkCondition() {
         layoutNetworkCondition.show()
         layoutServerError.hide()
@@ -296,6 +306,7 @@ class AppointmentListFragment : BaseFragment(), View.OnClickListener, Appointmen
 
     override fun onDestroy() {
         appointmentPresenter.onStop()
+        mixPanel.flush()
         super.onDestroy()
     }
 }
