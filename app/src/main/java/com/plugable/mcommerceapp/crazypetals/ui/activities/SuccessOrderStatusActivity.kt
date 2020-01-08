@@ -70,7 +70,7 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
 
         if (intent.hasExtra(IntentFlags.REDIRECT_FROM)) {
             when (intent.getStringExtra(IntentFlags.REDIRECT_FROM)) {
-                "OrderDetailFragment" -> {
+                "OrderDetailActivity" -> {
                     paymentStatus = intent.getStringExtra("TransactionStatus")
                     deliveryDay = intent.getStringExtra("DeliveryDay")
                     orderNumber = intent.getStringExtra("orderNumber")
@@ -177,9 +177,18 @@ class SuccessOrderStatusActivity : AppCompatActivity(), View.OnClickListener {
     }
     private fun sendMixPanelEvent() {
         val productObject = JSONObject()
-        productObject.put(IntentFlags.MIXPANEL_ORDER_NUMBER, placeOrderResponse!!.orderNumber)
-        mixPanel.track(IntentFlags.MIXPANEL_VISITED_SUCCESS_ORDER_STATUS_SCREEN, productObject)
-    }
+        if (intent.hasExtra(IntentFlags.REDIRECT_FROM)) {
+            when (intent.getStringExtra(IntentFlags.REDIRECT_FROM)) {
+                "OrderDetailActivity" -> {
+                    productObject.put(IntentFlags.MIXPANEL_ORDER_NUMBER, orderNumber)
+                    mixPanel.track(IntentFlags.MIXPANEL_VISITED_SUCCESS_ORDER_STATUS_SCREEN, productObject)
+                }
+            }
+        }else{
+            productObject.put(IntentFlags.MIXPANEL_ORDER_NUMBER, placeOrderResponse!!.orderNumber)
+            mixPanel.track(IntentFlags.MIXPANEL_VISITED_SUCCESS_ORDER_STATUS_SCREEN, productObject)
+        }
+      }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

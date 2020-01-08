@@ -128,8 +128,8 @@ object IntentFlags {
     const val VERIFY_EMAIL_ADDRESS = "VerifyEmailAddress"
     const val VERIFY_PHONE_NUMBER = "VerifyPhoneNumber"
 
-    const val HOME_FRAGMENT="HomeFragment"
-    const val PRODUCT_LIST="ProductList"
+    const val HOME_FRAGMENT = "HomeFragment"
+    const val PRODUCT_LIST = "ProductList"
     const val PRODUCT_DETAIL = "ProductDetail"
     const val WISHLIST = "Wishlist"
     const val ORDER_DETAIL = "OrderDetail"
@@ -153,7 +153,7 @@ object IntentFlags {
     const val MIXPANEL_EMAIL_ADDRESS = "Email Address"
     const val MIXPANEL_ORDERED_PRODUCTS = "Ordered Items"
     const val MIXPANEL_VISITED_DASHBOARD = "Visited Dashboard"
-     const val MIXPANEL_VISITED_CATEGORY_AND_SUBCATEGORY = "Visited Category&Subcategory"
+    const val MIXPANEL_VISITED_CATEGORY_AND_SUBCATEGORY = "Visited Category&Subcategory"
     const val MIXPANEL_VISITED_PRODUCT_LIST = "Visited Product list"
     const val MIXPANEL_VISITED_WISH_LIST = "Visited Wish list"
     const val MIXPANEL_VISITED_REQUEST_BOOKING_SCREEN_FROM_HAMBURGER_MENU =
@@ -192,6 +192,10 @@ object IntentFlags {
     const val MIXPANEL_VISITED_NOTIFICATIONS_SCREEN = "Visited Notifications Screen"
     const val MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN = "Visited Order Summary screen"
     const val MIXPANEL_TERMS_OF_USE_SELECTION_ERROR = "Terms Of Use Selection Fail"
+    const val MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY = "Order Summary Successful Payment"
+    const val MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_SUMMARY = "Order Summary Payment Failure"
+    const val MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_DETAIL = "Order Detail Successful Payment"
+    const val MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_DETAIL = "Order Detail Payment Failure"
     const val MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR = "Product Detail Add To Cart Fail"
     const val MIXPANEL_PRODUCT_LIST_ADD_TO_CART_ERROR = "Product List Add To Cart Fail"
     const val MIXPANEL_APPLIED_FILTER_LIST = "Applied Filter List"
@@ -237,6 +241,6 @@ object SharedPreferences {
     const val PROFILE = "user.profile"
     const val REMEMBER_ME = "remember_me"
 
-    var cartItemList=HashSet<String>()
+    var cartItemList = HashSet<String>()
 }
 

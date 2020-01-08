@@ -81,9 +81,6 @@
             android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.RequestProductBookingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.PrivacyPolicyActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.plugable.mcommerceapp.crazypetals.ui.activities.SuccessProductBookingActivity"
             android:screenOrientation="portrait" />
         <activity

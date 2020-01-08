@@ -33,7 +33,6 @@ import com.plugable.mcommerceapp.crazypetals.utils.extension.show
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.crazypetals.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.activity_order_detail.*
-import kotlinx.android.synthetic.main.activity_order_summary.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
 import kotlinx.android.synthetic.main.layout_network_condition.*
 import kotlinx.android.synthetic.main.layout_no_data_condition.*
@@ -46,6 +45,7 @@ import retrofit2.Response
 
 class OrderDetailActivity : BaseActivity() {
 
+    private  var paymentStatus: String=""
     private lateinit var orderDetailApi: Call<OrderDetailResponse>
     private lateinit var orderId: String
     lateinit var orderDetail: OrderDetailResponse.Data.OrderDetails
@@ -57,7 +57,7 @@ class OrderDetailActivity : BaseActivity() {
         setContentView(R.layout.activity_order_detail)
 
 
-        orderId = intent.getStringExtra("order_id")
+        orderId = intent.getStringExtra("order_id")!!
 
         initializeViews()
         initializeTheme()
@@ -70,7 +70,7 @@ class OrderDetailActivity : BaseActivity() {
         imgToolbarHomeLayout.setOnClickListener(this)
 
         mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
-        sendMixPanelEvent()
+        sendMixPanelEvent("visitedScreen")
     }
 
     private fun initializeTheme() {
@@ -138,9 +138,22 @@ class OrderDetailActivity : BaseActivity() {
         }
     }
 
-    private fun sendMixPanelEvent() {
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
         val productObject = JSONObject()
-        mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_DETAIL, productObject)
+        when {
+            mixPanelTitle.equals("visitedScreen", true) -> {
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_DETAIL, productObject)
+            }
+            mixPanelTitle.equals("successFulPayment", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_DETAIL, paymentStatus)
+                mixPanel.track(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_DETAIL, productObject)
+            }
+            mixPanelTitle.equals("unSuccessFulPayment", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_DETAIL, paymentStatus)
+                mixPanel.track(IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_DETAIL, productObject)
+            }
+        }
+
     }
 
 
@@ -247,10 +260,10 @@ class OrderDetailActivity : BaseActivity() {
         override fun getPageTitle(position: Int): CharSequence? {
 
             var title: String? = null
-            if (position == 0) {
-                title = getString(R.string.tab_order_detail)
+            title = if (position == 0) {
+                getString(R.string.tab_order_detail)
             } else {
-                title = getString(R.string.tab_product)
+                getString(R.string.tab_product)
             }
             return title
         }
@@ -268,7 +281,7 @@ class OrderDetailActivity : BaseActivity() {
 
     private fun updateTransactionStatus(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (requestCode == PayUmoneyFlowManager.REQUEST_CODE_PAYMENT && resultCode == AppCompatActivity.RESULT_OK && data != null) {
+        if (requestCode == PayUmoneyFlowManager.REQUEST_CODE_PAYMENT && resultCode == RESULT_OK && data != null) {
             val transactionResponse = data.getParcelableExtra<TransactionResponse>(
                 PayUmoneyFlowManager
                     .INTENT_EXTRA_TRANSACTION_RESPONSE
@@ -278,7 +291,7 @@ class OrderDetailActivity : BaseActivity() {
                 data.getParcelableExtra<ResultModel>(PayUmoneyFlowManager.ARG_RESULT)
 
             // Check which object is non-null
-            if (transactionResponse.getPayuResponse() != null) {
+            if (transactionResponse!!.getPayuResponse() != null) {
                 transactionResponse.transactionDetails
                 if (transactionResponse.transactionStatus == TransactionResponse.TransactionStatus.SUCCESSFUL) {
                     //Success Transaction
@@ -286,10 +299,14 @@ class OrderDetailActivity : BaseActivity() {
                     toast("Transaction successful")
                     showProgress()
                     updatePaymentStatus(orderId.toInt(), "2", "Successful")
+                    paymentStatus="Payment SuccessFul"
+                    sendMixPanelEvent("successFulPayment")
                 } else {
                     toast("Transaction unsuccessful")
                     showProgress()
                     updatePaymentStatus(orderId.toInt(), "5", "Unsuccessful")
+                    paymentStatus="Payment UnSuccessFul"
+                    sendMixPanelEvent("unSuccessFulPayment")
 
                     //Failure Transaction
                 }
@@ -303,6 +320,8 @@ class OrderDetailActivity : BaseActivity() {
             toast("Transaction unsuccessful")
             showProgress()
             updatePaymentStatus(orderId.toInt(), "5", "Unsuccessful")
+            paymentStatus="Payment UnSuccessFul"
+            sendMixPanelEvent("unSuccessFulPayment")
         }
 
     }
@@ -346,15 +365,9 @@ class OrderDetailActivity : BaseActivity() {
                     response: Response<UpdatePaymentResponse>
                 ) {
                     if (response.body()!!.statusCode.equals("10")) {
-                        /*startActivity<DashboardActivity>(
-                            IntentFlags.FRAGMENT_TO_BE_LOADED to activity!!.intent.getIntExtra(
-                                IntentFlags.FRAGMENT_TO_BE_LOADED,
-                                R.id.nav_home
-                            )
-                        )
-                        activity!!.finish()*/
+
                         startActivity<SuccessOrderStatusActivity>(
-                            IntentFlags.REDIRECT_FROM to "OrderDetailFragment",
+                            IntentFlags.REDIRECT_FROM to "OrderDetailActivity",
                             "DeliveryDay" to orderDetail.deliveryDay,
                             "orderNumber" to orderDetail.orderNumber,
                             "TransactionStatus" to transactionStatus

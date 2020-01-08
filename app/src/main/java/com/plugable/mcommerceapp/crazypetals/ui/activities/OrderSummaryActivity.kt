@@ -48,6 +48,7 @@ import retrofit2.Response
 class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventListener {
 
 
+    private var paymentStatus: String = ""
     private var termsOfUseError: String = ""
     private lateinit var updatePaymentStatusApi: Call<UpdatePaymentResponse>
     private lateinit var fetchAddressListApi: Call<AddressListResponse>
@@ -666,10 +667,14 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 //                    toast("Transaction successful")
                     showProgress()
                     updatePaymentStatus(orderId, "2", "Successful")
+                    paymentStatus = "Payment SuccessFul"
+                    sendMixPanelEvent("successFulPayment")
                 } else {
 //                    toast("Transaction unsuccessful")
                     showProgress()
                     updatePaymentStatus(orderId, "5", "Unsuccessful")
+                    paymentStatus = "Payment UnSuccessFul"
+                    sendMixPanelEvent("unSuccessFulPayment")
 
                     //Failure Transaction
                 }
@@ -683,6 +688,9 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 //            toast("Transaction unsuccessful")
             showProgress()
             updatePaymentStatus(orderId, "5", "Unsuccessful")
+            paymentStatus = "Payment UnSuccessFul"
+            sendMixPanelEvent("unSuccessFulPayment")
+
         }
 
     }
@@ -758,14 +766,29 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
     private fun sendMixPanelEvent(mixPanelTitle: String) {
         val productObject = JSONObject()
-        if (mixPanelTitle.equals("visitedScreen", true)) {
-            mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN, productObject)
-        } else if (mixPanelTitle.equals("checkBoxUnchecked", true)) {
-            productObject.put(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, termsOfUseError)
-            mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
-        } else if (mixPanelTitle.equals("buttonClickError", true)) {
-            productObject.put(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, termsOfUseError)
-            mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
+        when {
+            mixPanelTitle.equals("visitedScreen", true) -> {
+                mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN, productObject)
+            }
+            mixPanelTitle.equals("checkBoxUnchecked", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, termsOfUseError)
+                mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
+            }
+            mixPanelTitle.equals("buttonClickError", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, termsOfUseError)
+                mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
+            }
+            mixPanelTitle.equals("successFulPayment", true) -> {
+                productObject.put(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY, paymentStatus)
+                mixPanel.track(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY, productObject)
+            }
+            mixPanelTitle.equals("unSuccessFulPayment", true) -> {
+                productObject.put(
+                    IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_SUMMARY,
+                    paymentStatus
+                )
+                mixPanel.track(IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_SUMMARY, productObject)
+            }
         }
 
     }
