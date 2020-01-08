@@ -506,6 +506,7 @@ class BookAppointmentActivity : BaseActivity(), AppointmentView, OnListChekedLis
 
     override fun onDestroy() {
         appointmentPresenter.onStop()
+        mixPanel.flush()
         super.onDestroy()
     }
 
