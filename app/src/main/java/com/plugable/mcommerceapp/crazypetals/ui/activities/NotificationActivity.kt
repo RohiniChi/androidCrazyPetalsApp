@@ -11,14 +11,17 @@
 package com.plugable.mcommerceapp.crazypetals.ui.activities
 
 import ServiceGenerator
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
+import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.Notifications
 import com.plugable.mcommerceapp.crazypetals.mcommerce.webservices.ProjectApi
@@ -46,8 +49,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class NotificationActivity : BaseActivity() {
+class NotificationActivity : BaseActivity(), EventListener {
 
+    private lateinit var eventClickListener: EventListener
     private lateinit var notificationListApi: Call<Notifications>
     private lateinit var notificationListAdapter: NotificationListAdapter
     private var notificationList = ArrayList<Notifications.Data.NotificationListItem?>()
@@ -103,7 +107,9 @@ class NotificationActivity : BaseActivity() {
         mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
         sendMixPanelEvent()
 
-        notificationListAdapter = NotificationListAdapter(this, notificationList)
+        eventClickListener = this
+        notificationListAdapter =
+            NotificationListAdapter(this, notificationList, eventClickListener)
         recyclerViewNotifications.itemAnimator = DefaultItemAnimator()
         recyclerViewNotifications.adapter = notificationListAdapter
 
@@ -266,6 +272,26 @@ class NotificationActivity : BaseActivity() {
 
     }
 
+    object LastClickTimeSingleton {
+        var lastClickTime: Long = 0
+    }
+
+    override fun onItemClickListener(position: Int) {
+        if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
+        else {
+//            if (!(notificationList[position]?.categoryId.isNullOrEmpty()) || !(notificationList[position]?.category.isNullOrEmpty())) {
+            val notificationItems=notificationList[position]
+            val intent = Intent(this, ProductsListActivity::class.java)
+            intent.putExtra(IntentFlags.REDIRECT_FROM,IntentFlags.NOTIFICATION)
+            intent.putExtra("Category_id", notificationItems?.categoryId)
+            intent.putExtra("Category_name", notificationItems?.category)
+            startActivity(intent)
+//            }
+        }
+        LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+
+    }
+
     override fun onStop() {
         super.onStop()
         cancelTasks()
@@ -279,5 +305,6 @@ class NotificationActivity : BaseActivity() {
         mixPanel.flush()
         super.onDestroy()
     }
+
 
 }

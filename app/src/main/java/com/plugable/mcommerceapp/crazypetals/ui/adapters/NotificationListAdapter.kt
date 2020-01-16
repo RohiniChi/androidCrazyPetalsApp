@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.plugable.mcommerceapp.crazypetals.R
+import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.Notifications
 import kotlinx.android.synthetic.main.row_notification.view.*
 import java.text.SimpleDateFormat
@@ -35,7 +36,8 @@ import java.util.*
  */
 class NotificationListAdapter(
     private var context: Context,
-    private var notificationList: ArrayList<Notifications.Data.NotificationListItem?>
+    private var notificationList: ArrayList<Notifications.Data.NotificationListItem?>,
+    var itemClickListener: EventListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -53,17 +55,20 @@ class NotificationListAdapter(
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
             val notificationDate = simpleDateFormat.format(date)
 
-            val now=Calendar.getInstance()
-            if (now.get(Calendar.DATE)==calendar.get(Calendar.DATE)){
-                viewHolder.itemView.notificationDate.text="Today"
+            val now = Calendar.getInstance()
+            when {
+                now.get(Calendar.DATE) == calendar.get(Calendar.DATE) -> {
+                    viewHolder.itemView.notificationDate.text = "Today"
+                }
+                now.get(Calendar.DATE) - calendar.get(Calendar.DATE) == 1 -> {
+                    viewHolder.itemView.notificationDate.text = "Yesterday"
+                }
+                else -> {
+                    viewHolder.itemView.notificationDate.text = notificationDate
+                }
             }
-            else if (now.get(Calendar.DATE)-calendar.get(Calendar.DATE)==1){
-                viewHolder.itemView.notificationDate.text="Yesterday"
-            }
-            else{
-                viewHolder.itemView.notificationDate.text = notificationDate
-            }
-            viewHolder.itemView.txtTitle.text = notificationList[position]!!.title
+//            viewHolder.itemView.txtTitle.text = notificationList[position]!!.title
+            viewHolder.itemView.txtTitle.text = notificationList[position]!!.modifiedTitle
             if (notificationList[position]!!.notificationType.equals("Text")) {
                 viewHolder.itemView.txtMessage.visibility = View.VISIBLE
                 viewHolder.itemView.ivBanner.visibility = View.GONE
@@ -92,6 +97,12 @@ class NotificationListAdapter(
         View.OnClickListener {
         override fun onClick(view: View?) {
             val position = adapterPosition
+            if ((notificationList[position]?.categoryId.equals("0")) || (notificationList[position]?.category == null)) {
+                return
+            } else {
+                itemClickListener.onItemClickListener(position)
+                return
+            }
         }
 
         init {
@@ -104,6 +115,12 @@ class NotificationListAdapter(
         View.OnClickListener {
         override fun onClick(view: View?) {
             val position = adapterPosition
+            if ((notificationList[position]?.categoryId.equals("0")) || (notificationList[position]?.category == null)) {
+                return
+            } else {
+                itemClickListener.onItemClickListener(position)
+                return
+            }
         }
 
         init {

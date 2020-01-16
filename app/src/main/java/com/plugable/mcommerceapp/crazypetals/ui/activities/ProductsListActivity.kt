@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.callbacks.OnButtonClickListener
@@ -48,6 +49,7 @@ import kotlinx.android.synthetic.main.recycler_filter_item.*
 import org.jetbrains.anko.allCaps
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,6 +63,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     OnItemCheckListener, OnButtonClickListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
 
+    private var appliedFilterList: List<String> = listOf()
     private lateinit var applyFilterApi: Call<Products>
     private lateinit var getFilterApi: Call<GetFilters>
     private lateinit var productListApi: Call<Products>
@@ -78,8 +81,9 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
     private var takeCount = 10
     private var categoryId = 0
     var categoryList = ArrayList<Categories.Data.Category>()
-    //    private lateinit var mixPanel: MixpanelAPI
+    private lateinit var mixPanel: MixpanelAPI
     var checkedId = HashSet<Int>()
+    private var categoryName="category_name"
 
 
     var isLoading = false
@@ -105,10 +109,10 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
         // Reuse drawable if possible
         val reuseIcon = cartIcon.findDrawableByLayerId(R.id.ic_group_count_cart)
-        if (reuseIcon != null && reuseIcon is CountDrawable) {
-            cartBadge = reuseIcon
+        cartBadge = if (reuseIcon != null && reuseIcon is CountDrawable) {
+            reuseIcon
         } else {
-            cartBadge = CountDrawable(this)
+            CountDrawable(this)
         }
 
         var cartCountText = SharedPreferences.getInstance(this).getCartCountString()!!
@@ -233,10 +237,21 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         button_apply_filter.setOnClickListener(this)
         button_cancel.setOnClickListener(this)
 
-//        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+        mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
 
 
-        categoryId = intent.getIntExtra(IntentFlags.CATEGORY_ID, 0)
+//        categoryId = intent.getIntExtra(IntentFlags.CATEGORY_ID, 0)
+
+        if (intent.hasExtra(IntentFlags.REDIRECT_FROM)){
+            when(intent.getStringExtra(IntentFlags.REDIRECT_FROM)){
+                IntentFlags.HOME_FRAGMENT->{
+                    categoryId = intent.getIntExtra(IntentFlags.CATEGORY_ID, 0)
+                }
+                IntentFlags.NOTIFICATION->{
+                    categoryId=intent.getStringExtra("Category_id")!!.toInt()
+                }
+            }
+        }
 
         SharedPreferences.getInstance(this)
             .setStringValue(IntentFlags.CATEGORY_ID, categoryId.toString())
@@ -297,6 +312,7 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         recycler_filter.layoutManager = linearLayoutManager
         recycler_filter.adapter = filterListAdapter
 
+        sendMixPanelEvent("visitedScreen")
 
     }
 
@@ -487,14 +503,30 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     }
 
-    /* private fun sendMixPanelEvent() {
-         val productObject = JSONObject()
-         productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
-         mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
-     }
- */
+    private fun sendMixPanelEvent(mixPanelTitle: String) {
+        val productObject = JSONObject()
+        if (mixPanelTitle.equals("visitedScreen", true)) {
+            productObject.put(IntentFlags.MIXPANEL_PRODUCT_ID, products?.id)
+            mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCT_LIST, productObject)
+        } else if (mixPanelTitle.equals("applyFilterList", true)) {
+            productObject.put(IntentFlags.MIXPANEL_APPLIED_FILTER_LIST, appliedFilterList)
+            mixPanel.track(IntentFlags.MIXPANEL_APPLIED_FILTER_LIST, productObject)
+
+        }
+    }
+
     override fun setToolBar(name: String) {
-        val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
+        if (intent.hasExtra(IntentFlags.REDIRECT_FROM)){
+            when(intent.getStringExtra(IntentFlags.REDIRECT_FROM)){
+                IntentFlags.HOME_FRAGMENT->{
+                    categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)!!
+                }
+                IntentFlags.NOTIFICATION->{
+                    categoryName=intent.getStringExtra("Category_name")!!
+                }
+            }
+        }
+//        val categoryName = intent.getStringExtra(IntentFlags.CATEGORY_NAME)
 
         setSupportActionBar(toolBar)
         setStatusBarColor()
@@ -726,7 +758,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
                             if (productList.isNotEmpty()) {
                                 recycler_filter.scrollToPosition(0)
                             }
-//                            sendMixPanelEvent()
+                            appliedFilterList = response.body()!!.data.filtersList
+                            sendMixPanelEvent("applyFilterList")
 
                         } else if (skipCount == 0 && response.body()?.data?.productList?.isEmpty()!!) {
                             showNoDataAvailableScreen()
@@ -947,13 +980,12 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }
     }
 
-    /*
 
-        override fun onDestroy() {
-            mixPanel.flush()
-            super.onDestroy()
-        }
-    */
+    override fun onDestroy() {
+        mixPanel.flush()
+        super.onDestroy()
+    }
+
     override fun onStop() {
         super.onStop()
         cancelTasks()

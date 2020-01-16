@@ -7,6 +7,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -175,13 +176,19 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
 
     private fun attemptCartApiCall() {
         if (SharedPreferences.getInstance(activity!!).isUserLoggedIn) {
-
-            val applicationUserId =
+            var applicationUserId = 0
+            val appUserId =
                 SharedPreferences.getInstance(activity!!)
                     .getStringValue(IntentFlags.APPLICATION_USER_ID)
+            if (TextUtils.isEmpty(appUserId) || appUserId?.toInt()==0){
+                 applicationUserId = 0
+            }
+            else{
+                applicationUserId=appUserId!!.toInt()
+            }
             App.HostUrl = SharedPreferences.getInstance(context!!).hostUrl!!
             val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-            cartListApi = clientInstance.getCartApi(applicationUserId!!.toInt())
+            cartListApi = clientInstance.getCartApi(applicationUserId)
 
             cartListApi.enqueue(object : Callback<GetCartResponse> {
                 override fun onFailure(call: Call<GetCartResponse>, t: Throwable) {
@@ -529,10 +536,21 @@ class HomeFragment : BaseFragment(), EventListener, View.OnClickListener,
     }
 
     override fun onItemClickListener(position: Int) {
+ /*       if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
+        else {
+            val categoryItems = categoryList[position]
+            val intent = Intent(activity, ProductsListActivity::class.java)
+            intent.putExtra(IntentFlags.CATEGORY_ID, categoryList[position].id)
+            intent.putExtra(IntentFlags.CATEGORY_NAME, categoryItems.name)
+            startActivity(intent)
+        }
+        LastClickTimeSingleton.lastClickTime = SystemClock.elapsedRealtime()
+*/
         if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
         else {
             val categoryItems = categoryList[position]
             val intent = Intent(activity, ProductsListActivity::class.java)
+            intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.HOME_FRAGMENT)
             intent.putExtra(IntentFlags.CATEGORY_ID, categoryList[position].id)
             intent.putExtra(IntentFlags.CATEGORY_NAME, categoryItems.name)
             startActivity(intent)
