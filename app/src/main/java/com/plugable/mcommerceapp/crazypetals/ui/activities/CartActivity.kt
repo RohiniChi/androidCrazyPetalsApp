@@ -377,7 +377,8 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
             R.id.textViewCheckoutButtonSubtotal -> showHideBootomSheet()
             R.id.textViewViewPriceDetails -> showHideBootomSheet()
             R.id.materialButtonCheckout -> {
-                materialButtonCheckout.isClickable = false
+                if (isNetworkAccessible()){
+                    materialButtonCheckout.isClickable = false
 
                 var isOutOfStock = false
                 for (product in productList) {
@@ -398,7 +399,10 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                     materialButtonCheckout.isClickable = false
                     startActivity<DeliveryAddressActivity>()
                 }
-
+            }else{
+                    materialButtonCheckout.isClickable = true
+                    toast(getString(R.string.oops_no_internet_connection))
+                }
             }
 
             R.id.buttonBrowseMore -> {
@@ -463,7 +467,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
                 if (response.isSuccessful) {
                     if (response.body()?.statusCode.equals("10")) {
                         callTotalPriceApi()
-                        toast(response.body()!!.message)
+//                        toast(response.body()!!.message)
                     } else if (response.body()?.statusCode.equals("30")) {
                         toast(response.body()!!.message)
                     }
