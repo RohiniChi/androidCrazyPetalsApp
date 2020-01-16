@@ -428,10 +428,10 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         if (isNetworkAccessible()) {
             val category =
                 SharedPreferences.getInstance(this).getStringValue(IntentFlags.CATEGORY_ID)
-            categoryId = if (TextUtils.isEmpty(category) || category!!.toInt() == 0) {
-                0
+            if (TextUtils.isEmpty(category) || category!!.toInt() == 0) {
+                categoryId = 0
             } else {
-                category.toInt()
+                categoryId = category.toInt()
             }
             callRecommendedListApi(skipCount, takeCount, categoryId, product.id)
         } else {
