@@ -208,6 +208,42 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhoneNumber" />
 
 
+          <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutCurrentCity"
+                style="@style/customTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                app:boxStrokeColor="@color/colorLightGray"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhoneNumber"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhoneNumber"
+                app:layout_constraintTop_toBottomOf="@+id/textViewMobileNoError">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputEditTextCurrentCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:hint="City"
+                    android:textCursorDrawable="@null" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textViewCurrentCityError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/edittextErrorColor"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCurrentCity"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutCurrentCity"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCurrentCity" />
+
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonUpdate"
                 android:layout_width="223dp"
@@ -218,9 +254,9 @@
                 android:textAllCaps="false"
                 android:textColor="@android:color/background_light"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPhoneNumber"
-                app:layout_constraintStart_toStartOf="@+id/textInputLayoutPhoneNumber"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhoneNumber" />
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCurrentCity"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayoutCurrentCity"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCurrentCity" />
 
 
             <androidx.core.widget.ContentLoadingProgressBar

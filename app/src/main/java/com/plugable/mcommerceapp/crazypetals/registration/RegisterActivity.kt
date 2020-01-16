@@ -344,11 +344,13 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 textInputEditTextEmailId.text?.clear()
                 textInputEditTextPhoneNumber.text?.clear()
                 textInputEditTextPassword.text?.clear()
+                textInputEditTextCity.text?.clear()
 
                 textViewNameError.invisible()
                 textViewEmailIdError.invisible()
                 textViewMobileNoError.invisible()
                 textViewPasswordError.invisible()
+                textViewCityError.invisible()
 
                 startActivity<DashboardActivity>()
                 ActivityCompat.finishAffinity(this)
@@ -360,11 +362,13 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 textInputEditTextEmailId.text?.clear()
                 textInputEditTextPhoneNumber.text?.clear()
                 textInputEditTextPassword.text?.clear()
+                textInputEditTextCity.text?.clear()
 
                 textViewNameError.invisible()
                 textViewEmailIdError.invisible()
                 textViewMobileNoError.invisible()
                 textViewPasswordError.invisible()
+                textViewCityError.invisible()
 
                 startActivity<LoginActivity>()
                 ActivityCompat.finishAffinity(this)
@@ -376,8 +380,9 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 contactValidation()
                 emailValidation()
                 nameValidation()
+                cityValidation()
 
-                if (nameValidation() && emailValidation() && contactValidation() && passwordValidation()) {
+                if (nameValidation() && emailValidation() && contactValidation() && passwordValidation() && cityValidation()) {
                     showProgress(this)
                     when {
                         extras != null -> {
@@ -426,6 +431,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             textInputEditTextPassword.text.toString(),
             textInputEditTextPhoneNumber.text.toString(),
             textInputEditTextName.text.toString(),
+            textInputEditTextCity.text.toString(),
             myImagePath
         )
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
@@ -437,7 +443,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         registerWithDataApi.enqueue(object : Callback<RegisterWithData> {
             override fun onFailure(call: Call<RegisterWithData>, t: Throwable) {
                 hideProgress(this@RegisterActivity)
-                toast("Failed to create profile,please try again")
+                toast(getString(R.string.message_create_profile_error))
             }
 
             override fun onResponse(
@@ -471,7 +477,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     buttonRegister.isClickable = true
                     hideProgress(this@RegisterActivity)
-                    toast(" Failed to create profile,please try again")
+                    toast(getString(R.string.message_create_profile_error))
                 }
 
             }
@@ -515,6 +521,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                         textInputEditTextPhoneNumber.text?.clear()
                         textInputEditTextEmailId.text?.clear()
                         textInputEditTextPassword.text?.clear()
+                        textInputEditTextCity.text?.clear()
 
                         Glide.with(this@RegisterActivity).load(R.drawable.cp_profile)
                             .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.cp_profile))
@@ -526,6 +533,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                         textViewEmailIdError.invisible()
                         textViewMobileNoError.invisible()
                         textViewPasswordError.invisible()
+                        textViewCityError.invisible()
                     } else {
                         buttonRegister.isClickable = true
                         hideProgress(this@RegisterActivity)
@@ -555,7 +563,10 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                 mixPanel.track(IntentFlags.MIXPANEL_REGISTRATION_SEND_OTP_ERROR, productObject)
             }
             mixPanelTitle.equals("validationError", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_REGISTRATION_VALIDATION_ERROR, validationError)
+                productObject.put(
+                    IntentFlags.MIXPANEL_REGISTRATION_VALIDATION_ERROR,
+                    validationError
+                )
                 mixPanel.track(IntentFlags.MIXPANEL_REGISTRATION_VALIDATION_ERROR, productObject)
             }
         }
@@ -592,6 +603,13 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
 
+        textInputEditTextCity.setOnFocusChangeListener { view, isFocused ->
+            if (!isFocused) {
+                this.hideKeyboard(view)
+                cityValidation()
+            }
+        }
+
         textInputEditTextName.onTextChanged {
             textViewNameError.invisible()
         }
@@ -602,6 +620,9 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
         textInputEditTextPhoneNumber.onTextChanged {
             textViewMobileNoError.invisible()
+        }
+        textInputEditTextCity.onTextChanged {
+            textViewCityError.invisible()
         }
 
     }
@@ -712,6 +733,29 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
         }
         textViewPasswordError.invisible()
+        validationError = ""
+        return true
+    }
+
+    private fun cityValidation(): Boolean {
+        when {
+            textInputEditTextCity.isEmpty() -> {
+                textViewCityError.show()
+                textViewCityError.text = getString(R.string.validation_enter_city)
+                validationError = getString(R.string.validation_enter_city)
+                sendMixPanelEvent("validationError")
+                return false
+            }
+            textInputEditTextCity.text.toString().equals("null") -> {
+                textViewCityError.show()
+                textViewCityError.text = getString(R.string.validation_enter_city)
+                validationError = getString(R.string.validation_enter_city)
+                sendMixPanelEvent("validationError")
+                return false
+            }
+
+        }
+        textViewCityError.invisible()
         validationError = ""
         return true
     }

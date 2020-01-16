@@ -10,6 +10,7 @@ data class GetMyProfile(
         val emailId: String,
         val mobileNumber: String,
         val name: String,
-        val profilePicture: String?
+        val profilePicture: String?,
+        val city:String
     )
 }

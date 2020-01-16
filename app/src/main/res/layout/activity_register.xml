@@ -50,36 +50,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewSkip"
                     tools:ignore="ContentDescription"/>
 
-          <!--      <ImageView
-                        android:id="@+id/imageViewCamera"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_50sdp"
-                        android:layout_marginTop="24dp"
-                        android:src="@drawable/ic_camera"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/imageViewLogo"
-                        tools:ignore="ContentDescription" />
-
-                <TextView
-                        android:id="@+id/textViewAddPhoto"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="128dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="128dp"
-                        android:layout_marginBottom="56dp"
-                        android:gravity="center"
-                        android:text="@string/text_add_profile_photo"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@id/imageViewLogo"
-                        app:layout_constraintEnd_toEndOf="@+id/imageViewCamera"
-                        app:layout_constraintStart_toStartOf="@+id/imageViewCamera"
-                        app:layout_constraintTop_toBottomOf="@id/imageViewCamera" />
-
--->
-
             <TextView
                     android:id="@+id/textViewCreateAccount"
                     android:layout_width="0dp"
@@ -233,6 +203,40 @@
                     app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
 
+           <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutCity"
+                    style="@style/customTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    app:boxStrokeColor="@color/colorLightGray"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewPasswordError">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textInputEditTextCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="City"
+                    android:inputType="textPersonName"
+                        android:singleLine="true"
+                        android:textCursorDrawable="@null" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                    android:id="@+id/textViewCityError"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/edittextErrorColor"
+                    android:textSize="12sp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="@+id/textInputLayoutCity"
+                    app:layout_constraintStart_toStartOf="@+id/textInputLayoutCity"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayoutCity" />
+
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonRegister"
                     android:layout_width="223dp"
@@ -245,7 +249,7 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
                     app:layout_constraintStart_toStartOf="@+id/textInputLayoutPassword"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewPasswordError" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewCityError" />
 
             <TextView
                     android:id="@+id/textViewAlreadyHaveAnAccount"

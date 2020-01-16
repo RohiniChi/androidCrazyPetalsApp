@@ -100,6 +100,7 @@ class ProfileActivity : BaseActivity() {
             textInputEditTextEmailId.setText(String.format("%s", profile.emailId))
             textInputEditTextName.setText(String.format("%s", profile.name))
             textInputEditTextPhoneNumber.setText(String.format("%s", profile.mobileNumber))
+            textInputEditTextCurrentCity.setText(String.format("%s", profile.city))
 
 
             profilePicture = App.HostUrl.plus(profile.profilePicture)
@@ -310,7 +311,7 @@ class ProfileActivity : BaseActivity() {
                     } else {
                         buttonUpdate.isClickable = true
                         hideProgress(this@ProfileActivity)
-                        toast("Failed to update profile,please try again")
+                        toast(getString(R.string.message_update_profile_error))
                     }
                 }
             }
@@ -376,27 +377,32 @@ class ProfileActivity : BaseActivity() {
 
             R.id.buttonUpdate -> {
                 hideKeyboard(v)
-                contactValidation()
-                emailValidation()
-                nameValidation()
-                if (nameValidation() && emailValidation() && contactValidation()) {
+                if (isNetworkAccessible()) {
+                    cityValidation()
+                    contactValidation()
+                    emailValidation()
+                    nameValidation()
 
+                    if (nameValidation() && emailValidation() && contactValidation() && cityValidation()) {
 //                    attemptApiCall()
-                    if (isProfilePictureChanged) {
-                        showProgress(this)
-                        if (extras != null) {
-                            callRegisterApiWithImage(getImageUri(this, imageBitmap))
-                        } else if (imageData != null) {
-                            callRegisterApiWithImage(getImageUri(this, bitmapImage!!))
+                        if (isProfilePictureChanged) {
+                            showProgress(this)
+                            if (extras != null) {
+                                callRegisterApiWithImage(getImageUri(this, imageBitmap))
+                            } else if (imageData != null) {
+                                callRegisterApiWithImage(getImageUri(this, bitmapImage!!))
+                                buttonUpdate.isClickable = false
+                                showProgress(this)
+                            }
+                        } else {
+                            attemptApiCall()
                             buttonUpdate.isClickable = false
                             showProgress(this)
-
                         }
-                    } else {
-                        attemptApiCall()
-                        buttonUpdate.isClickable = false
-                        showProgress(this)
                     }
+                } else {
+                    hideProgress(this)
+                    toast(getString(R.string.oops_no_internet_connection))
                 }
             }
         }
@@ -426,10 +432,11 @@ class ProfileActivity : BaseActivity() {
         userProfile = profile?.profilePicture
         val userInfo = UpdateProfileData(
             ApplicationUserId = applicationUserId!!,
-            Email = textInputEditTextEmailId.text.toString(),
+            EmailId = textInputEditTextEmailId.text.toString(),
             Image = if (myImagePath.isNullOrEmpty()) userProfile else myImagePath,
             Name = textInputEditTextName.text.toString(),
-            PhoneNumber = textInputEditTextPhoneNumber.text.toString()
+            PhoneNumber = textInputEditTextPhoneNumber.text.toString(),
+            City = textInputEditTextCurrentCity.text.toString()
         )
 
         App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
@@ -485,7 +492,7 @@ class ProfileActivity : BaseActivity() {
         if (mixPanelTitle.equals("visitedScreen", true)) {
             mixPanel.track(IntentFlags.MIXPANEL_VISITED_UPDATE_PROFILE, productObject)
         } else if (mixPanelTitle.equals("updateProfileFailure", true)) {
-            productObject.put(IntentFlags.MIXPANEL_UPDATE_PROFILE_ERROR,updateProfileError)
+            productObject.put(IntentFlags.MIXPANEL_UPDATE_PROFILE_ERROR, updateProfileError)
             mixPanel.track(IntentFlags.MIXPANEL_UPDATE_PROFILE_ERROR, productObject)
         } else if (mixPanelTitle.equals("validationError", true)) {
             productObject.put(IntentFlags.MIXPANEL_UPDATE_PROFILE_VALIDATION_ERROR, validationError)
@@ -517,6 +524,13 @@ class ProfileActivity : BaseActivity() {
             }
         }
 
+        textInputEditTextCurrentCity.setOnFocusChangeListener { view, isFocused ->
+            if (!isFocused) {
+                this.hideKeyboard(view)
+                cityValidation()
+            }
+        }
+
 
         textInputEditTextName.onTextChanged {
             textViewNameError.invisible()
@@ -528,6 +542,9 @@ class ProfileActivity : BaseActivity() {
 
         textInputEditTextPhoneNumber.onTextChanged {
             textViewMobileNoError.invisible()
+        }
+        textInputEditTextCurrentCity.onTextChanged {
+            textViewCurrentCityError.invisible()
         }
 
     }
@@ -606,6 +623,30 @@ class ProfileActivity : BaseActivity() {
             }
         }
         textViewMobileNoError.invisible()
+        validationError = ""
+        return true
+    }
+
+    private fun cityValidation(): Boolean {
+        when {
+            textInputEditTextCurrentCity.isEmpty() -> {
+                textViewCurrentCityError.show()
+                textViewCurrentCityError.text = getString(R.string.validation_enter_city)
+                validationError = getString(R.string.validation_enter_city)
+                sendMixPanelEvent("validationError")
+                return false
+            }
+            textInputEditTextCurrentCity.text.toString().equals("null") -> {
+                textViewCurrentCityError.show()
+                textViewCurrentCityError.text = getString(R.string.validation_enter_city)
+                validationError = getString(R.string.validation_enter_city)
+                sendMixPanelEvent("validationError")
+                return false
+
+            }
+
+        }
+        textViewCurrentCityError.invisible()
         validationError = ""
         return true
     }

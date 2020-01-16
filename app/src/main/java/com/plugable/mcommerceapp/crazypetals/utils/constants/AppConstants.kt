@@ -111,9 +111,9 @@ object IntentFlags {
     const val CATEGORY_ID = "categoryId"
     const val CATEGORY_NAME = "categoryName"
 
-    const val APPLICATION_USER_ID = ""
-    const val APPOINTMENT_ID = ""
-    const val ORDER_ID = ""
+    const val APPLICATION_USER_ID = "application_user_id"
+    const val APPOINTMENT_ID = "appointment_id"
+    const val ORDER_ID = "order_id"
     const val DeliveryAddressName = ""
     const val TOTAL_PRICE = ""
 
@@ -129,6 +129,7 @@ object IntentFlags {
     const val VERIFY_PHONE_NUMBER = "VerifyPhoneNumber"
 
     const val HOME_FRAGMENT = "HomeFragment"
+   const val NOTIFICATION="Notification"
     const val PRODUCT_LIST = "ProductList"
     const val PRODUCT_DETAIL = "ProductDetail"
     const val WISHLIST = "Wishlist"
@@ -206,7 +207,7 @@ object IntentFlags {
     const val MIXPANEL_VERSION_NUMBER = "App version number"
     const val MIXPANEL_LAUNCHED_APPLICATION = "App version number"
     const val MIXPANEL_ORDER_NUMBER = "Order Number"
-    const val MIXPANEL_VISITED_SUCCESS_ORDER_STATUS_SCREEN = "Visited Success Order screen"
+    const val MIXPANEL_VISITED_SUCCESS_ORDER_STATUS_SCREEN = "Visited Order Status Screen"
     const val MIXPANEL_WISHLIST_PRODUCTS_LIST = "WishList Products List"
     const val MIXPANEL_VISITED_MY_ORDER_SCREEN = "Visited My Order Screen"
     const val MIXPANEL_VISITED_ORDER_DETAIL = "Visited Order Detail Screen"
@@ -215,6 +216,9 @@ object IntentFlags {
     const val MIXPANEL_VISITED_BOOK_APPOINTMENT_SCREEN = "Visited Book Appointment Screen"
     const val MIXPANEL_BOOK_APPOINTMENT_ERROR = "Appointment Booking Failed"
     const val MIXPANEL_BOOK_APPOINTMENT_VALIDATION_ERROR = "Book Appointment Validation Fail"
+    const val MIXPANEL_APPLICATION_KILLED = "Application Killed"
+    const val MIXPANEL_PAYMENT_FAIL_DUE_TO_APP_KILL = "Payment Failed due to Application Kill"
+    const val MIXPANEL_PAYMENT_STATUS_UPDATE = "Payment Status Updated on Dashboard"
 
 //    const val MIXPANEL_LOCATION = "Location"
 //    const val MIXPANEL_AREA_NAME = "Area Name"
