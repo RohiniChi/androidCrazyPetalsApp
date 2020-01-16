@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.payumoney.core.PayUmoneyConstants
 import com.payumoney.core.PayUmoneySdkInitializer
@@ -154,7 +155,6 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     }
 
     private fun showRememberMeDialog() {
-
         alert(getString(R.string.message_remember_me), getString(R.string.label_remember_me)) {
             positiveButton("Yes") {
                 SharedPreferences.getInstance(this@OrderSummaryActivity)
@@ -196,8 +196,6 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     )
             }
         }
-
-
     }
 
     private fun loadData() {
@@ -355,6 +353,11 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     override fun onItemClickListener(position: Int) {
     }
 
+    override fun onBackPressed() {
+        if (!progressBarOrderSummary.isVisible){
+            super.onBackPressed()
+        }
+    }
     override fun onClick(view: View?) {
         when (view?.id) {
             android.R.id.home -> onBackPressed()
@@ -459,6 +462,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                         val phoneNumber =
                             SharedPreferences.getInstance(this@OrderSummaryActivity).getProfile()
                                 ?.mobileNumber
+
+                        SharedPreferences.getInstance(this@OrderSummaryActivity)
+                            .setStringValue(IntentFlags.ORDER_ID, orderId.toString())
+
                         initiatePayment(
                             address!!.name,
                             emailId!!,
@@ -613,6 +620,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         // Result Code is -1 send from Payumoney activity
         Log.d("MainActivity", "request code $requestCode resultcode $resultCode")
+        SharedPreferences.getInstance(this).setStringValue(IntentFlags.ORDER_ID, "")
         materialButtonOrderSummaryPlaceOrder.isClickable = true
         hideProgress()
         if (isNetworkAccessible()) {
@@ -771,15 +779,24 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN, productObject)
             }
             mixPanelTitle.equals("checkBoxUnchecked", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, termsOfUseError)
+                productObject.put(
+                    IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR,
+                    termsOfUseError
+                )
                 mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
             }
             mixPanelTitle.equals("buttonClickError", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, termsOfUseError)
+                productObject.put(
+                    IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR,
+                    termsOfUseError
+                )
                 mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
             }
             mixPanelTitle.equals("successFulPayment", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY, paymentStatus)
+                productObject.put(
+                    IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY,
+                    paymentStatus
+                )
                 mixPanel.track(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY, productObject)
             }
             mixPanelTitle.equals("unSuccessFulPayment", true) -> {
@@ -787,7 +804,10 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                     IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_SUMMARY,
                     paymentStatus
                 )
-                mixPanel.track(IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_SUMMARY, productObject)
+                mixPanel.track(
+                    IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_SUMMARY,
+                    productObject
+                )
             }
         }
 

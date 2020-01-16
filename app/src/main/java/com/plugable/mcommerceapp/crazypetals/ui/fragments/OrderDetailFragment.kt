@@ -23,6 +23,7 @@ import com.payumoney.sdkui.ui.utils.PayUmoneyFlowManager
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.OrderDetailResponse
+import com.plugable.mcommerceapp.crazypetals.utils.constants.IntentFlags
 import com.plugable.mcommerceapp.crazypetals.utils.extension.hide
 import com.plugable.mcommerceapp.crazypetals.utils.extension.show
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
@@ -59,6 +60,8 @@ class OrderDetailFragment : BaseFragment() {
                     val name = SharedPreferences.getInstance(activity!!)
                         .getProfile()?.name
 
+                    SharedPreferences.getInstance(activity!!).setStringValue(
+                        IntentFlags.ORDER_ID,orderId)
                     initiatePayment(
                         name,
                         emailId!!,

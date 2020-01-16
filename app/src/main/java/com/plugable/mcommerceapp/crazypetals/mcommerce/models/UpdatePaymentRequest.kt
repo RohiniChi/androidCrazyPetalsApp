@@ -1,6 +1,6 @@
 package com.plugable.mcommerceapp.crazypetals.mcommerce.models
 
 data class UpdatePaymentRequest(
-    val orderid: String,
-    val paymentstatusid: String
+    val orderId: String,
+    val paymentStatusId: String
 )

@@ -21,11 +21,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.iid.FirebaseInstanceId
+import com.mixpanel.android.mpmetrics.MixpanelAPI
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.mcommerce.apptheme.ApplicationThemeUtils
-import com.plugable.mcommerceapp.crazypetals.mcommerce.models.GetMyProfile
-import com.plugable.mcommerceapp.crazypetals.mcommerce.models.NotificationToken
-import com.plugable.mcommerceapp.crazypetals.mcommerce.models.NotificationTokenRequest
+import com.plugable.mcommerceapp.crazypetals.mcommerce.models.*
 import com.plugable.mcommerceapp.crazypetals.mcommerce.webservices.ProjectApi
 import com.plugable.mcommerceapp.crazypetals.registration.LoginActivity
 import com.plugable.mcommerceapp.crazypetals.ui.fragments.*
@@ -39,10 +38,11 @@ import com.plugable.mcommerceapp.crazypetals.utils.extension.show
 import com.plugable.mcommerceapp.crazypetals.utils.sharedpreferences.SharedPreferences
 import com.plugable.mcommerceapp.crazypetals.utils.util.isNetworkAccessible
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.activity_order_summary.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
-import kotlinx.android.synthetic.main.nav_header_dashboard.*
 import kotlinx.android.synthetic.main.nav_header_dashboard.view.*
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,9 +55,11 @@ import retrofit2.Response
 class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
 
+        private lateinit var updatePaymentStatusApi: Call<UpdatePaymentResponse>
     private lateinit var addTokenApi: Call<NotificationToken>
     private lateinit var getMyProfileApi: Call<GetMyProfile>
     private var backPressed: Long = 0
+    private lateinit var mixPanel: MixpanelAPI
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +73,47 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
         fetchFCMToken()
     }
 
+      private fun updatePaymentStatus(
+          orderId: String?,
+          paymentStatusId: String
+      ) {
+          if (isNetworkAccessible()) {
+              val updateStatusRequest = UpdatePaymentRequest(
+                  orderId.toString(),
+                  paymentStatusId
+              )
+              App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
+              val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
+              updatePaymentStatusApi = clientInstance.updatePaymentStatus(updateStatusRequest)
+              updatePaymentStatusApi.enqueue(object : Callback<UpdatePaymentResponse> {
+                  override fun onFailure(call: Call<UpdatePaymentResponse>, t: Throwable) {
+                      toast(getString(R.string.message_something_went_wrong))
+                  }
+
+                  override fun onResponse(
+                      call: Call<UpdatePaymentResponse>,
+                      response: Response<UpdatePaymentResponse>
+                  ) {
+                      if (response.body()!!.statusCode.equals("10")) {
+                          toast("Payment status updated successfully")
+                          SharedPreferences.getInstance(this@DashboardActivity).setStringValue(IntentFlags.ORDER_ID,"")
+                          sendMixPanelEvent()
+                      } else {
+                          toast(response.body()!!.message)
+                      }
+                  }
+
+              })
+          } else {
+              toast(getString(R.string.oops_no_internet_connection))
+          }
+      }
+
+      private fun sendMixPanelEvent() {
+          val productObject = JSONObject()
+          productObject.put(IntentFlags.MIXPANEL_APPLICATION_KILLED,IntentFlags.MIXPANEL_PAYMENT_FAIL_DUE_TO_APP_KILL)
+          mixPanel.track(IntentFlags.MIXPANEL_PAYMENT_STATUS_UPDATE,productObject)
+      }
     //Fetch firebase cloud messaging token
     private fun fetchFCMToken() {
         FirebaseInstanceId.getInstance().instanceId
@@ -254,15 +297,17 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
             setNavigationItemSelectedListener(this@DashboardActivity)
             getHeaderView(0).setBackgroundColor(Color.parseColor(ApplicationThemeUtils.TOOL_BAR_COLOR))
             getHeaderView(0).setBackgroundColor(Color.GRAY)
-            getHeaderView(0)
-                .textViewNavigationHeader.setBackgroundColor(Color.GRAY) //
+            getHeaderView(0).textViewNavigationHeader.setBackgroundColor(Color.GRAY) //
             getHeaderView(0).textViewNavigationHeader.textColor = Color.WHITE
+            getHeaderView(0).textViewNavigationHeader.text = ""
             if (customerName != null && SharedPreferences.getInstance(this@DashboardActivity).isUserLoggedIn) {
                 getHeaderView(0).textViewNavigationHeader.text =
                     getString(R.string.title_hello).plus(" ").plus(customerName.capitalize())
                         .plus(" ")
 //                        .plus(getString(R.string.title_emoji))
 
+            } else {
+                if (textViewNavigationHeader != null) textViewNavigationHeader.hide()
             } /*else {
                 getHeaderView(0).textViewNavigationHeader.text =
                     getString(R.string.title_hello).plus(" User ")
@@ -314,6 +359,11 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                 menu.findItem(R.id.nav_appointmentList).isVisible = false
             }
         }
+           mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
+           if (SharedPreferences.getInstance(this).getStringValue(IntentFlags.ORDER_ID)!!.isNotEmpty()) {
+               val orderId = SharedPreferences.getInstance(this).getStringValue(IntentFlags.ORDER_ID)
+               updatePaymentStatus(orderId, "5")
+           }
     }
 
     fun hideKeyboard() {
@@ -457,7 +507,6 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
     private fun logoutUser() {
         SharedPreferences.getInstance(this).isUserLoggedIn = false
         SharedPreferences.getInstance(this).isUserSkippedLogin = false
-        textViewNavigationHeader.text = ""
         SharedPreferences.getInstance(this).setStringValue(IntentFlags.APPLICATION_USER_ID, "0")
         SharedPreferences.getInstance(this).isTermsConditionRememberMe = false
         initializeViews()

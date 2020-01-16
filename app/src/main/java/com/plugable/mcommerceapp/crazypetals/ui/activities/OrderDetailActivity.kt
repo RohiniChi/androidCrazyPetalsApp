@@ -7,7 +7,6 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -45,7 +44,7 @@ import retrofit2.Response
 
 class OrderDetailActivity : BaseActivity() {
 
-    private  var paymentStatus: String=""
+    private var paymentStatus: String = ""
     private lateinit var orderDetailApi: Call<OrderDetailResponse>
     private lateinit var orderId: String
     lateinit var orderDetail: OrderDetailResponse.Data.OrderDetails
@@ -145,12 +144,21 @@ class OrderDetailActivity : BaseActivity() {
                 mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_DETAIL, productObject)
             }
             mixPanelTitle.equals("successFulPayment", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_DETAIL, paymentStatus)
+                productObject.put(
+                    IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_DETAIL,
+                    paymentStatus
+                )
                 mixPanel.track(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_DETAIL, productObject)
             }
             mixPanelTitle.equals("unSuccessFulPayment", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_DETAIL, paymentStatus)
-                mixPanel.track(IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_DETAIL, productObject)
+                productObject.put(
+                    IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_DETAIL,
+                    paymentStatus
+                )
+                mixPanel.track(
+                    IntentFlags.MIXPANEL_UNSUCCESSFUL_PAYMENT_ORDER_DETAIL,
+                    productObject
+                )
             }
         }
 
@@ -271,6 +279,7 @@ class OrderDetailActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        SharedPreferences.getInstance(this).setStringValue(IntentFlags.ORDER_ID,"")
         if (isNetworkAccessible()) {
             updateTransactionStatus(requestCode, resultCode, data)
         } else {
@@ -299,13 +308,13 @@ class OrderDetailActivity : BaseActivity() {
                     toast("Transaction successful")
                     showProgress()
                     updatePaymentStatus(orderId.toInt(), "2", "Successful")
-                    paymentStatus="Payment SuccessFul"
+                    paymentStatus = "Payment SuccessFul"
                     sendMixPanelEvent("successFulPayment")
                 } else {
                     toast("Transaction unsuccessful")
                     showProgress()
                     updatePaymentStatus(orderId.toInt(), "5", "Unsuccessful")
-                    paymentStatus="Payment UnSuccessFul"
+                    paymentStatus = "Payment UnSuccessFul"
                     sendMixPanelEvent("unSuccessFulPayment")
 
                     //Failure Transaction
@@ -320,11 +329,12 @@ class OrderDetailActivity : BaseActivity() {
             toast("Transaction unsuccessful")
             showProgress()
             updatePaymentStatus(orderId.toInt(), "5", "Unsuccessful")
-            paymentStatus="Payment UnSuccessFul"
+            paymentStatus = "Payment UnSuccessFul"
             sendMixPanelEvent("unSuccessFulPayment")
         }
 
     }
+
     private fun showProgress() {
         shimmerViewContainerProductList.hide()
         tabLayout.hide()
@@ -410,6 +420,7 @@ class OrderDetailActivity : BaseActivity() {
             }
         }
     }
+
     override fun onStop() {
         super.onStop()
         cancelTasks()
@@ -418,6 +429,7 @@ class OrderDetailActivity : BaseActivity() {
     private fun cancelTasks() {
         if (::orderDetailApi.isInitialized && orderDetailApi != null) orderDetailApi.cancel()
     }
+
     override fun onDestroy() {
         mixPanel.flush()
         super.onDestroy()
