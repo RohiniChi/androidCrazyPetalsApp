@@ -417,8 +417,8 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun updatePreferenceOfHostname() {
         val apiConfigData = Host.ApiConfig(
-            "http://165.22.60.17:9293/",
-            "http://165.22.60.17:9293/",
+            "http://178.128.111.8:9021/",
+            "http://178.128.111.8:9021/",
             "http://165.22.60.17:9295/",
             "PA003",
             "CrazyPetals"
