@@ -19,6 +19,7 @@ data class Products(
     val statusCode: String
 ) {
     data class Data(
+        val filtersList: List<String>,
         val productList: List<ProductDetails>,
         val totalCount: Int
     ) {
