@@ -357,17 +357,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::callLoginApi.isInitialized && callLoginApi != null) callLoginApi.cancel()
     }
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 }

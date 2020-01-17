@@ -227,17 +227,13 @@ class MobileVerificationActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::sendOTPAPi.isInitialized && sendOTPAPi != null) sendOTPAPi.cancel()
     }
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

@@ -362,7 +362,7 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
            mixPanel = MixpanelAPI.getInstance(this, resources.getString(R.string.mix_panel_token))
            if (SharedPreferences.getInstance(this).getStringValue(IntentFlags.ORDER_ID)!!.isNotEmpty()) {
                val orderId = SharedPreferences.getInstance(this).getStringValue(IntentFlags.ORDER_ID)
-               updatePaymentStatus(orderId, "5")
+               updatePaymentStatus(orderId, "3")
            }
     }
 
@@ -550,14 +550,13 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::addTokenApi.isInitialized && addTokenApi != null) addTokenApi.cancel()
         if (::getMyProfileApi.isInitialized && getMyProfileApi != null) getMyProfileApi.cancel()
     }
 
+    override fun onDestroy() {
+        cancelTasks()
+        super.onDestroy()
+    }
 }

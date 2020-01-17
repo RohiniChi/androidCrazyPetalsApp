@@ -983,12 +983,8 @@ class ProductsListActivity : BaseActivity(), EventListener, OnFavoriteListener,
 
     override fun onDestroy() {
         mixPanel.flush()
-        super.onDestroy()
-    }
-
-    override fun onStop() {
-        super.onStop()
         cancelTasks()
+        super.onDestroy()
     }
 
     private fun cancelTasks() {

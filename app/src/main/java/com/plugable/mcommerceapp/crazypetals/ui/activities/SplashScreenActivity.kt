@@ -462,10 +462,6 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
                setActivityTheme()
            }
        }*/
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
 
     private fun cancelTasks() {
         if (::appVersionApi.isInitialized && appVersionApi != null) appVersionApi.cancel()
@@ -473,6 +469,7 @@ class SplashScreenActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

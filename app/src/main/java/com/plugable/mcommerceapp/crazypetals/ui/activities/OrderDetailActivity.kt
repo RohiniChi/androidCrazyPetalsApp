@@ -313,7 +313,7 @@ class OrderDetailActivity : BaseActivity() {
                 } else {
                     toast("Transaction unsuccessful")
                     showProgress()
-                    updatePaymentStatus(orderId.toInt(), "5", "Unsuccessful")
+                    updatePaymentStatus(orderId.toInt(), "3", "Unsuccessful")
                     paymentStatus = "Payment UnSuccessFul"
                     sendMixPanelEvent("unSuccessFulPayment")
 
@@ -328,7 +328,7 @@ class OrderDetailActivity : BaseActivity() {
         } else {
             toast("Transaction unsuccessful")
             showProgress()
-            updatePaymentStatus(orderId.toInt(), "5", "Unsuccessful")
+            updatePaymentStatus(orderId.toInt(), "3", "Unsuccessful")
             paymentStatus = "Payment UnSuccessFul"
             sendMixPanelEvent("unSuccessFulPayment")
         }
@@ -421,17 +421,13 @@ class OrderDetailActivity : BaseActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::orderDetailApi.isInitialized && orderDetailApi != null) orderDetailApi.cancel()
     }
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

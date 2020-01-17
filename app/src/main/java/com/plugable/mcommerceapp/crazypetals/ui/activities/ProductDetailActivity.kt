@@ -73,7 +73,7 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
     }
 
 
-    private  var addToCartError: String=""
+    private var addToCartError: String = ""
     private lateinit var addToCartApi: Call<ResponseAddToCart>
     private lateinit var recommendedListApi: Call<Products>
     private lateinit var productDetailApi: Call<ProductDetail>
@@ -535,11 +535,17 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
                 mixPanel.track(IntentFlags.MIXPANEL_VISITED_PRODUCTS, productObject)
             }
             mixPanelTitle.equals("addToCartApiFail", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR, addToCartError)
+                productObject.put(
+                    IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR,
+                    addToCartError
+                )
                 mixPanel.track(IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR, productObject)
             }
             mixPanelTitle.equals("addToCartError", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR, addToCartError)
+                productObject.put(
+                    IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR,
+                    addToCartError
+                )
                 mixPanel.track(IntentFlags.MIXPANEL_PRODUCT_DETAIL_ADD_TO_CART_ERROR, productObject)
             }
         }
@@ -960,8 +966,10 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
             toast(getString(R.string.check_internet_connection))
         }
     }
+
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 
@@ -1043,11 +1051,6 @@ class ProductDetailActivity : BaseActivity(), EventListener, OnFavoriteListener,
         }*/
 
 
-    }
-
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
     }
 
     private fun cancelTasks() {

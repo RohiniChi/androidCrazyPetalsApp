@@ -177,7 +177,10 @@ class NewPasswordActivity : AppCompatActivity(), View.OnClickListener {
 
             }
             mixPanelTitle.equals("validationError", true) -> {
-                productObject.put(IntentFlags.MIXPANEL_RESET_PASSWORD_VALIDATION_ERROR, validationError)
+                productObject.put(
+                    IntentFlags.MIXPANEL_RESET_PASSWORD_VALIDATION_ERROR,
+                    validationError
+                )
                 mixPanel.track(IntentFlags.MIXPANEL_RESET_PASSWORD_VALIDATION_ERROR, productObject)
 
             }
@@ -264,17 +267,13 @@ class NewPasswordActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::resetPasswordApi.isInitialized && resetPasswordApi != null) resetPasswordApi.cancel()
     }
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

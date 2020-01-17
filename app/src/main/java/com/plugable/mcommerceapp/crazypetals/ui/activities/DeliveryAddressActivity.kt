@@ -429,11 +429,6 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::deleteAddressApi.isInitialized && deleteAddressApi != null) deleteAddressApi.cancel()
         if (::fetchAddressListApi.isInitialized && fetchAddressListApi != null) fetchAddressListApi.cancel()
@@ -442,6 +437,7 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

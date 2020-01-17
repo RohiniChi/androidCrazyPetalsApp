@@ -507,12 +507,6 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
         }
     }
 
-
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::verifyOTPApi.isInitialized && verifyOTPApi != null) verifyOTPApi.cancel()
         if (::sendOTPApi.isInitialized && sendOTPApi != null) sendOTPApi.cancel()
@@ -520,6 +514,7 @@ class OTPActivity : AppCompatActivity(), View.OnClickListener, OnOtpCompletionLi
 
     override fun onDestroy() {
         super.onDestroy()
+        cancelTasks()
         if (smsReceiver != null) {
             unregisterReceiver(smsReceiver!!)
 //            smsReceiver=null

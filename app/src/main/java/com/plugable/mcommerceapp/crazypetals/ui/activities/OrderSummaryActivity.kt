@@ -1,6 +1,7 @@
 package com.plugable.mcommerceapp.crazypetals.ui.activities
 
 import ServiceGenerator
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -49,8 +50,8 @@ import retrofit2.Response
 class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventListener {
 
 
-    private var paymentStatus: String = ""
-    private var termsOfUseError: String = ""
+    private var paymentStatus: String = "paymentStatus"
+    private var termsOfUseError: String = "termsOfUseError"
     private lateinit var updatePaymentStatusApi: Call<UpdatePaymentResponse>
     private lateinit var fetchAddressListApi: Call<AddressListResponse>
     private lateinit var placeOrderApi: Call<PlaceOrderResponse>
@@ -68,7 +69,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     private var mPaymentParams: PayUmoneySdkInitializer.PaymentParam? = null
     private var isTestMode: Boolean = false
     private var totalPrice = "0"
-    var transactionId = ""
+    var transactionId = "transactionId"
     private lateinit var mixPanel: MixpanelAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -354,10 +355,11 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
     }
 
     override fun onBackPressed() {
-        if (!progressBarOrderSummary.isVisible){
+        if (!progressBarOrderSummary.isVisible) {
             super.onBackPressed()
         }
     }
+
     override fun onClick(view: View?) {
         when (view?.id) {
             android.R.id.home -> onBackPressed()
@@ -438,8 +440,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         placeOrderApi = clientInstance.placeOrder(placeOrderRequest)
         placeOrderApi.enqueue(object : Callback<PlaceOrderResponse> {
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
-                materialButtonOrderSummaryPlaceOrder.isEnabled = true
-                materialButtonOrderSummaryPlaceOrder.isClickable = false
+                materialButtonOrderSummaryPlaceOrder.isClickable = true
                 hideProgress()
                 toast(getString(R.string.message_something_went_wrong))
             }
@@ -579,40 +580,44 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         amountData: String,
         orderNumber: String
     ) {
-        transactionId = orderNumber
-        val builder = PayUmoneySdkInitializer.PaymentParam.Builder()
-        builder.setAmount(amountData)                          // Payment amount
-            .setTxnId(transactionId)                                             // Transaction ID
-            .setPhone(phoneData)                                           // User Phone number
-            .setProductName("Android test")                   // Product Name or description
-            .setFirstName(nameData)                              // User First name
-            .setEmail(emailData)                                            // User Email ID
-            .setsUrl(getString(R.string.pay_u_success_url))                    // Success URL (surl)
-            .setfUrl(getString(R.string.pay_u_failed_url))
-            .setUdf1("")
-            .setUdf2("")
-            .setUdf3("")
-            .setUdf4("")
-            .setUdf5("")
-            .setUdf6("")
-            .setUdf7("")
-            .setUdf8("")
-            .setUdf9("")
-            .setUdf10("")
-            .setIsDebug(isTestMode)                              // Integration environment - true (Debug)/ false(Production)
-            .setKey(getString(R.string.pay_u_merchant_key))                        // Merchant key
-            .setMerchantId(getString(R.string.pay_u_merchant_id))
+        if (isNetworkAccessible()) {
+            transactionId = orderNumber
+            val builder = PayUmoneySdkInitializer.PaymentParam.Builder()
+            builder.setAmount(amountData)                          // Payment amount
+                .setTxnId(transactionId)                                             // Transaction ID
+                .setPhone(phoneData)                                           // User Phone number
+                .setProductName("Android test")                   // Product Name or description
+                .setFirstName(nameData)                              // User First name
+                .setEmail(emailData)                                            // User Email ID
+                .setsUrl(getString(R.string.pay_u_success_url))                    // Success URL (surl)
+                .setfUrl(getString(R.string.pay_u_failed_url))
+                .setUdf1("")
+                .setUdf2("")
+                .setUdf3("")
+                .setUdf4("")
+                .setUdf5("")
+                .setUdf6("")
+                .setUdf7("")
+                .setUdf8("")
+                .setUdf9("")
+                .setUdf10("")
+                .setIsDebug(isTestMode)                              // Integration environment - true (Debug)/ false(Production)
+                .setKey(getString(R.string.pay_u_merchant_key))                        // Merchant key
+                .setMerchantId(getString(R.string.pay_u_merchant_id))
 
-        mPaymentParams = builder.build()
-        mPaymentParams = calculateServerSideHashAndInitiatePayment1(mPaymentParams!!)
+            mPaymentParams = builder.build()
+            mPaymentParams = calculateServerSideHashAndInitiatePayment1(mPaymentParams!!)
 
-        PayUmoneyFlowManager.startPayUMoneyFlow(
-            mPaymentParams,
-            this@OrderSummaryActivity,
-            R.style.AppTheme_Purple,
-            false
-        )
-
+            PayUmoneyFlowManager.startPayUMoneyFlow(
+                mPaymentParams,
+                this@OrderSummaryActivity,
+                R.style.AppTheme_Purple,
+                false
+            )
+        } else {
+            toast(getString(R.string.oops_no_internet_connection))
+            materialButtonOrderSummaryPlaceOrder.isClickable = true
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -667,7 +672,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 data.getParcelableExtra<ResultModel>(PayUmoneyFlowManager.ARG_RESULT)
 
             // Check which object is non-null
-            if (transactionResponse.getPayuResponse() != null) {
+            if (transactionResponse!!.getPayuResponse() != null) {
                 transactionResponse.transactionDetails
                 if (transactionResponse.transactionStatus == TransactionResponse.TransactionStatus.SUCCESSFUL) {
                     //Success Transaction
@@ -680,7 +685,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
                 } else {
 //                    toast("Transaction unsuccessful")
                     showProgress()
-                    updatePaymentStatus(orderId, "5", "Unsuccessful")
+                    updatePaymentStatus(orderId, "3", "Unsuccessful")
                     paymentStatus = "Payment UnSuccessFul"
                     sendMixPanelEvent("unSuccessFulPayment")
 
@@ -695,7 +700,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         } else {
 //            toast("Transaction unsuccessful")
             showProgress()
-            updatePaymentStatus(orderId, "5", "Unsuccessful")
+            updatePaymentStatus(orderId, "3", "Unsuccessful")
             paymentStatus = "Payment UnSuccessFul"
             sendMixPanelEvent("unSuccessFulPayment")
 
@@ -776,28 +781,40 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
         val productObject = JSONObject()
         when {
             mixPanelTitle.equals("visitedScreen", true) -> {
-                mixPanel.track(IntentFlags.MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN, productObject)
+                mixPanel.track(
+                    IntentFlags.MIXPANEL_VISITED_ORDER_SUMMARY_SCREEN,
+                    productObject
+                )
             }
             mixPanelTitle.equals("checkBoxUnchecked", true) -> {
                 productObject.put(
                     IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR,
                     termsOfUseError
                 )
-                mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
+                mixPanel.track(
+                    IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR,
+                    productObject
+                )
             }
             mixPanelTitle.equals("buttonClickError", true) -> {
                 productObject.put(
                     IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR,
                     termsOfUseError
                 )
-                mixPanel.track(IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR, productObject)
+                mixPanel.track(
+                    IntentFlags.MIXPANEL_TERMS_OF_USE_SELECTION_ERROR,
+                    productObject
+                )
             }
             mixPanelTitle.equals("successFulPayment", true) -> {
                 productObject.put(
                     IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY,
                     paymentStatus
                 )
-                mixPanel.track(IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY, productObject)
+                mixPanel.track(
+                    IntentFlags.MIXPANEL_SUCCESSFUL_PAYMENT_ORDER_SUMMARY,
+                    productObject
+                )
             }
             mixPanelTitle.equals("unSuccessFulPayment", true) -> {
                 productObject.put(
@@ -813,11 +830,6 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::placeOrderApi.isInitialized && placeOrderApi != null) placeOrderApi.cancel()
         if (::fetchAddressListApi.isInitialized && fetchAddressListApi != null) fetchAddressListApi.cancel()
@@ -828,6 +840,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

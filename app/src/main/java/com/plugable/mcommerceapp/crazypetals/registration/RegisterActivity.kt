@@ -760,11 +760,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun showProgress(activity: Activity) {
 //        window?.setBackgroundDrawableResource(android.R.color.transparent)
         activity.disableWindowClicks()
@@ -784,6 +779,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

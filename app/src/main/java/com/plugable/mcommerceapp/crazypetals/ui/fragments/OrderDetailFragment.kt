@@ -167,7 +167,7 @@ class OrderDetailFragment : BaseFragment() {
         tvOrderId.text = orderDetail.orderNumber
         tvOrderTotal.text = "₹".plus(orderDetail.orderTotal.toString())
 
-        if (orderDetail.paymentStatus.equals("Failed", true)) {
+        if (orderDetail.paymentStatus.equals("Cancelled", true)) {
             tvPaymentStatus.text = orderDetail.paymentStatus
             tvPaymentStatus.setTextColor(Color.RED)
             buttonPayment.show()

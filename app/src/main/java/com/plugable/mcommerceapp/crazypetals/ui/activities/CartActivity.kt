@@ -361,7 +361,7 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         setSupportActionBar(toolBar)
         setStatusBarColor()
         supportActionBar?.setDisplayShowTitleEnabled(true)
-        supportActionBar?.title =  "Cart"
+        supportActionBar?.title = "Cart"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_shape_backarrow_white)
         cp_Logo.hide()
@@ -377,29 +377,29 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
             R.id.textViewCheckoutButtonSubtotal -> showHideBootomSheet()
             R.id.textViewViewPriceDetails -> showHideBootomSheet()
             R.id.materialButtonCheckout -> {
-                if (isNetworkAccessible()){
+                if (isNetworkAccessible()) {
                     materialButtonCheckout.isClickable = false
 
-                var isOutOfStock = false
-                for (product in productList) {
-                    if (!product.isAvailable) {
-                        isOutOfStock = true
+                    var isOutOfStock = false
+                    for (product in productList) {
+                        if (!product.isAvailable) {
+                            isOutOfStock = true
+                        }
                     }
-                }
 
-                if (isOutOfStock) {
-                    materialButtonCheckout.isClickable = true
+                    if (isOutOfStock) {
+                        materialButtonCheckout.isClickable = true
 
-                    Toast.makeText(
-                        this@CartActivity,
-                        "Please remove out of stock product",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        Toast.makeText(
+                            this@CartActivity,
+                            "Please remove out of stock product",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        materialButtonCheckout.isClickable = false
+                        startActivity<DeliveryAddressActivity>()
+                    }
                 } else {
-                    materialButtonCheckout.isClickable = false
-                    startActivity<DeliveryAddressActivity>()
-                }
-            }else{
                     materialButtonCheckout.isClickable = true
                     toast(getString(R.string.oops_no_internet_connection))
                 }
@@ -538,20 +538,17 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
     }
 
 
-    fun showProgressBar(){
+    fun showProgressBar() {
         progressBarCartList.show()
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
     }
 
-    fun hideProgressBar(){
+    fun hideProgressBar() {
         progressBarCartList.hide()
-        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-    }
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     private fun cancelTasks() {
@@ -560,8 +557,10 @@ class CartActivity : BaseActivity(), View.OnClickListener, EventListener,
         if (::cartListApi.isInitialized && cartListApi != null) cartListApi.cancel()
         if (::removeItemFromCartApi.isInitialized && removeItemFromCartApi != null) removeItemFromCartApi.cancel()
     }
+
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

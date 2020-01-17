@@ -235,16 +235,16 @@ class NotificationActivity : BaseActivity(), EventListener {
                             val scrollPosition = notificationList.size
                             notificationListAdapter.notifyItemRemoved(scrollPosition)
 
-                            if (response!!.body()!!.data!!.notificationList.isEmpty()) {
+                            if (response!!.body()!!.data.notificationList.isEmpty()) {
                                 pageIndex -= 1
                                 isLoading = false
                             }
 
-                        } else if (!isLoading && response!!.body()!!.data!!.notificationList.isEmpty()) {
+                        } else if (!isLoading && response!!.body()!!.data.notificationList.isEmpty()) {
                             showNoDataAvailableScreen()
                         }
 
-                        notificationList.addAll(response!!.body()!!.data!!.notificationList)
+                        notificationList.addAll(response!!.body()!!.data.notificationList)
 
                         notificationListAdapter.notifyDataSetChanged()
                         isLoading = false
@@ -280,9 +280,9 @@ class NotificationActivity : BaseActivity(), EventListener {
         if (SystemClock.elapsedRealtime() - LastClickTimeSingleton.lastClickTime < 500L) return
         else {
 //            if (!(notificationList[position]?.categoryId.isNullOrEmpty()) || !(notificationList[position]?.category.isNullOrEmpty())) {
-            val notificationItems=notificationList[position]
+            val notificationItems = notificationList[position]
             val intent = Intent(this, ProductsListActivity::class.java)
-            intent.putExtra(IntentFlags.REDIRECT_FROM,IntentFlags.NOTIFICATION)
+            intent.putExtra(IntentFlags.REDIRECT_FROM, IntentFlags.NOTIFICATION)
             intent.putExtra("Category_id", notificationItems?.categoryId)
             intent.putExtra("Category_name", notificationItems?.category)
             startActivity(intent)
@@ -292,17 +292,13 @@ class NotificationActivity : BaseActivity(), EventListener {
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::notificationListApi.isInitialized && notificationListApi != null) notificationListApi.cancel()
     }
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 

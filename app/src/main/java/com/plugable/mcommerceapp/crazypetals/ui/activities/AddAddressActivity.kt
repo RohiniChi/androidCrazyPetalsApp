@@ -561,11 +561,6 @@ class AddAddressActivity : AppCompatActivity(),
         return true
     }
 
-    override fun onStop() {
-        super.onStop()
-        cancelTasks()
-    }
-
     private fun cancelTasks() {
         if (::editAddressApi.isInitialized && editAddressApi != null) editAddressApi.cancel()
         if (::addAddressApi.isInitialized && addAddressApi != null) addAddressApi.cancel()
@@ -573,6 +568,7 @@ class AddAddressActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         mixPanel.flush()
+        cancelTasks()
         super.onDestroy()
     }
 
