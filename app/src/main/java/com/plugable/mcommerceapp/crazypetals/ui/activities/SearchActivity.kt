@@ -5,8 +5,10 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.SystemClock
+import android.view.Gravity
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -145,7 +147,16 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     callSearchApi(keywordGlobal)
                     showProgress()
                 } else {
-                    if (searchViewProducts.query.length < 3) toast(getString(R.string.search_min_characters_to_search))
+                    if (searchViewProducts.query.length < 3) {
+//                        toast(getString(R.string.search_min_characters_to_search))
+                        val toast = Toast.makeText(
+                            this,
+                            getString(R.string.search_min_characters_to_search),
+                            Toast.LENGTH_LONG
+                        )
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
+                    }
                 }
 
         } else
@@ -239,7 +250,14 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
             override fun onQueryTextSubmit(searchText: String?): Boolean {
                 if (isNetworkAccessible()) {
                     if (searchText!!.length < 3) {
-                        toast(getString(R.string.search_min_characters_to_search))
+//                        toast(getString(R.string.search_min_characters_to_search))
+                        val toast = Toast.makeText(
+                            this@SearchActivity,
+                            getString(R.string.search_min_characters_to_search),
+                            Toast.LENGTH_LONG
+                        )
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
                     }
                 }
                 return false
@@ -258,7 +276,16 @@ class SearchActivity : BaseActivity(), EventListener, OnFavoriteListener,
                     productList.clear()
                     productListAdapter.notifyDataSetChanged()
                     hideNoDataAvailableScreen()
-                    if (searchText.trim().length < 3) toast(getString(R.string.search_min_characters_to_search))
+                    if (searchText.trim().length < 3) {
+//                        toast(getString(R.string.search_min_characters_to_search))
+                        val toast = Toast.makeText(
+                            this@SearchActivity,
+                            getString(R.string.search_min_characters_to_search),
+                            Toast.LENGTH_LONG
+                        )
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
+                    }
                 } else showNetworkCondition()
 
                 return false
