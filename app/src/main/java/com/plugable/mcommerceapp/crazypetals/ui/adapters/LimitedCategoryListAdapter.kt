@@ -45,12 +45,12 @@ class LimitedCategoryListAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val categoryItems = categoryList[position]
         holder.itemView.txtProductCategoryNames.text = categoryItems.name
+
         Glide.with(context)
             .load(categoryItems.image)
             .placeholder(R.drawable.ic_placeholder_category)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .fallback(R.drawable.ic_placeholder_category).centerInside()
-            .apply(RequestOptions())
+            .apply(RequestOptions().fitCenter())
             .error(R.drawable.ic_placeholder_category)
             .into(holder.itemView.imgCategory)
 

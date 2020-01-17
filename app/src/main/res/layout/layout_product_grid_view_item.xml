@@ -9,7 +9,6 @@
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
     android:layout_marginTop="4dp"
-    app:cardCornerRadius="@dimen/_8sdp"
     tools:ignore="RtlHardcoded">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +19,7 @@
         <ImageView
             android:id="@+id/imgCategory"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_170sdp"
             android:layout_marginTop="8dp"
             android:adjustViewBounds="true"
             android:padding="2dp"
