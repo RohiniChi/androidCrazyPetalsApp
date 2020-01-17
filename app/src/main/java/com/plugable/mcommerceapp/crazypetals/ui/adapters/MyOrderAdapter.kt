@@ -88,7 +88,7 @@ class MyOrderAdapter(
                 )
             )
         }
-        if (orderArrayList[position]!!.paymentStatusId.equals("5") ) {
+        if (orderArrayList[position]!!.paymentStatusId.equals("3") ) {
             viewHolder.itemView.tvOrderedOn.hide()
             viewHolder.itemView.tvDeliveredDate.hide()
             viewHolder.itemView.tvArrivingDate.hide()
@@ -108,10 +108,10 @@ class MyOrderAdapter(
        else if ( orderArrayList[position]?.paymentStatusId.equals("1")){
             viewHolder.itemView.tvOrderedOn.hide()
             viewHolder.itemView.tvDeliveredDate.hide()
-            viewHolder.itemView.tvArrivingDate.hide()
+            viewHolder.itemView.tvArrivingDate.text = "Awaiting Payment"
             viewHolder.itemView.tvPaymentFailed.show()
-
-            viewHolder.itemView.tvPaymentFailed.text = "Awaiting Payment"
+            viewHolder.itemView.tvPaymentFailed.hide()
+//            viewHolder.itemView.tvPaymentFailed.text = "Awaiting Payment"
 
 //            viewHolder.itemView.tvPaymentFailed.setTextColor(Color.RED)
 
