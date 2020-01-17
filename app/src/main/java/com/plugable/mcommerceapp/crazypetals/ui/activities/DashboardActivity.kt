@@ -95,7 +95,7 @@ class DashboardActivity : BaseActivity(), NavigationView.OnNavigationItemSelecte
                       response: Response<UpdatePaymentResponse>
                   ) {
                       if (response.body()!!.statusCode.equals("10")) {
-                          toast("Payment status updated successfully")
+//                          toast("Payment status updated successfully")
                           SharedPreferences.getInstance(this@DashboardActivity).setStringValue(IntentFlags.ORDER_ID,"")
                           sendMixPanelEvent()
                       } else {

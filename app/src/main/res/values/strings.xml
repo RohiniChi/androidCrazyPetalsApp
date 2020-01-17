@@ -1,7 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Crazypetals</string>
 
-    <string name="mix_panel_token">9f12ed6324e82bb2f0ad80ca6e49c428</string>
+  <!--  <string name="mix_panel_token">9f12ed6324e82bb2f0ad80ca6e49c428</string> for testing-->
+    <string name="mix_panel_token">44105cbc5ed53f064fdaeb535c658eb1</string>
 
     //interactive theme plug
 
