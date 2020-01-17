@@ -100,7 +100,11 @@ class ProfileActivity : BaseActivity() {
             textInputEditTextEmailId.setText(String.format("%s", profile.emailId))
             textInputEditTextName.setText(String.format("%s", profile.name))
             textInputEditTextPhoneNumber.setText(String.format("%s", profile.mobileNumber))
-            textInputEditTextCurrentCity.setText(String.format("%s", profile.city))
+            if (profile.city.equals(null) ) {
+                textInputEditTextCurrentCity.setText(String.format("%s",""))
+            } else {
+                textInputEditTextCurrentCity.setText(String.format("%s", profile.city))
+            }
 
 
             profilePicture = App.HostUrl.plus(profile.profilePicture)
