@@ -100,7 +100,7 @@ class ProfileActivity : BaseActivity() {
             textInputEditTextEmailId.setText(String.format("%s", profile.emailId))
             textInputEditTextName.setText(String.format("%s", profile.name))
             textInputEditTextPhoneNumber.setText(String.format("%s", profile.mobileNumber))
-            if (profile.city.equals(null) ) {
+            if (profile.city == null) {
                 textInputEditTextCurrentCity.setText(String.format("%s",""))
             } else {
                 textInputEditTextCurrentCity.setText(String.format("%s", profile.city))
