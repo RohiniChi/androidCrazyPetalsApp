@@ -94,7 +94,7 @@ class MyOrderAdapter(
             viewHolder.itemView.tvArrivingDate.hide()
             viewHolder.itemView.tvPaymentFailed.show()
 
-            viewHolder.itemView.tvPaymentFailed.text = "Order payment failed"
+            viewHolder.itemView.tvPaymentFailed.text = "Order payment cancelled"
 
             viewHolder.itemView.tvPaymentFailed.setTextColor(Color.RED)
 
