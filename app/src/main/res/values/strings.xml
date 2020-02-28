@@ -407,8 +407,8 @@
     <string name="validation_locality_landmark">Please enter colony/street/landmark.</string>
     <string name="validation_area">Please enter area/locality.</string>
     <string name="validation_enter_city">Please enter  your city</string>
-    <string name="validation_enter_state">Please enter state.</string>
-    <string name="validation_enter_country">Please enter country.</string>
+    <string name="validation_enter_state">Please enter your state</string>
+    <string name="validation_enter_country">Please enter your country </string>
     <string name="validation_enter_pincode">Please enter a pin code.</string>
     <string name="validation_correct_pincode">Please enter a vaild pin code.</string>
     <string name="message_agree_terms">Please agree to terms and conditions</string>

@@ -101,7 +101,7 @@ class ProfileActivity : BaseActivity() {
             textInputEditTextName.setText(String.format("%s", profile.name))
             textInputEditTextPhoneNumber.setText(String.format("%s", profile.mobileNumber))
             if (profile.city == null) {
-                textInputEditTextCurrentCity.setText(String.format("%s",""))
+                textInputEditTextCurrentCity.setText(String.format("%s", ""))
             } else {
                 textInputEditTextCurrentCity.setText(String.format("%s", profile.city))
             }
@@ -374,6 +374,7 @@ class ProfileActivity : BaseActivity() {
                 textViewNameError.invisible()
                 textViewEmailIdError.invisible()
                 textViewMobileNoError.invisible()
+                textViewCurrentCityError.invisible()
 
                 startActivity<DashboardActivity>()
 

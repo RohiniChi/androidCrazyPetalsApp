@@ -22,6 +22,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.plugable.mcommerceapp.crazypetals.R
 import com.plugable.mcommerceapp.crazypetals.callbacks.EventListener
 import com.plugable.mcommerceapp.crazypetals.mcommerce.models.Notifications
+import com.plugable.mcommerceapp.crazypetals.utils.extension.hide
+import com.plugable.mcommerceapp.crazypetals.utils.extension.show
 import kotlinx.android.synthetic.main.row_notification.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -70,14 +72,14 @@ class NotificationListAdapter(
 //            viewHolder.itemView.txtTitle.text = notificationList[position]!!.title
             viewHolder.itemView.txtTitle.text = notificationList[position]!!.modifiedTitle
             if (notificationList[position]!!.notificationType.equals("Text")) {
-                viewHolder.itemView.txtMessage.visibility = View.VISIBLE
-                viewHolder.itemView.ivBanner.visibility = View.GONE
+                viewHolder.itemView.txtMessage.show()
+                viewHolder.itemView.ivBanner.hide()
                 viewHolder.itemView.txtMessage.text = notificationList[position]!!.message
 //                viewHolder.itemView.notificationDate.text = notificationDate
 
             } else {
-                viewHolder.itemView.txtMessage.visibility = View.GONE
-                viewHolder.itemView.ivBanner.visibility = View.VISIBLE
+                viewHolder.itemView.txtMessage.hide()
+                viewHolder.itemView.ivBanner.show()
                 Glide.with(context)
                     .load(notificationList[position]!!.imageUrl)
                     .placeholder(R.drawable.ic_placeholder_category)

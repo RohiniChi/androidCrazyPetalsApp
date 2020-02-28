@@ -770,7 +770,7 @@ class OrderSummaryActivity : AppCompatActivity(), View.OnClickListener, EventLis
 
         stringBuilder.append(getString(R.string.pay_u_merchant_salt))
 
-        val hash = hashCal(stringBuilder.toString())
+        val hash =hashCal(stringBuilder.toString())
         paymentParam.setMerchantHash(hash)
 
         return paymentParam

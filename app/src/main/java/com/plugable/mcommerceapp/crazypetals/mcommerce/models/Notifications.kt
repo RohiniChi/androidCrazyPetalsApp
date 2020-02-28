@@ -1,5 +1,11 @@
 package com.plugable.mcommerceapp.crazypetals.mcommerce.models
-
+/* val intent = Intent(this, ProductDetailActivity::class.java)
+        intent.putExt/* val intent = Intent(this, ProductDetailActivity::class.java)
+        intent.putExtra(IntentFlags.PRODUCT_MODEL, productList[position])
+        intent.putExtra(IntentFlags.CATEGORY_ID, categoryId)
+        startActivity(intent)*/ra(IntentFlags.PRODUCT_MODEL, productList[position])
+        intent.putExtra(IntentFlags.CATEGORY_ID, categoryId)
+        startActivity(intent)*/
 /*
 data class Notifications(
     val data: Data? = null,

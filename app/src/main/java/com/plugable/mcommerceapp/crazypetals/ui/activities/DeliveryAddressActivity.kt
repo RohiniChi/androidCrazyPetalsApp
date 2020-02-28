@@ -43,7 +43,6 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
     private var deliverAddressError: String = ""
     private lateinit var deleteAddressApi: Call<AddressAddResponse>
     private lateinit var fetchAddressListApi: Call<AddressListResponse>
-    private lateinit var getDeliveryDayApi: Call<DeliveryDayResponse>
     private var addressList = ArrayList<AddressListResponse.Data>()
     private lateinit var deliveryAddressAdapter: DeliveryAddressAdapter
     private var isAddressSelected = false
@@ -58,16 +57,13 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
             return
         }
 
-        getDeliveryDay(address.id.toString())
+//        getDeliveryDay(address.id.toString())
         isAddressSelected = address.isSelected
         selectedAddress = address
 
         deliveryDateLayout.show()
         tvDeliveryAddressDate.text = address.deliveryDay
 
-        /*  if (isAddressSelected) {
-              materialButtonDeliveryAddressReviewOrder.isEnabled = true
-  //        }*/
         recyclerViewDeliveryAddresses.smoothScrollToPosition(addressList.indexOf(address))
     }
 
@@ -160,30 +156,6 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         initializeTheme()
         initializeViews()
         fetchAddressList()
-    }
-
-    private fun getDeliveryDay(addressId: String) {
-        App.HostUrl = SharedPreferences.getInstance(this).hostUrl!!
-        val clientInstance = ServiceGenerator.createService(ProjectApi::class.java)
-        getDeliveryDayApi = clientInstance.getDeliveryDay(addressId)
-
-        getDeliveryDayApi.enqueue(object : Callback<DeliveryDayResponse> {
-            override fun onFailure(call: Call<DeliveryDayResponse>, t: Throwable) {
-                toast(getString(R.string.message_something_went_wrong))
-            }
-
-            override fun onResponse(
-                call: Call<DeliveryDayResponse>,
-                response: Response<DeliveryDayResponse>
-            ) {
-                if (response.body()?.statusCode.equals("10")) {
-                    setColorToDeliveryDate(response.body()!!.deliveryDay)
-                } else {
-//                    toast(getString(R.string.message_something_went_wrong))
-                }
-            }
-
-        })
     }
 
     override fun onResume() {
@@ -306,24 +278,6 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
         )
     }
 
-    private fun setColorToDeliveryDate(deliveryDay: String) {
-        val text =
-            String.format(
-                getString(R.string.label_your_order_will_be_delivered_on_s),
-                deliveryDay
-            )
-        val splitText = text.split(":")
-        val spannedText = SpannableString(text)
-        spannedText.setSpan(
-            ForegroundColorSpan(Color.parseColor(ApplicationThemeUtils.SECONDARY_COLOR)),
-            splitText[0].length.plus(1),
-            splitText[0].length.plus(1).plus(splitText[1].length),
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-//        textViewDeliveryAddressDeliverDate.setText("${splitText[0]} - $spannedText", TextView.BufferType.SPANNABLE)
-        textViewDeliveryAddressDeliverDate.show()
-        textViewDeliveryAddressDeliverDate.setText(spannedText, TextView.BufferType.SPANNABLE)
-    }
 
     fun setToolBar(name: String) {
         setSupportActionBar(toolBar)
@@ -432,7 +386,6 @@ class DeliveryAddressActivity : AppCompatActivity(), View.OnClickListener, Event
     private fun cancelTasks() {
         if (::deleteAddressApi.isInitialized && deleteAddressApi != null) deleteAddressApi.cancel()
         if (::fetchAddressListApi.isInitialized && fetchAddressListApi != null) fetchAddressListApi.cancel()
-        if (::getDeliveryDayApi.isInitialized && getDeliveryDayApi != null) getDeliveryDayApi.cancel()
     }
 
     override fun onDestroy() {
